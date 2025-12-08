@@ -1,5 +1,6 @@
 # 빌드 디렉토리
 Binary/
+x64/
 # 컴파일 결과물
 *.obj
 *.o
@@ -11,6 +12,9 @@ Binary/
 *.iobj
 *.ipdb
 *.pch
+DummyClient/x64/*
+ServerCore/x64/*
+GameServer/x64/*
 
 # 사용자별 설정 (공유 불필요)
 *.suo
