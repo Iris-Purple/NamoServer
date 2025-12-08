@@ -1,0 +1,7 @@
+# 모든 텍스트 파일 자동 처리
+* text=auto
+
+# 또는 특정 파일 지정
+*.proto text eol=lf
+*.cpp text eol=crlf
+*.h text eol=crlf
