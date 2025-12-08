@@ -10,6 +10,7 @@ Binary/
 *.exp
 *.iobj
 *.ipdb
+*.pch
 
 # 사용자별 설정 (공유 불필요)
 *.suo
