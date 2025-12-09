@@ -11,6 +11,7 @@ enum PacketId
 	PKT_NONE = 0;
 	PKT_C2S_ENTER_GAME = 1000;
 	PKT_S2C_ENTER_GAME = 1001;
+	PKT_S2C_LEAVE_GAME = 1002;
 	
 	PKT_S2C_SPAWN = 2000;
 	PKT_S2C_DESPAWN = 2001;	
@@ -31,7 +32,16 @@ message S2C_ENTER_GAME
 {
 	PlayerInfo player = 1;
 }
-message S2C_SPAWN { }
-message S2C_DESPAWN { } 
+message S2C_LEAVE_GAME { }
+
+
+message S2C_SPAWN 
+{ 
+	repeated PlayerInfo players = 1;
+}
+message S2C_DESPAWN 
+{ 
+	repeated int32 playerIds = 1;
+} 
 message C2S_MOVE { }
 message S2C_MOVE { }

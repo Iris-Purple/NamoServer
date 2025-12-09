@@ -8,6 +8,7 @@ enum : uint16
 {
 	PKT_C2S_ENTER_GAME = 1000,
 	PKT_S2C_ENTER_GAME = 1001,
+	PKT_S2C_LEAVE_GAME = 1002,
 	PKT_S2C_SPAWN = 2000,
 	PKT_S2C_DESPAWN = 2001,
 	PKT_C2S_MOVE = 2002,
@@ -36,6 +37,7 @@ public:
 		return GPacketHandler[header->id](session, buffer, len);
 	}
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S2C_ENTER_GAME); }
+	static SendBufferRef MakeSendBuffer(Protocol::S2C_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S2C_LEAVE_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S2C_SPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S2C_DESPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S2C_MOVE); }

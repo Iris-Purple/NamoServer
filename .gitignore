@@ -15,6 +15,7 @@ x64/
 DummyClient/x64/*
 ServerCore/x64/*
 GameServer/x64/*
+Study/x64/*
 
 # 사용자별 설정 (공유 불필요)
 *.suo

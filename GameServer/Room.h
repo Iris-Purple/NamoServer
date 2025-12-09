@@ -3,7 +3,7 @@
 class Room : public enable_shared_from_this<Room>
 {
 public:
-	Room();
+	Room(int32 roomId);
 	virtual ~Room();
 
 	bool HandleEnterPlayerLocked(PlayerRef player);
@@ -19,7 +19,7 @@ private:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 private:
 	unordered_map<uint64, PlayerRef> _players;
-	static atomic<int32> room_idGenerator;
+	int _roomId;
 };
 
-extern RoomRef GRoom;
+//extern RoomRef GRoom;

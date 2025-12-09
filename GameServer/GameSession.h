@@ -17,5 +17,5 @@ public:
 	virtual void OnSend(int32 len) override;
 
 public:
-	atomic<shared_ptr<Player>> player;
+	atomic<shared_ptr<Player>> myPlayer;
 };

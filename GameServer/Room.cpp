@@ -4,25 +4,22 @@
 #include "GameSession.h"
 
 
-RoomRef GRoom = make_shared<Room>();
+//RoomRef GRoom = make_shared<Room>();
 
-Room::Room()
-{
-}
+Room::Room(int32 roomId) : _roomId(roomId) { }
 
-Room::~Room()
-{
-	
-}
+Room::~Room() {	}
 
 bool Room::HandleEnterPlayerLocked(PlayerRef player)
 {
 	WRITE_LOCK;
 
-	bool success = EnterPlayer(player);
+	if (EnterPlayer(player) == false)
+		return false;
 
 	player->playerInfo->set_posx(0);
 	player->playerInfo->set_posy(0);	
+
 	// 입장 사실을 신입 플레이어에게 알린다
 	{
 		Protocol::S2C_ENTER_GAME enterGamePkt;
@@ -33,76 +30,94 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 		if (auto session = player->session.lock())
+		{
 			session->Send(sendBuffer);
+			cout << "신입 플레이어 입장 : " << player->_playerId << endl;
+		}
+			
 	}
+	// 기존에 입장한 플레이어 목록을 신입 플레이어한테 알려준다
+	{
+		Protocol::S2C_SPAWN spawnPkt;
+		for (auto& item : _players)
+		{
+			if (item.second->_playerId == player->_playerId) continue;
+				
+			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
+			//cout << "기존 플레이어 id: " << item.second->_playerId << endl;
+			playerInfo->CopyFrom(*item.second->playerInfo);
+		}
+		// TODO 현재 혼자있을 때도 전송중...
 
+		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
+		if (auto session = player->session.lock())
+		{
+			//cout << "기존 플레이어 id를  신규유저한테 알려줬어요: " << player->_playerId << endl;
+			session->Send(sendBuffer);
+		}
+			
+	}
 	// 입장 사실을 다른 플레이어에게 알린다
 	{
-		/*
-		Protocol::S_SPAWN spawnPkt;
-
+		Protocol::S2C_SPAWN spawnPkt;
 		Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
 		playerInfo->CopyFrom(*player->playerInfo);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		this->Broadcast(sendBuffer, player->playerInfo->object_id());
-		*/
-	}
-
-	// 기존에 입장한 플레이어 목록을 신입 플레이어한테 알려준다
-	{
-		/*
-		Protocol::S_SPAWN spawnPkt;
-		
 		for (auto& item : _players)
 		{
-			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
-			playerInfo->CopyFrom(*item.second->playerInfo);
+			if (item.second->_playerId == player->_playerId) continue;
+			if (auto session = item.second->session.lock())
+				session->Send(sendBuffer);
 		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
-		if (auto session = player->session.lock())
-			session->Send(sendBuffer);
-		*/
 	}
 
-	return success;
+	return true;
 }
 
 bool Room::HandleLeavePlayerLocked(PlayerRef player)
 {
-	return true;
-	/*
 	if (player == nullptr)
 		return false;
 
 	WRITE_LOCK;
 
-	const uint64 objectId = player->playerInfo->object_id();
-	bool success = LeavePlayer(objectId);
-	
+	const uint64 objectId = player->playerInfo->playerid();
+	if (LeavePlayer(objectId) == false)
+		return false;
+
 	// 퇴장 사실을 퇴장하는 플레이어에게 알린다
 	{
-		Protocol::S_LEAVE_GAME leaveGamePkt;
+		Protocol::S2C_LEAVE_GAME leaveGamePkt;
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
 		if (auto session = player->session.lock())
+		{
+			cout << "LeaveGame Packet 전달: " << player->_playerId << endl;
 			session->Send(sendBuffer);
+		}
+			
 	}
 
 	// 퇴장 사실을 알린다
 	{
-		Protocol::S_DESPAWN despawnPkt;
-		despawnPkt.add_object_ids(objectId);
+		Protocol::S2C_DESPAWN despawnPkt;
+		despawnPkt.add_playerids(player->playerInfo->playerid());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
-		Broadcast(sendBuffer, objectId);
-
-		if (auto session = player->session.lock())
-			session->Send(sendBuffer);
+		for (auto& item : _players)
+		{
+			if (item.second->_playerId == player->_playerId) continue;
+		
+			if (auto session = item.second->session.lock())
+			{
+				//cout << "플레이어: " << player->_playerId << " 퇴장함을 플레이어: " << item.second->_playerId << " 알려줍니다" << endl;
+				session->Send(sendBuffer);
+			}
+				
+		}
 	}
 	
-	return success;
-	*/
+	return true;
 }
 
 bool Room::EnterPlayer(PlayerRef player)

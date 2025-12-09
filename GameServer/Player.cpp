@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "Player.h"
 
-Player::Player()
+Player::Player(int32 playerId)
+	: _playerId(playerId), playerInfo(std::make_unique<Protocol::PlayerInfo>())
 {
-	playerInfo = new Protocol::PlayerInfo();
 }
 
-Player::~Player()
-{
-	delete playerInfo;
+Player::~Player() 
+{ 
+	cout << "~Player" << endl;
 }

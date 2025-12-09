@@ -14,10 +14,43 @@
 //#include "example13.h"
 //#include "example14.h"
 
+class A
+{
+public:
+	void ProcessRecv()
+	{
+		OnRecv();
+	}
+	virtual void OnRecv()
+	{
+		cout << "A.OnRecv()" << endl;
+	}
+};
+class B : public A
+{
+public:
+	void OnRecv() sealed
+	{
+		cout << "B.OnRecv()" << endl;;
+		OnRecvPacket();
+	}
+	virtual void OnRecvPacket() = 0;
 
+};
+class C : public B
+{
+public:
+	virtual void OnRecvPacket() override
+	{
+		cout << "C.OnRecvPacket()" << endl;
+	}
+};
 
 int main()
 {
+	class C ccc;
+	ccc.ProcessRecv();
+
 	//example3::Do();
 	//example4::Do();
 	//example5::Do();

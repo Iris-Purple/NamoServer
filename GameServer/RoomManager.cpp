@@ -5,12 +5,12 @@
 
 RoomRef RoomManager::Add()
 {
-	RoomRef room = make_shared<Room>();
-	
 	USE_LOCK;
+	RoomRef room = make_shared<Room>(_roomId);
 	_rooms.emplace(_roomId, room);
 	_roomId++;
 
+	cout << "RoomManager  Add() called" << endl;
 	return room;
 }
 

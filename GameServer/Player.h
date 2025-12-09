@@ -5,12 +5,14 @@ class Room;
 
 class Player : public enable_shared_from_this<Player>
 {
+	
 public:
-	Player();
+	Player(int32 playerId);
 	virtual ~Player();
+	int32 _playerId;
 
 public:
-	Protocol::PlayerInfo* playerInfo;
+	unique_ptr<Protocol::PlayerInfo> playerInfo;
 	weak_ptr<GameSession> session;
 
 public:

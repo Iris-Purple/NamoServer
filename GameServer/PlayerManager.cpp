@@ -4,9 +4,8 @@
 
 PlayerRef PlayerManager::Add()
 {
-	PlayerRef player = make_shared<Player>();
-
 	USE_LOCK;
+	PlayerRef player = make_shared<Player>(_playerId);
 	_players.emplace(_playerId, player);
 	_playerId++;
 	

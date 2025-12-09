@@ -49,7 +49,7 @@ struct TableStruct_Protocol_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[7]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[8]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -72,6 +72,9 @@ extern S2C_DESPAWNDefaultTypeInternal _S2C_DESPAWN_default_instance_;
 class S2C_ENTER_GAME;
 struct S2C_ENTER_GAMEDefaultTypeInternal;
 extern S2C_ENTER_GAMEDefaultTypeInternal _S2C_ENTER_GAME_default_instance_;
+class S2C_LEAVE_GAME;
+struct S2C_LEAVE_GAMEDefaultTypeInternal;
+extern S2C_LEAVE_GAMEDefaultTypeInternal _S2C_LEAVE_GAME_default_instance_;
 class S2C_MOVE;
 struct S2C_MOVEDefaultTypeInternal;
 extern S2C_MOVEDefaultTypeInternal _S2C_MOVE_default_instance_;
@@ -85,6 +88,7 @@ template<> ::Protocol::C2S_MOVE* Arena::CreateMaybeMessage<::Protocol::C2S_MOVE>
 template<> ::Protocol::PlayerInfo* Arena::CreateMaybeMessage<::Protocol::PlayerInfo>(Arena*);
 template<> ::Protocol::S2C_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S2C_DESPAWN>(Arena*);
 template<> ::Protocol::S2C_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S2C_ENTER_GAME>(Arena*);
+template<> ::Protocol::S2C_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::S2C_LEAVE_GAME>(Arena*);
 template<> ::Protocol::S2C_MOVE* Arena::CreateMaybeMessage<::Protocol::S2C_MOVE>(Arena*);
 template<> ::Protocol::S2C_SPAWN* Arena::CreateMaybeMessage<::Protocol::S2C_SPAWN>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -94,6 +98,7 @@ enum PacketId : int {
   PKT_NONE = 0,
   PKT_C2S_ENTER_GAME = 1000,
   PKT_S2C_ENTER_GAME = 1001,
+  PKT_S2C_LEAVE_GAME = 1002,
   PKT_S2C_SPAWN = 2000,
   PKT_S2C_DESPAWN = 2001,
   PKT_C2S_MOVE = 2002,
@@ -573,6 +578,132 @@ class S2C_ENTER_GAME final :
 };
 // -------------------------------------------------------------------
 
+class S2C_LEAVE_GAME final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S2C_LEAVE_GAME) */ {
+ public:
+  inline S2C_LEAVE_GAME() : S2C_LEAVE_GAME(nullptr) {}
+  ~S2C_LEAVE_GAME() override;
+  explicit constexpr S2C_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S2C_LEAVE_GAME(const S2C_LEAVE_GAME& from);
+  S2C_LEAVE_GAME(S2C_LEAVE_GAME&& from) noexcept
+    : S2C_LEAVE_GAME() {
+    *this = ::std::move(from);
+  }
+
+  inline S2C_LEAVE_GAME& operator=(const S2C_LEAVE_GAME& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S2C_LEAVE_GAME& operator=(S2C_LEAVE_GAME&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S2C_LEAVE_GAME& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S2C_LEAVE_GAME* internal_default_instance() {
+    return reinterpret_cast<const S2C_LEAVE_GAME*>(
+               &_S2C_LEAVE_GAME_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(S2C_LEAVE_GAME& a, S2C_LEAVE_GAME& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S2C_LEAVE_GAME* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S2C_LEAVE_GAME* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline S2C_LEAVE_GAME* New() const final {
+    return new S2C_LEAVE_GAME();
+  }
+
+  S2C_LEAVE_GAME* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<S2C_LEAVE_GAME>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S2C_LEAVE_GAME& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const S2C_LEAVE_GAME& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message*to, const ::PROTOBUF_NAMESPACE_ID::Message&from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S2C_LEAVE_GAME* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S2C_LEAVE_GAME";
+  }
+  protected:
+  explicit S2C_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:Protocol.S2C_LEAVE_GAME)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class S2C_SPAWN final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S2C_SPAWN) */ {
  public:
@@ -617,7 +748,7 @@ class S2C_SPAWN final :
                &_S2C_SPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    4;
 
   friend void swap(S2C_SPAWN& a, S2C_SPAWN& b) {
     a.Swap(&b);
@@ -687,6 +818,27 @@ class S2C_SPAWN final :
 
   // accessors -------------------------------------------------------
 
+  enum : int {
+    kPlayersFieldNumber = 1,
+  };
+  // repeated .Protocol.PlayerInfo players = 1;
+  int players_size() const;
+  private:
+  int _internal_players_size() const;
+  public:
+  void clear_players();
+  ::Protocol::PlayerInfo* mutable_players(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
+      mutable_players();
+  private:
+  const ::Protocol::PlayerInfo& _internal_players(int index) const;
+  ::Protocol::PlayerInfo* _internal_add_players();
+  public:
+  const ::Protocol::PlayerInfo& players(int index) const;
+  ::Protocol::PlayerInfo* add_players();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
+      players() const;
+
   // @@protoc_insertion_point(class_scope:Protocol.S2C_SPAWN)
  private:
   class _Internal;
@@ -694,6 +846,7 @@ class S2C_SPAWN final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -743,7 +896,7 @@ class S2C_DESPAWN final :
                &_S2C_DESPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    5;
 
   friend void swap(S2C_DESPAWN& a, S2C_DESPAWN& b) {
     a.Swap(&b);
@@ -813,6 +966,31 @@ class S2C_DESPAWN final :
 
   // accessors -------------------------------------------------------
 
+  enum : int {
+    kPlayerIdsFieldNumber = 1,
+  };
+  // repeated int32 playerIds = 1;
+  int playerids_size() const;
+  private:
+  int _internal_playerids_size() const;
+  public:
+  void clear_playerids();
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_playerids(int index) const;
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+      _internal_playerids() const;
+  void _internal_add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
+      _internal_mutable_playerids();
+  public:
+  ::PROTOBUF_NAMESPACE_ID::int32 playerids(int index) const;
+  void set_playerids(int index, ::PROTOBUF_NAMESPACE_ID::int32 value);
+  void add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+      playerids() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
+      mutable_playerids();
+
   // @@protoc_insertion_point(class_scope:Protocol.S2C_DESPAWN)
  private:
   class _Internal;
@@ -820,6 +998,8 @@ class S2C_DESPAWN final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 > playerids_;
+  mutable std::atomic<int> _playerids_cached_byte_size_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
@@ -869,7 +1049,7 @@ class C2S_MOVE final :
                &_C2S_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(C2S_MOVE& a, C2S_MOVE& b) {
     a.Swap(&b);
@@ -995,7 +1175,7 @@ class S2C_MOVE final :
                &_S2C_MOVE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(S2C_MOVE& a, S2C_MOVE& b) {
     a.Swap(&b);
@@ -1292,11 +1472,102 @@ inline void S2C_ENTER_GAME::set_allocated_player(::Protocol::PlayerInfo* player)
 
 // -------------------------------------------------------------------
 
+// S2C_LEAVE_GAME
+
+// -------------------------------------------------------------------
+
 // S2C_SPAWN
+
+// repeated .Protocol.PlayerInfo players = 1;
+inline int S2C_SPAWN::_internal_players_size() const {
+  return players_.size();
+}
+inline int S2C_SPAWN::players_size() const {
+  return _internal_players_size();
+}
+inline void S2C_SPAWN::clear_players() {
+  players_.Clear();
+}
+inline ::Protocol::PlayerInfo* S2C_SPAWN::mutable_players(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S2C_SPAWN.players)
+  return players_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
+S2C_SPAWN::mutable_players() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S2C_SPAWN.players)
+  return &players_;
+}
+inline const ::Protocol::PlayerInfo& S2C_SPAWN::_internal_players(int index) const {
+  return players_.Get(index);
+}
+inline const ::Protocol::PlayerInfo& S2C_SPAWN::players(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S2C_SPAWN.players)
+  return _internal_players(index);
+}
+inline ::Protocol::PlayerInfo* S2C_SPAWN::_internal_add_players() {
+  return players_.Add();
+}
+inline ::Protocol::PlayerInfo* S2C_SPAWN::add_players() {
+  ::Protocol::PlayerInfo* _add = _internal_add_players();
+  // @@protoc_insertion_point(field_add:Protocol.S2C_SPAWN.players)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
+S2C_SPAWN::players() const {
+  // @@protoc_insertion_point(field_list:Protocol.S2C_SPAWN.players)
+  return players_;
+}
 
 // -------------------------------------------------------------------
 
 // S2C_DESPAWN
+
+// repeated int32 playerIds = 1;
+inline int S2C_DESPAWN::_internal_playerids_size() const {
+  return playerids_.size();
+}
+inline int S2C_DESPAWN::playerids_size() const {
+  return _internal_playerids_size();
+}
+inline void S2C_DESPAWN::clear_playerids() {
+  playerids_.Clear();
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_DESPAWN::_internal_playerids(int index) const {
+  return playerids_.Get(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_DESPAWN::playerids(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S2C_DESPAWN.playerIds)
+  return _internal_playerids(index);
+}
+inline void S2C_DESPAWN::set_playerids(int index, ::PROTOBUF_NAMESPACE_ID::int32 value) {
+  playerids_.Set(index, value);
+  // @@protoc_insertion_point(field_set:Protocol.S2C_DESPAWN.playerIds)
+}
+inline void S2C_DESPAWN::_internal_add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  playerids_.Add(value);
+}
+inline void S2C_DESPAWN::add_playerids(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_add_playerids(value);
+  // @@protoc_insertion_point(field_add:Protocol.S2C_DESPAWN.playerIds)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+S2C_DESPAWN::_internal_playerids() const {
+  return playerids_;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >&
+S2C_DESPAWN::playerids() const {
+  // @@protoc_insertion_point(field_list:Protocol.S2C_DESPAWN.playerIds)
+  return _internal_playerids();
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
+S2C_DESPAWN::_internal_mutable_playerids() {
+  return &playerids_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< ::PROTOBUF_NAMESPACE_ID::int32 >*
+S2C_DESPAWN::mutable_playerids() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S2C_DESPAWN.playerIds)
+  return _internal_mutable_playerids();
+}
 
 // -------------------------------------------------------------------
 
@@ -1309,6 +1580,8 @@ inline void S2C_ENTER_GAME::set_allocated_player(::Protocol::PlayerInfo* player)
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

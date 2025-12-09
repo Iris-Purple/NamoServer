@@ -3,10 +3,12 @@
 #include "BufferReader.h"
 #include "BufferWriter.h"
 #include "ObjectUtils.h"
+#include "RoomManager.h"
 #include "Room.h"
 #include "GameSession.h"
 #include "Player.h"
 #include "PlayerManager.h"
+
 
 
 
@@ -17,14 +19,22 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 	//GRoom->HandleEnterPlayerLocked(make_shared<Player>());
 	// TODO : Log
-
-	PlayerManager::Instance().Add();
 	return false;
 }
 
 bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt)
 {
 	cout << "C2S_ENTER_GAME  called!" << endl;
+
+	PlayerRef player = PlayerManager::Instance().Add();
+	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
+
+	player->session = static_pointer_cast<GameSession>(session);
+	player->playerInfo->set_playerid(player->_playerId);
+	player->playerInfo->set_name("John");
+	
+	RoomRef room = RoomManager::Instance().Find(1);
+	room->HandleEnterPlayerLocked(player);
 
 	return true;
 }

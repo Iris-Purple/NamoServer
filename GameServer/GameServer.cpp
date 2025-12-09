@@ -7,7 +7,7 @@
 #include "GameSessionManager.h"
 #include <tchar.h>
 #include "Job.h"
-
+#include "RoomManager.h"
 
 enum
 {
@@ -18,8 +18,6 @@ void DoWorkerJob(ServerServiceRef& service)
 {
 	while (true)
 	{
-		
-
 		LEndTickCount = ::GetTickCount64() + WORKER_TICK;
 
 		// 네트워크 입출력 처리 -> 인게임 로직까지 (패킷 핸들러에 의해)
@@ -35,6 +33,8 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {	
+	RoomManager::Instance().Add();
+
 	ServerPacketHandler::Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
