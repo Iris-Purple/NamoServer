@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Protocol {
+namespace Google.Protobuf.Protocol {
 
   /// <summary>Holder for reflection information generated from Enum.proto</summary>
   public static partial class EnumReflection {
@@ -26,11 +26,14 @@ namespace Protocol {
           string.Concat(
             "CgpFbnVtLnByb3RvEghQcm90b2NvbCpoCgpQbGF5ZXJUeXBlEhQKEFBMQVlF",
             "Ul9UWVBFX05PTkUQABIWChJQTEFZRVJfVFlQRV9LTklHSFQQARIUChBQTEFZ",
-            "RVJfVFlQRV9NQUdFEAISFgoSUExBWUVSX1RZUEVfQVJDSEVSEANiBnByb3Rv",
-            "Mw=="));
+            "RVJfVFlQRV9NQUdFEAISFgoSUExBWUVSX1RZUEVfQVJDSEVSEAMqOgoNQ3Jl",
+            "YXR1cmVTdGF0ZRIICgRJZGxlEAASCgoGTW92aW5nEAESCQoFU2tpbGwQAhII",
+            "CgREZWFkEAMqOgoHTW92ZURpchIICgROb25lEAASBgoCVXAQARIICgREb3du",
+            "EAISCAoETGVmdBADEgkKBVJpZ2h0EARCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Q",
+            "cm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Protocol.PlayerType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.PlayerType), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), }, null, null));
     }
     #endregion
 
@@ -41,6 +44,21 @@ namespace Protocol {
     [pbr::OriginalName("PLAYER_TYPE_KNIGHT")] Knight = 1,
     [pbr::OriginalName("PLAYER_TYPE_MAGE")] Mage = 2,
     [pbr::OriginalName("PLAYER_TYPE_ARCHER")] Archer = 3,
+  }
+
+  public enum CreatureState {
+    [pbr::OriginalName("Idle")] Idle = 0,
+    [pbr::OriginalName("Moving")] Moving = 1,
+    [pbr::OriginalName("Skill")] Skill = 2,
+    [pbr::OriginalName("Dead")] Dead = 3,
+  }
+
+  public enum MoveDir {
+    [pbr::OriginalName("None")] None = 0,
+    [pbr::OriginalName("Up")] Up = 1,
+    [pbr::OriginalName("Down")] Down = 2,
+    [pbr::OriginalName("Left")] Left = 3,
+    [pbr::OriginalName("Right")] Right = 4,
   }
 
   #endregion

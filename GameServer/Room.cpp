@@ -17,15 +17,19 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	if (EnterPlayer(player) == false)
 		return false;
 
-	player->playerInfo->set_posx(0);
-	player->playerInfo->set_posy(0);	
-
+	auto posInfo = new Protocol::PositionInfo();
+	posInfo->set_state(Protocol::CreatureState::Idle);
+	posInfo->set_movedir(Protocol::MoveDir::None);
+	posInfo->set_posx(0);
+	posInfo->set_posy(0);
+	player->info->set_allocated_posinfo(posInfo);
+	
 	// 입장 사실을 신입 플레이어에게 알린다
 	{
 		Protocol::S2C_ENTER_GAME enterGamePkt;
 		
 		Protocol::PlayerInfo* playerInfo = new Protocol::PlayerInfo();
-		playerInfo->CopyFrom(*player->playerInfo);
+		playerInfo->CopyFrom(*player->info);
 		enterGamePkt.set_allocated_player(playerInfo);
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
@@ -44,15 +48,15 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 			if (item.second->_playerId == player->_playerId) continue;
 				
 			Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
-			//cout << "기존 플레이어 id: " << item.second->_playerId << endl;
-			playerInfo->CopyFrom(*item.second->playerInfo);
+			cout << "기존 플레이어 id: " << item.second->_playerId << endl;
+			playerInfo->CopyFrom(*item.second->info);
 		}
-		// TODO 현재 혼자있을 때도 전송중...
-
+		
+		// 현재 혼자있을 때도 전송중...
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		if (auto session = player->session.lock())
 		{
-			//cout << "기존 플레이어 id를  신규유저한테 알려줬어요: " << player->_playerId << endl;
+			cout << "기존 플레이어 id를  신규유저한테 알려줬어요: " << player->_playerId << endl;
 			session->Send(sendBuffer);
 		}
 			
@@ -61,8 +65,8 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	{
 		Protocol::S2C_SPAWN spawnPkt;
 		Protocol::PlayerInfo* playerInfo = spawnPkt.add_players();
-		playerInfo->CopyFrom(*player->playerInfo);
-
+		playerInfo->CopyFrom(*player->info);
+		cout << "입장 사실을 다른 플레이어에게 알린다" << endl;
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		for (auto& item : _players)
 		{
@@ -82,7 +86,7 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 
 	WRITE_LOCK;
 
-	const uint64 objectId = player->playerInfo->playerid();
+	const uint64 objectId = player->info->playerid();
 	if (LeavePlayer(objectId) == false)
 		return false;
 
@@ -101,7 +105,7 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 	// 퇴장 사실을 알린다
 	{
 		Protocol::S2C_DESPAWN despawnPkt;
-		despawnPkt.add_playerids(player->playerInfo->playerid());
+		despawnPkt.add_playerids(player->info->playerid());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
 		for (auto& item : _players)
@@ -123,10 +127,10 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 bool Room::EnterPlayer(PlayerRef player)
 {
 	// 이미 player 존재함
-	if (_players.find(player->playerInfo->playerid()) != _players.end())
+	if (_players.find(player->info->playerid()) != _players.end())
 		return false;
 
-	_players.insert(make_pair(player->playerInfo->playerid(), player));
+	_players.insert(make_pair(player->info->playerid(), player));
 	player->room.store(shared_from_this());
 	return true;
 }
@@ -149,7 +153,7 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 	for (auto& item : _players)
 	{
 		PlayerRef player = item.second;
-		if (player->playerInfo->playerid() == exceptId)
+		if (player->info->playerid() == exceptId)
 			continue;
 
 		if (GameSessionRef session = player->session.lock())

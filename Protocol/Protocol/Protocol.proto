@@ -17,15 +17,11 @@ enum PacketId
 	PKT_S2C_DESPAWN = 2001;	
 	PKT_C2S_MOVE = 2002;
 	PKT_S2C_MOVE = 2003;
+	PKT_C2S_SKILL = 2004;
+	PKT_S2C_SKILL = 2005;
 }
 
-message PlayerInfo
-{
-	int32 playerId = 1;
-	string name = 2;
-	int32 posX = 3;
-	int32 posY = 4;
-}
+
 
 message C2S_ENTER_GAME {  }
 message S2C_ENTER_GAME
@@ -43,5 +39,21 @@ message S2C_DESPAWN
 { 
 	repeated int32 playerIds = 1;
 } 
-message C2S_MOVE { }
-message S2C_MOVE { }
+message C2S_MOVE
+{ 
+	PositionInfo posInfo = 1;
+}
+message S2C_MOVE 
+{ 
+	int32 playerId = 1;
+	PositionInfo posInfo = 2;
+}
+message C2S_SKILL
+{
+	SkillInfo info = 1;
+}
+message S2C_SKILL
+{
+	int32 playerId = 1;
+	SkillInfo info = 2;
+}

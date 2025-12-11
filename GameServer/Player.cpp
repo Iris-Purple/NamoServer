@@ -2,7 +2,7 @@
 #include "Player.h"
 
 Player::Player(int32 playerId)
-	: _playerId(playerId), playerInfo(std::make_unique<Protocol::PlayerInfo>())
+	: _playerId(playerId), info(std::make_unique<Protocol::PlayerInfo>())
 {
 }
 

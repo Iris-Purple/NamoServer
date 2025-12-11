@@ -15,7 +15,7 @@ private:
 
 	USE_LOCK;
 
-private:
+public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 private:
 	unordered_map<uint64, PlayerRef> _players;

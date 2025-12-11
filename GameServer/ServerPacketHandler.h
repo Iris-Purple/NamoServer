@@ -13,12 +13,15 @@ enum : uint16
 	PKT_S2C_DESPAWN = 2001,
 	PKT_C2S_MOVE = 2002,
 	PKT_S2C_MOVE = 2003,
+	PKT_C2S_SKILL = 2004,
+	PKT_S2C_SKILL = 2005,
 };
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt);
 bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt);
+bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt);
 
 class ServerPacketHandler
 {
@@ -29,6 +32,7 @@ public:
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_C2S_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_ENTER_GAME>(Handle_C2S_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_C2S_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_MOVE>(Handle_C2S_MOVE, session, buffer, len); };
+		GPacketHandler[PKT_C2S_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_SKILL>(Handle_C2S_SKILL, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -41,6 +45,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S2C_SPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S2C_DESPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S2C_MOVE); }
+	static SendBufferRef MakeSendBuffer(Protocol::S2C_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_S2C_SKILL); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

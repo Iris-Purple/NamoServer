@@ -12,7 +12,7 @@ public:
 	int32 _playerId;
 
 public:
-	unique_ptr<Protocol::PlayerInfo> playerInfo;
+	unique_ptr<Protocol::PlayerInfo> info;
 	weak_ptr<GameSession> session;
 
 public:

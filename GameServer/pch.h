@@ -12,9 +12,9 @@
 
 #include "CorePch.h"
 
-#include "Protocol\Protocol.pb.h"
-#include "Protocol\Enum.pb.h"
-#include "Protocol\Struct.pb.h"
+#include "Protocol/Protocol.pb.h"
+#include "Protocol/Enum.pb.h"
+#include "Protocol/Struct.pb.h"
 #include "ServerPacketHandler.h"
 #include "Utils.h"
 #include "GameSession.h"

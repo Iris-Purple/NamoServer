@@ -30,8 +30,8 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
 
 	player->session = static_pointer_cast<GameSession>(session);
-	player->playerInfo->set_playerid(player->_playerId);
-	player->playerInfo->set_name("John");
+	player->info->set_playerid(player->_playerId);
+	player->info->set_name("John");
 	
 	RoomRef room = RoomManager::Instance().Find(1);
 	room->HandleEnterPlayerLocked(player);
@@ -40,6 +40,37 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 }
 
 bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
+{
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	cout << "C2S_MOVE (" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
+
+	PlayerRef myPlayer = gameSession->myPlayer.load();
+	if (myPlayer == nullptr)
+		return false;
+	RoomRef myRoom = myPlayer->room.load().lock();
+	if (myRoom == nullptr)
+		return false;
+
+	// TODO : 검증
+
+	// 일단 서버에서 좌표 이동
+	// TODO myPlayer 이동관련 매서드 추가해서 관리하자
+	myPlayer->info->mutable_posinfo()->CopyFrom(pkt.posinfo());
+
+
+	// 다른 플레이어한테도 알려준다
+	Protocol::S2C_MOVE resPkt;
+	resPkt.set_playerid(gameSession->myPlayer.load()->_playerId);
+	resPkt.mutable_posinfo()->CopyFrom(pkt.posinfo());
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
+	// 나를 제외한 다른 유저에게 이동패킷 전달
+	myRoom->Broadcast(sendBuffer, myPlayer->_playerId);
+
+	return true;
+}
+
+bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 {
 	return true;
 }
