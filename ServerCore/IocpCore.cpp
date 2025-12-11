@@ -41,9 +41,13 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		default:
-			// TODO : ·Î±× Âï±â
-			IocpObjectRef iocpObject = iocpEvent->owner;
-			iocpObject->Dispatch(iocpEvent, numOfBytes);
+			// Handle failed I/O operations - iocpEvent can be NULL in some error cases
+			// (e.g., ERROR_ABANDONED_WAIT_0 when IOCP handle is closed)
+			if (iocpEvent != nullptr)
+			{
+				IocpObjectRef iocpObject = iocpEvent->owner;
+				iocpObject->Dispatch(iocpEvent, numOfBytes);
+			}
 			break;
 		}
 	}
