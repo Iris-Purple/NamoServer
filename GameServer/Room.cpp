@@ -137,26 +137,12 @@ bool Room::EnterPlayer(PlayerRef player)
 		
 		Protocol::S2C_ENTER_GAME enterGamePkt;
 		enterGamePkt.mutable_player()->CopyFrom(player->_objInfo);
-		cout << "player 1" << endl;
-		cout << player->_objInfo.name() << endl;
-		cout << player->_objInfo.posinfo().state() << endl;
-		cout << player->_objInfo.posinfo().movedir() << endl;
-		cout << player->_objInfo.posinfo().posx() << endl;
-		cout << player->_objInfo.posinfo().posy() << endl;
-		cout << "------------------" << endl;
-
-		cout << "EnterPlayer 1" << endl;
-		cout << enterGamePkt.player().name() << endl;
-		cout << enterGamePkt.player().posinfo().state() << endl;
-		cout << enterGamePkt.player().posinfo().movedir() << endl;
-		cout << enterGamePkt.player().posinfo().posx() << endl;
-		cout << enterGamePkt.player().posinfo().posy() << endl;
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 		if (auto session = player->session.lock())
 		{
 			session->Send(sendBuffer);
-			cout << "신입 플레이어 입장 : " << player->GetId() << endl;
+			cout << "EnterPlayerId: " << player->GetId() << endl;
 		}
 
 	}
@@ -168,7 +154,6 @@ bool Room::EnterPlayer(PlayerRef player)
 			if (item.second->GetId() == player->GetId()) continue;
 
 			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
-			cout << "기존 플레이어 id: " << item.second->GetId() << endl;
 		}
 
 		// 현재 혼자있을 때도 전송중...
@@ -200,7 +185,7 @@ bool Room::LeavePlayer(int32 objectId)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
 		if (auto session = player->session.lock())
 		{
-			cout << "LeaveGame Packet 전달: " << objectId << endl;
+			cout << "LeavePlayerId: " << objectId << endl;
 			session->Send(sendBuffer);
 		}
 	}
@@ -248,7 +233,6 @@ void Room::HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt)
 	WRITE_LOCK;
 	
 	auto posInfo = player->MutablePosInfo();
-	cout << "HandleSkill posInfo->state: " << posInfo->state() << endl;
 	if (posInfo->state() != Protocol::CreatureState::Idle)
 		return;
 	

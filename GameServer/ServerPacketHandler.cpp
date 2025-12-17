@@ -48,7 +48,7 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-	cout << "C2S_MOVE (" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
+	
 
 	PlayerRef myPlayer = gameSession->myPlayer.load();
 	if (myPlayer == nullptr)
@@ -58,6 +58,7 @@ bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 		return false;
 
 	room->HandleMove(myPlayer, pkt);
+	cout << myPlayer->GetId() << " : C2S_MOVE(" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
 	return true;
 }
 
@@ -72,8 +73,8 @@ bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 	if (room == nullptr)
 		return false;
 
-	cout << "C2S_SKILL" << endl;
 	room->HandleSkill(myPlayer, pkt);
+	cout << myPlayer->GetId() << " : C2S_SKILL" << endl;
 	return true;
 }
 
