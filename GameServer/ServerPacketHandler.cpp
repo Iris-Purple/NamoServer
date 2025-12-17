@@ -72,6 +72,7 @@ bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 	if (room == nullptr)
 		return false;
 
+	cout << "C2S_SKILL" << endl;
 	room->HandleSkill(myPlayer, pkt);
 	return true;
 }

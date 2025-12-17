@@ -18,11 +18,15 @@ void Room::Init(int mapId)
 
 void Room::Update()
 {
-	USE_LOCK;
+	WRITE_LOCK;
 	for (auto [_, projectile] : _projectiles)
 	{
 		projectile->Update();
 	}
+	for (int32 id : _removeProjectileIds)
+		_projectiles.erase(id);
+
+	_removeProjectileIds.clear();
 }
 
 bool Room::HandleEnterGame(GameObjectRef gameObject)
@@ -30,7 +34,6 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 	if (gameObject == nullptr)
 		return false;
 
-	WRITE_LOCK;
 	auto type = ObjectManager::GetObjectTypeById(gameObject->GetId());
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
@@ -76,8 +79,6 @@ bool Room::HandleLeaveGame(int32 objectId)
 {
 	auto type = ObjectManager::GetObjectTypeById(objectId);
 
-	WRITE_LOCK;
-
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
 		// TODO return 처리
@@ -95,7 +96,8 @@ bool Room::HandleLeaveGame(int32 objectId)
 	{
 		ProjectileRef projectile = _projectiles[objectId];
 		projectile->_room.store(weak_ptr<Room>());
-		_projectiles.erase(objectId);
+		_removeProjectileIds.push_back(objectId);
+		//_projectiles.erase(objectId);
 	}
 
 	// 퇴장 사실을 알린다
@@ -210,14 +212,14 @@ void Room::HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt)
 	if (player == nullptr)
 		return;
 
-	USE_LOCK;
+	WRITE_LOCK;
 	// TODO 이동 검증
-	
-	
-	
+	//cout << "HandleMove posInfo state: " << pkt.posinfo().posx() <<"," << pkt.posinfo().posy() << " : " << pkt.posinfo().state() << endl;
+
 	// 다른 좌표로 이동할 경우 , 갈 수 있는지 체크
 	const auto& movePosInfo = pkt.posinfo();
-	if (movePosInfo.posx() != player->GetPosInfo().posy() || movePosInfo.posy() != player->GetPosInfo().posx())
+	//cout << "player posInfo state: " << player->GetPosInfo().posx() << "," << player->GetPosInfo().posy() << " : " << player->GetPosInfo().state() << endl;
+	if (movePosInfo.posx() != player->GetPosInfo().posx() || movePosInfo.posy() != player->GetPosInfo().posy())
 	{
 		if (_map.CanGo(Vector2Int{ movePosInfo.posx(), movePosInfo.posy() }) == false)
 			return;
@@ -229,18 +231,10 @@ void Room::HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt)
 
 	_map.ApplyMove(player, Vector2Int{ movePosInfo.posx(), movePosInfo.posy() });
 
-
 	// 다른 플레이어한테도 알려준다
 	Protocol::S2C_MOVE resPkt;
 	resPkt.set_objectid(player->GetId());
 	resPkt.mutable_posinfo()->CopyFrom(pkt.posinfo());
-
-	// test
-	cout << "S2C_MOVE objectid: " << resPkt.objectid() << endl;
-	cout << "S2C_MOVE posInfo x: " << resPkt.posinfo().posx() << endl;
-	cout << "S2C_MOVE posInfo y: " << resPkt.posinfo().posx() << endl;
-	cout << "S2C_MOVE posInfo movedir: " << resPkt.posinfo().movedir() << endl;
-	cout << "S2C_MOVE posInfo state: " << resPkt.posinfo().state() << endl;
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 	Broadcast(sendBuffer, player->GetId());
@@ -251,13 +245,16 @@ void Room::HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt)
 	if (player == nullptr)
 		return;
 
-	USE_LOCK;
+	WRITE_LOCK;
+	
 	auto posInfo = player->MutablePosInfo();
-
+	cout << "HandleSkill posInfo->state: " << posInfo->state() << endl;
 	if (posInfo->state() != Protocol::CreatureState::Idle)
 		return;
+	
 	// TODO 스킬 사용 가능 여부 체크
 	
+
 	posInfo->set_state(Protocol::CreatureState::Skill);
 
 	int32 skillId = pkt.info().skillid();
@@ -270,7 +267,7 @@ void Room::HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt)
 	resPkt.set_allocated_info(skill);
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 	Broadcast(sendBuffer);
-
+	
 	if (skillId == 1) 
 	{
 		// TODO 데미지 판정
@@ -284,6 +281,7 @@ void Room::HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt)
 	else if (skillId == 2)
 	{
 		ArrowRef arrow = ObjectManager::Instance().Add<Arrow>();
+		cout << "Arrow Created : " << arrow->GetId() << endl;
 		if (arrow == nullptr)
 			return;
 		

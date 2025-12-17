@@ -7,7 +7,7 @@ bool ObjectManager::Remove(int32 objectId)
 {
 	Protocol::GameObjectType objectType = GetObjectTypeById(objectId);
 
-	USE_LOCK;
+	WRITE_LOCK;
 	if (objectType == Protocol::GameObjectType::PLAYER)
 	{
 		return _players.erase(objectId) > 0;
@@ -19,7 +19,7 @@ PlayerRef ObjectManager::Find(int32 objectId)
 {
 	Protocol::GameObjectType objectType = GetObjectTypeById(objectId);
 
-	USE_LOCK;
+	WRITE_LOCK;
 	if (objectType == Protocol::GameObjectType::PLAYER)
 	{
 		auto it = _players.find(objectId);

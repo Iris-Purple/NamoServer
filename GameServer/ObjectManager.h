@@ -39,7 +39,7 @@ public:
 
 		auto gameObject = std::make_shared<T>();
 
-		USE_LOCK;
+		WRITE_LOCK;
 		gameObject->SetId(GenerateId(gameObject->GetObjectType()));
 		if (gameObject->GetObjectType() == Protocol::GameObjectType::PLAYER) 
 		{

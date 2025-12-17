@@ -7,7 +7,7 @@ RoomRef RoomManager::Add(int mapId)
 {
 	RoomRef room = make_shared<Room>(_roomId);
 	
-	USE_LOCK;
+	WRITE_LOCK;
 	room->Init(mapId);
 	
 	_rooms.emplace(_roomId, room);
@@ -18,13 +18,13 @@ RoomRef RoomManager::Add(int mapId)
 
 bool RoomManager::Remove(int32 roomId)
 {
-	USE_LOCK;
+	WRITE_LOCK;
 	return _rooms.erase(roomId) ? true : false;
 }
 
 RoomRef RoomManager::Find(int32 roomId)
 {
-	USE_LOCK;
+	WRITE_LOCK;
 	auto it = _rooms.find(roomId);
 	return it != _rooms.end() ? it->second : nullptr;
 }

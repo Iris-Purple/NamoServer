@@ -18,7 +18,9 @@ void Arrow::Update()
 	Vector2Int destPos = GetFrontCellPos();
 	if (room->_map.CanGo(destPos))
 	{
-		Vector2Int cellPos = GetCellPos();
+		cout << "Arrow move : " << destPos.x << "," << destPos.y << endl;
+		// memory 위치 갱신 
+		SetCellPos(destPos);
 
 		Protocol::S2C_MOVE pkt;
 		pkt.set_objectid(GetId());
@@ -26,7 +28,6 @@ void Arrow::Update()
 		
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		room->Broadcast(sendBuffer);
-		cout << "Move Arrow" << endl;
 	}
 	else
 	{
@@ -37,6 +38,7 @@ void Arrow::Update()
 		}
 
 		// 소멸
+		cout << "Arrow Remove" << endl;
 		room->HandleLeaveGame(GetId());
 	}
 }
