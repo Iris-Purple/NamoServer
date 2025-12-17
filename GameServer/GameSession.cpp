@@ -4,7 +4,7 @@
 #include "ServerPacketHandler.h"
 #include "RoomManager.h"
 #include "Room.h"
-#include "PlayerManager.h"
+#include "ObjectManager.h"
 #include "Player.h"
 
 void GameSession::OnConnected()
@@ -16,11 +16,12 @@ void GameSession::OnDisconnected()
 {
 	cout << "GameSession::OnDisconnected" << endl;
 
+	int32 objectId = myPlayer.load()->GetId();
 	RoomRef room = RoomManager::Instance().Find(1);
 	if (room)
-		room->HandleLeavePlayerLocked(myPlayer.load());
+		room->HandleLeaveGame(objectId);
 
-	PlayerManager::Instance().Remove(myPlayer.load()->_playerId);
+	ObjectManager::Instance().Remove(objectId);
 
 	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }

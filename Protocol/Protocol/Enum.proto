@@ -3,12 +3,12 @@ package Protocol;
 
 option csharp_namespace = "Google.Protobuf.Protocol";
 
-enum PlayerType
+enum GameObjectType
 {
-	PLAYER_TYPE_NONE = 0;
-	PLAYER_TYPE_KNIGHT = 1;
-	PLAYER_TYPE_MAGE = 2;
-	PLAYER_TYPE_ARCHER = 3;
+	NONE = 0;
+	PLAYER = 1;
+	MONSTER = 2;
+	PROJECTILE = 3;
 }
 
 enum CreatureState
@@ -20,9 +20,8 @@ enum CreatureState
 }
 enum MoveDir
 {
-    None = 0;
-    Up = 1;
-    Down = 2;
-    Left = 3;
-    Right = 4;
+    Up = 0;
+    Down = 1;
+    Left = 2;
+    Right = 3;
 }

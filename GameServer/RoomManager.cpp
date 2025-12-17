@@ -3,13 +3,15 @@
 #include "RoomManager.h"
 
 
-RoomRef RoomManager::Add()
+RoomRef RoomManager::Add(int mapId)
 {
-	USE_LOCK;
 	RoomRef room = make_shared<Room>(_roomId);
+	
+	USE_LOCK;
+	room->Init(mapId);
+	
 	_rooms.emplace(_roomId, room);
 	_roomId++;
-
 	cout << "RoomManager  Add() called" << endl;
 	return room;
 }

@@ -26,18 +26,18 @@ enum PacketId
 message C2S_ENTER_GAME {  }
 message S2C_ENTER_GAME
 {
-	PlayerInfo player = 1;
+	ObjectInfo player = 1;
 }
 message S2C_LEAVE_GAME { }
 
 
 message S2C_SPAWN 
 { 
-	repeated PlayerInfo players = 1;
+	repeated ObjectInfo objects = 1;
 }
 message S2C_DESPAWN 
 { 
-	repeated int32 playerIds = 1;
+	repeated int32 objectIds = 1;
 } 
 message C2S_MOVE
 { 
@@ -45,7 +45,7 @@ message C2S_MOVE
 }
 message S2C_MOVE 
 { 
-	int32 playerId = 1;
+	int32 objectId = 1;
 	PositionInfo posInfo = 2;
 }
 message C2S_SKILL
@@ -54,6 +54,6 @@ message C2S_SKILL
 }
 message S2C_SKILL
 {
-	int32 playerId = 1;
+	int32 objectId = 1;
 	SkillInfo info = 2;
 }

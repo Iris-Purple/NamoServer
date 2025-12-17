@@ -7,7 +7,7 @@
 #include "Room.h"
 #include "GameSession.h"
 #include "Player.h"
-#include "PlayerManager.h"
+#include "ObjectManager.h"
 
 
 
@@ -26,15 +26,21 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 {
 	cout << "C2S_ENTER_GAME  called!" << endl;
 
-	PlayerRef player = PlayerManager::Instance().Add();
-	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
+	PlayerRef player = ObjectManager::Instance().Add<Player>();
 
 	player->session = static_pointer_cast<GameSession>(session);
-	player->info->set_playerid(player->_playerId);
-	player->info->set_name("John");
-	
+	player->_objInfo.set_objectid(player->GetId());
+	player->_objInfo.set_name("Player_" + std::to_string(player->_objInfo.objectid()));
+	auto posInfo = player->_objInfo.mutable_posinfo();
+	posInfo->set_state(Protocol::CreatureState::Idle);
+	posInfo->set_movedir(Protocol::MoveDir::Down);
+	posInfo->set_posx(0);
+	posInfo->set_posy(0);
+
+	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
+
 	RoomRef room = RoomManager::Instance().Find(1);
-	room->HandleEnterPlayerLocked(player);
+	room->HandleEnterGame(player);
 
 	return true;
 }
@@ -47,31 +53,26 @@ bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 	PlayerRef myPlayer = gameSession->myPlayer.load();
 	if (myPlayer == nullptr)
 		return false;
-	RoomRef myRoom = myPlayer->room.load().lock();
-	if (myRoom == nullptr)
+	RoomRef room = myPlayer->_room.load().lock();
+	if (room == nullptr)
 		return false;
 
-	// TODO : 검증
-
-	// 일단 서버에서 좌표 이동
-	// TODO myPlayer 이동관련 매서드 추가해서 관리하자
-	myPlayer->info->mutable_posinfo()->CopyFrom(pkt.posinfo());
-
-
-	// 다른 플레이어한테도 알려준다
-	Protocol::S2C_MOVE resPkt;
-	resPkt.set_playerid(gameSession->myPlayer.load()->_playerId);
-	resPkt.mutable_posinfo()->CopyFrom(pkt.posinfo());
-
-	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
-	// 나를 제외한 다른 유저에게 이동패킷 전달
-	myRoom->Broadcast(sendBuffer, myPlayer->_playerId);
-
+	room->HandleMove(myPlayer, pkt);
 	return true;
 }
 
 bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 {
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef myPlayer = gameSession->myPlayer.load();
+	if (myPlayer == nullptr)
+		return false;
+	RoomRef room = myPlayer->_room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	room->HandleSkill(myPlayer, pkt);
 	return true;
 }
 

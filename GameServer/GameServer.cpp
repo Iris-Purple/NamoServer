@@ -8,6 +8,7 @@
 #include <tchar.h>
 #include "Job.h"
 #include "RoomManager.h"
+#include "Room.h"
 
 enum
 {
@@ -33,7 +34,7 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {	
-	RoomManager::Instance().Add();
+	RoomManager::Instance().Add(1);
 
 	ServerPacketHandler::Init();
 
@@ -54,19 +55,19 @@ int main()
 	}
 
 	// Main Thread
+	//DoWorkerJob(service);
 	cout << "Listen Server....." << endl << endl;
-	DoWorkerJob(service);
 
-	
 	while (true)
 	{
-		//Protocol::S_CHAT pkt;
-		//pkt.set_msg("HelloWorld");
-		//auto sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-
-		//GSessionManager.Broadcast(sendBuffer);
-		this_thread::sleep_for(1s);
+		auto room = RoomManager::Instance().Find(1);
+		if (room)
+		{
+			room->Update();
+		}
+		this_thread::sleep_for(100ms);
 	}
+
 
 	
 	GThreadManager->Join();

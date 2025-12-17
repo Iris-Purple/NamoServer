@@ -24,26 +24,25 @@ namespace Google.Protobuf.Protocol {
     static EnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpFbnVtLnByb3RvEghQcm90b2NvbCpoCgpQbGF5ZXJUeXBlEhQKEFBMQVlF",
-            "Ul9UWVBFX05PTkUQABIWChJQTEFZRVJfVFlQRV9LTklHSFQQARIUChBQTEFZ",
-            "RVJfVFlQRV9NQUdFEAISFgoSUExBWUVSX1RZUEVfQVJDSEVSEAMqOgoNQ3Jl",
-            "YXR1cmVTdGF0ZRIICgRJZGxlEAASCgoGTW92aW5nEAESCQoFU2tpbGwQAhII",
-            "CgREZWFkEAMqOgoHTW92ZURpchIICgROb25lEAASBgoCVXAQARIICgREb3du",
-            "EAISCAoETGVmdBADEgkKBVJpZ2h0EARCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Q",
-            "cm90b2NvbGIGcHJvdG8z"));
+            "CgpFbnVtLnByb3RvEghQcm90b2NvbCpDCg5HYW1lT2JqZWN0VHlwZRIICgRO",
+            "T05FEAASCgoGUExBWUVSEAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJTEUQ",
+            "Ayo6Cg1DcmVhdHVyZVN0YXRlEggKBElkbGUQABIKCgZNb3ZpbmcQARIJCgVT",
+            "a2lsbBACEggKBERlYWQQAyowCgdNb3ZlRGlyEgYKAlVwEAASCAoERG93bhAB",
+            "EggKBExlZnQQAhIJCgVSaWdodBADQhuqAhhHb29nbGUuUHJvdG9idWYuUHJv",
+            "dG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.PlayerType), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.MoveDir), }, null, null));
     }
     #endregion
 
   }
   #region Enums
-  public enum PlayerType {
-    [pbr::OriginalName("PLAYER_TYPE_NONE")] None = 0,
-    [pbr::OriginalName("PLAYER_TYPE_KNIGHT")] Knight = 1,
-    [pbr::OriginalName("PLAYER_TYPE_MAGE")] Mage = 2,
-    [pbr::OriginalName("PLAYER_TYPE_ARCHER")] Archer = 3,
+  public enum GameObjectType {
+    [pbr::OriginalName("NONE")] None = 0,
+    [pbr::OriginalName("PLAYER")] Player = 1,
+    [pbr::OriginalName("MONSTER")] Monster = 2,
+    [pbr::OriginalName("PROJECTILE")] Projectile = 3,
   }
 
   public enum CreatureState {
@@ -54,11 +53,10 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum MoveDir {
-    [pbr::OriginalName("None")] None = 0,
-    [pbr::OriginalName("Up")] Up = 1,
-    [pbr::OriginalName("Down")] Down = 2,
-    [pbr::OriginalName("Left")] Left = 3,
-    [pbr::OriginalName("Right")] Right = 4,
+    [pbr::OriginalName("Up")] Up = 0,
+    [pbr::OriginalName("Down")] Down = 1,
+    [pbr::OriginalName("Left")] Left = 2,
+    [pbr::OriginalName("Right")] Right = 3,
   }
 
   #endregion

@@ -17,7 +17,8 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 	cout << "player x, y: " << p.posinfo().posx() << ", " << p.posinfo().posy() << endl;
 
 	
-	this_thread::sleep_for(chrono::milliseconds(1000));
+	this_thread::sleep_for(chrono::milliseconds(5000));
+	cout << "client send C2S_MOVE" << endl;
 	Protocol::C2S_MOVE resPkt;
 	Protocol::PositionInfo* posInfo = resPkt.mutable_posinfo();
 	posInfo->set_state(Protocol::CreatureState::Moving);
@@ -28,6 +29,15 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(resPkt);
 	session->Send(sendBuffer);
 	
+	///////////
+	this_thread::sleep_for(chrono::milliseconds(5000));
+	cout << "client send C2S_SKILL" << endl;
+	Protocol::C2S_SKILL res2Pkt;
+	Protocol::SkillInfo* info = res2Pkt.mutable_info();
+	info->set_skillid(1);
+	sendBuffer = ClientPacketHandler::MakeSendBuffer(res2Pkt);
+	session->Send(sendBuffer);
+
 	return true;
 }
 bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt)
@@ -47,6 +57,11 @@ bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt)
 }
 
 bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt)
+{
+	return false;
+}
+
+bool Handle_S2C_SKILL(PacketSessionRef& session, Protocol::S2C_SKILL& pkt)
 {
 	return false;
 }

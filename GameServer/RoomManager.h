@@ -12,7 +12,7 @@ public:
 	RoomManager(const RoomManager&) = delete;
 	RoomManager& operator=(const RoomManager&) = delete;
 
-	RoomRef Add();
+	RoomRef Add(int mapId);
 	bool Remove(int32 roomId);
 	RoomRef Find(int32 roomId);
 

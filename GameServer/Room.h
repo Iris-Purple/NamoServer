@@ -1,25 +1,35 @@
 #pragma once
 
+#include "Map.h"
+
 class Room : public enable_shared_from_this<Room>
 {
 public:
 	Room(int32 roomId);
 	virtual ~Room();
 
-	bool HandleEnterPlayerLocked(PlayerRef player);
-	bool HandleLeavePlayerLocked(PlayerRef player);
+	void Init(int mapId);
+	void Update();
+	bool HandleEnterGame(GameObjectRef gameObject);
+	bool HandleLeaveGame(int32 objectId);
+	void HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt);
+	void HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt);
 
 private:
 	bool EnterPlayer(PlayerRef player);
-	bool LeavePlayer(uint64 objectId);
+	bool LeavePlayer(int32 objectId);
 
 	USE_LOCK;
 
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);
 private:
-	unordered_map<uint64, PlayerRef> _players;
+	unordered_map<int32, PlayerRef> _players;
+	unordered_map<int32, MonsterRef> _monsters;
+	unordered_map<int32, ProjectileRef> _projectiles;
 	int _roomId;
+	
+public:
+	Map _map;
 };
 
-//extern RoomRef GRoom;
