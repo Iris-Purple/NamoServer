@@ -43,4 +43,8 @@ IF NOT EXIST "..\Libraries\Libs\Protobuf\Debug\libprotobufd.pdb" COPY /Y "Protoc
 IF NOT EXIST "..\Libraries\Libs\Protobuf\Release\libprotobuf.lib" COPY /Y "Protocol\Lib\Release\libprotobuf.lib" "..\Libraries\Libs\Protobuf\Release\libprotobuf.lib"
 
 
+:: StatData.json บนป็
+XCOPY /Y "Data\*.*" "..\Common\Data\"
+XCOPY /Y "Data\*.*" "..\..\Client\Assets\Resources\Data\"
+
 PAUSE

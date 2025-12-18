@@ -7,7 +7,7 @@ GameObject::GameObject(Protocol::GameObjectType objType) : _objType(objType)
 { }
 
 
-int32 GameObject::GetId()
+int32 GameObject::Id()
 {
 	return _objInfo.objectid();
 }
@@ -26,13 +26,14 @@ void GameObject::SetObjectType(Protocol::GameObjectType objType)
 	_objType = objType;
 }
 
-const Protocol::PositionInfo& GameObject::GetPosInfo() const
-{
-	return _objInfo.posinfo();
-}
-Protocol::PositionInfo* GameObject::MutablePosInfo()
+Protocol::PositionInfo* GameObject::PosInfo()
 {
 	return _objInfo.mutable_posinfo();
+}
+
+Protocol::StatInfo* GameObject::StatInfo()
+{
+	return _objInfo.mutable_statinfo();
 }
 
 
@@ -72,6 +73,5 @@ Vector2Int GameObject::GetFrontCellPos(const Protocol::MoveDir& dir)
 }
 Vector2Int GameObject::GetFrontCellPos()
 {
-	auto posInfo = GetPosInfo();
-	return GetFrontCellPos(posInfo.movedir());
+	return GetFrontCellPos(PosInfo()->movedir());
 }

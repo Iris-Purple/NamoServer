@@ -25,3 +25,10 @@ enum MoveDir
     Left = 2;
     Right = 3;
 }
+
+enum SkillType
+{
+	SKILL_NONE = 0;
+	SKILL_AUTO = 1;
+	SKILL_PROJECTILE = 2;
+}

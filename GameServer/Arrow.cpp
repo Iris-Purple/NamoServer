@@ -6,14 +6,15 @@
 void Arrow::Update()
 {
 	RoomRef room = _room.load().lock();
-	if (_owner == nullptr || room == nullptr)
+	if (Data.skillType == Protocol::SkillType::SKILL_NONE || _owner == nullptr || room == nullptr)
 		return;
 	
 	auto getTickCount = ::GetTickCount64();
 	if (_nextMoveTick >= getTickCount)
 		return;
 
-	_nextMoveTick = getTickCount + 50;
+	long tick = (long)(1000 / Data.projectile->speed);
+	_nextMoveTick = getTickCount + tick;
 
 	Vector2Int destPos = GetFrontCellPos();
 	if (room->_map.CanGo(destPos))
@@ -23,8 +24,8 @@ void Arrow::Update()
 		SetCellPos(destPos);
 
 		Protocol::S2C_MOVE pkt;
-		pkt.set_objectid(GetId());
-		pkt.mutable_posinfo()->CopyFrom(GetPosInfo());
+		pkt.set_objectid(Id());
+		pkt.mutable_posinfo()->CopyFrom(*PosInfo());
 		
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		room->Broadcast(sendBuffer);
@@ -34,11 +35,16 @@ void Arrow::Update()
 		GameObjectRef target = room->_map.Find(destPos);
 		if (target != nullptr)
 		{
-			// TODO 피격 판정
+			cout << "arrow target match" << endl;
+			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage);
 		}
 
 		// 소멸
 		cout << "Arrow Remove" << endl;
-		room->HandleLeaveGame(GetId());
+		room->HandleLeaveGame(Id());
 	}
+}
+
+void Arrow::OnDamaged(GameObjectRef attacker, int damage)
+{
 }

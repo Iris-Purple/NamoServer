@@ -15,19 +15,22 @@ public:
 	GameObject(Protocol::GameObjectType objType);
 	~GameObject() = default;
 
-	int32 GetId();
+	int32 Id();
 	void SetId(int32 id);
 
 	Protocol::GameObjectType GetObjectType();
 	void SetObjectType(Protocol::GameObjectType objType);
 
-	const Protocol::PositionInfo& GetPosInfo() const;
-	Protocol::PositionInfo* MutablePosInfo();
+	Protocol::PositionInfo* PosInfo();
+	Protocol::StatInfo* StatInfo();
 
 	Vector2Int GetCellPos();
 	void SetCellPos(const Vector2Int& pos);
 
 	Vector2Int GetFrontCellPos(const Protocol::MoveDir& dir);
 	Vector2Int GetFrontCellPos();
+
+public:
+	virtual void OnDamaged(GameObjectRef attacker, int damage) { }
 };
 

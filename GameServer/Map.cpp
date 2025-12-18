@@ -33,7 +33,7 @@ GameObjectRef Map::Find(const Vector2Int& cellPos) const
 
 bool Map::ApplyLeave(GameObjectRef gameObject)
 {
-    auto posInfo = gameObject->MutablePosInfo();
+    auto posInfo = gameObject->PosInfo();
     int posX = posInfo->posx();
     int posY = posInfo->posy();
 
@@ -58,7 +58,7 @@ bool Map::ApplyMove(GameObjectRef gameObject, Vector2Int dest)
     if (ApplyLeave(gameObject) == false)
         return false;
 
-    auto posInfo = gameObject->MutablePosInfo();
+    auto posInfo = gameObject->PosInfo();
     int posX = posInfo->posx();
     int posY = posInfo->posy();
 

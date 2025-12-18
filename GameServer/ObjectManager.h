@@ -43,7 +43,7 @@ public:
 		gameObject->SetId(GenerateId(gameObject->GetObjectType()));
 		if (gameObject->GetObjectType() == Protocol::GameObjectType::PLAYER) 
 		{
-			_players[gameObject->GetId()] = std::dynamic_pointer_cast<Player>(gameObject);
+			_players[gameObject->Id()] = std::dynamic_pointer_cast<Player>(gameObject);
 		}
 
 		return gameObject;

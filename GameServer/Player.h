@@ -10,12 +10,11 @@ public:
 	Player();
 	virtual ~Player();
 
+	virtual void OnDamaged(GameObjectRef attacker, int damage) override;
+
+
 public:
 	weak_ptr<GameSession> session;
 
-public:
-    
-
-    
 };
 

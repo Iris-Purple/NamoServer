@@ -11,6 +11,7 @@ message ObjectInfo
 	int32 objectId = 1;
 	string name = 2;
 	PositionInfo posInfo = 3;
+	StatInfo statInfo = 4;
 }
 
 message PositionInfo
@@ -24,4 +25,11 @@ message PositionInfo
 message SkillInfo
 {
 	int32 skillId = 1;
+}
+
+message StatInfo
+{
+	int32 hp = 1;
+	int32 maxHp = 2;
+	float speed = 3;
 }

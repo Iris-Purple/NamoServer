@@ -29,7 +29,7 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 	PlayerRef player = ObjectManager::Instance().Add<Player>();
 
 	player->session = static_pointer_cast<GameSession>(session);
-	player->_objInfo.set_objectid(player->GetId());
+	player->_objInfo.set_objectid(player->Id());
 	player->_objInfo.set_name("Player_" + std::to_string(player->_objInfo.objectid()));
 	auto posInfo = player->_objInfo.mutable_posinfo();
 	posInfo->set_state(Protocol::CreatureState::Idle);
@@ -58,7 +58,7 @@ bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 		return false;
 
 	room->HandleMove(myPlayer, pkt);
-	cout << myPlayer->GetId() << " : C2S_MOVE(" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
+	cout << myPlayer->Id() << " : C2S_MOVE(" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
 	return true;
 }
 
@@ -74,7 +74,7 @@ bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 		return false;
 
 	room->HandleSkill(myPlayer, pkt);
-	cout << myPlayer->GetId() << " : C2S_SKILL" << endl;
+	cout << myPlayer->Id() << " : C2S_SKILL" << endl;
 	return true;
 }
 

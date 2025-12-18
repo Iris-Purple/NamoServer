@@ -9,6 +9,9 @@
 #include "Job.h"
 #include "RoomManager.h"
 #include "Room.h"
+#include "DataManager.h"
+#include "ConfigManager.h"
+
 
 enum
 {
@@ -34,6 +37,17 @@ void DoWorkerJob(ServerServiceRef& service)
 
 int main()
 {	
+	ConfigManager::Instance().LoadConfig();
+	const string& configPath = ConfigManager::Instance().GetDataPath();
+	DataManager::Instance().Init(configPath);
+	
+	//auto skillInfo = DataManager::Instance().GetSkill(2);
+	//cout << "skillInfo: " << skillInfo->id << ", " << skillInfo->skillType << endl;
+
+	Protocol::SkillType::SKILL_AUTO;
+
+
+
 	RoomManager::Instance().Add(1);
 
 	ServerPacketHandler::Init();

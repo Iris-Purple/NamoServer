@@ -1,10 +1,11 @@
 #pragma once
 #include "GameObject.h"
+#include "Stat.h"
 
 class Projectile : public GameObject
 {
 public:
-	bool isDead = false;
+	Data::Skill Data;
 
 public:
 	Projectile();
