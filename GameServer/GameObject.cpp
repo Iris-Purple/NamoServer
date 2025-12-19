@@ -105,5 +105,28 @@ void GameObject::OnDamaged(GameObjectRef attacker, int damage)
 
 void GameObject::OnDead(GameObjectRef attacker)
 {
+	RoomRef room = _room.load().lock();
+	if (room == nullptr)
+		return;
 
+	Protocol::S2C_DIE resPkt;
+	resPkt.set_objectid(Id());
+	resPkt.set_attackerid(attacker->Id());
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
+	room->Broadcast(sendBuffer);
+
+	room->HandleLeaveGame(Id());
+
+	auto stat = StatInfo();
+	stat->set_hp(stat->maxhp());
+	
+	auto posInfo = PosInfo();
+	posInfo->set_state(Protocol::CreatureState::Idle);
+	posInfo->set_movedir(Protocol::MoveDir::Down);
+	posInfo->set_posx(0);
+	posInfo->set_posy(0);
+
+	// TODO player 객체 소멸인데 다시 확인 필요
+	room->HandleEnterGame(shared_from_this());
 }

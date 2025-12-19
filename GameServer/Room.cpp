@@ -46,6 +46,8 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 		MonsterRef monster = static_pointer_cast<Monster>(gameObject);
 		monster->_room.store(shared_from_this());
 		_monsters.insert(make_pair(gameObject->Id(), monster));
+
+		_map.ApplyMove(monster, Vector2Int{ monster->PosInfo()->posx(), monster->PosInfo()->posy() });
 		
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
@@ -132,6 +134,8 @@ bool Room::EnterPlayer(PlayerRef player)
 	_players.insert(make_pair(player->Id(), player));
 	player->_room.store(shared_from_this());
 
+	// 지도에 내 위치 저장 (충돌 및 타켓)
+	_map.ApplyMove(player, Vector2Int{ player->PosInfo()->posx(), player->PosInfo()->posy() });
 	// 입장 사실을 신입 플레이어에게 알린다
 	{
 		
@@ -155,6 +159,11 @@ bool Room::EnterPlayer(PlayerRef player)
 
 			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
 		}
+		for (auto& item : _monsters)
+			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
+
+		for (auto& item : _projectiles)
+			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
 
 		// 현재 혼자있을 때도 전송중...
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);

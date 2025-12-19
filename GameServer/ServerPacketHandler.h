@@ -16,6 +16,7 @@ enum : uint16
 	PKT_C2S_SKILL = 2004,
 	PKT_S2C_SKILL = 2005,
 	PKT_S2C_CHANGE_HP = 2006,
+	PKT_S2C_DIE = 2007,
 };
 
 // Custom Handlers
@@ -48,6 +49,7 @@ public:
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S2C_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_S2C_SKILL); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_CHANGE_HP& pkt) { return MakeSendBuffer(pkt, PKT_S2C_CHANGE_HP); }
+	static SendBufferRef MakeSendBuffer(Protocol::S2C_DIE& pkt) { return MakeSendBuffer(pkt, PKT_S2C_DIE); }
 
 private:
 	template<typename PacketType, typename ProcessFunc>

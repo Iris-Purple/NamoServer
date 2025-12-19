@@ -49,7 +49,7 @@ struct TableStruct_Protocol_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -72,6 +72,9 @@ extern S2C_CHANGE_HPDefaultTypeInternal _S2C_CHANGE_HP_default_instance_;
 class S2C_DESPAWN;
 struct S2C_DESPAWNDefaultTypeInternal;
 extern S2C_DESPAWNDefaultTypeInternal _S2C_DESPAWN_default_instance_;
+class S2C_DIE;
+struct S2C_DIEDefaultTypeInternal;
+extern S2C_DIEDefaultTypeInternal _S2C_DIE_default_instance_;
 class S2C_ENTER_GAME;
 struct S2C_ENTER_GAMEDefaultTypeInternal;
 extern S2C_ENTER_GAMEDefaultTypeInternal _S2C_ENTER_GAME_default_instance_;
@@ -94,6 +97,7 @@ template<> ::Protocol::C2S_MOVE* Arena::CreateMaybeMessage<::Protocol::C2S_MOVE>
 template<> ::Protocol::C2S_SKILL* Arena::CreateMaybeMessage<::Protocol::C2S_SKILL>(Arena*);
 template<> ::Protocol::S2C_CHANGE_HP* Arena::CreateMaybeMessage<::Protocol::S2C_CHANGE_HP>(Arena*);
 template<> ::Protocol::S2C_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S2C_DESPAWN>(Arena*);
+template<> ::Protocol::S2C_DIE* Arena::CreateMaybeMessage<::Protocol::S2C_DIE>(Arena*);
 template<> ::Protocol::S2C_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S2C_ENTER_GAME>(Arena*);
 template<> ::Protocol::S2C_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::S2C_LEAVE_GAME>(Arena*);
 template<> ::Protocol::S2C_MOVE* Arena::CreateMaybeMessage<::Protocol::S2C_MOVE>(Arena*);
@@ -114,12 +118,13 @@ enum PacketId : int {
   PKT_C2S_SKILL = 2004,
   PKT_S2C_SKILL = 2005,
   PKT_S2C_CHANGE_HP = 2006,
+  PKT_S2C_DIE = 2007,
   PacketId_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   PacketId_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool PacketId_IsValid(int value);
 constexpr PacketId PacketId_MIN = PKT_NONE;
-constexpr PacketId PacketId_MAX = PKT_S2C_CHANGE_HP;
+constexpr PacketId PacketId_MAX = PKT_S2C_DIE;
 constexpr int PacketId_ARRAYSIZE = PacketId_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PacketId_descriptor();
@@ -1601,6 +1606,156 @@ class S2C_CHANGE_HP final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class S2C_DIE final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S2C_DIE) */ {
+ public:
+  inline S2C_DIE() : S2C_DIE(nullptr) {}
+  ~S2C_DIE() override;
+  explicit constexpr S2C_DIE(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S2C_DIE(const S2C_DIE& from);
+  S2C_DIE(S2C_DIE&& from) noexcept
+    : S2C_DIE() {
+    *this = ::std::move(from);
+  }
+
+  inline S2C_DIE& operator=(const S2C_DIE& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S2C_DIE& operator=(S2C_DIE&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S2C_DIE& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S2C_DIE* internal_default_instance() {
+    return reinterpret_cast<const S2C_DIE*>(
+               &_S2C_DIE_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(S2C_DIE& a, S2C_DIE& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S2C_DIE* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S2C_DIE* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline S2C_DIE* New() const final {
+    return new S2C_DIE();
+  }
+
+  S2C_DIE* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<S2C_DIE>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S2C_DIE& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const S2C_DIE& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message*to, const ::PROTOBUF_NAMESPACE_ID::Message&from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S2C_DIE* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S2C_DIE";
+  }
+  protected:
+  explicit S2C_DIE(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kAttackerIdFieldNumber = 2,
+  };
+  // int32 objectId = 1;
+  void clear_objectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid() const;
+  void set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_objectid() const;
+  void _internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 attackerId = 2;
+  void clear_attackerid();
+  ::PROTOBUF_NAMESPACE_ID::int32 attackerid() const;
+  void set_attackerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_attackerid() const;
+  void _internal_set_attackerid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S2C_DIE)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 attackerid_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -2242,9 +2397,55 @@ inline void S2C_CHANGE_HP::set_hp(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:Protocol.S2C_CHANGE_HP.hp)
 }
 
+// -------------------------------------------------------------------
+
+// S2C_DIE
+
+// int32 objectId = 1;
+inline void S2C_DIE::clear_objectid() {
+  objectid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_DIE::_internal_objectid() const {
+  return objectid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_DIE::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S2C_DIE.objectId)
+  return _internal_objectid();
+}
+inline void S2C_DIE::_internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  objectid_ = value;
+}
+inline void S2C_DIE::set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S2C_DIE.objectId)
+}
+
+// int32 attackerId = 2;
+inline void S2C_DIE::clear_attackerid() {
+  attackerid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_DIE::_internal_attackerid() const {
+  return attackerid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_DIE::attackerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S2C_DIE.attackerId)
+  return _internal_attackerid();
+}
+inline void S2C_DIE::_internal_set_attackerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  attackerid_ = value;
+}
+inline void S2C_DIE::set_attackerid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_attackerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S2C_DIE.attackerId)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
