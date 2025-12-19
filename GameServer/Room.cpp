@@ -126,10 +126,10 @@ bool Room::HandleLeaveGame(int32 objectId)
 bool Room::EnterPlayer(PlayerRef player)
 {
 	// 이미 player 존재함
-	if (_players.find(player->_objInfo.objectid()) != _players.end())
+	if (_players.find(player->Id()) != _players.end())
 		return false;
 
-	_players.insert(make_pair(player->_objInfo.objectid(), player));
+	_players.insert(make_pair(player->Id(), player));
 	player->_room.store(shared_from_this());
 
 	// 입장 사실을 신입 플레이어에게 알린다
@@ -293,7 +293,7 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 	for (auto& item : _players)
 	{
 		PlayerRef player = item.second;
-		if (player->_objInfo.objectid() == exceptId)
+		if (player->Id() == exceptId)
 			continue;
 
 		if (GameSessionRef session = player->session.lock())

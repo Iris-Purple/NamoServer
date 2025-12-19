@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameObject.h"
 #include "Map.h"
+#include "Room.h"
 
 
 GameObject::GameObject(Protocol::GameObjectType objType) : _objType(objType)
@@ -40,14 +41,14 @@ Protocol::StatInfo* GameObject::StatInfo()
 Vector2Int GameObject::GetCellPos()
 {
 	return Vector2Int(
-		_objInfo.posinfo().posx(),
-		_objInfo.posinfo().posy()
+		PosInfo()->posx(),
+		PosInfo()->posy()
 	);
 }
 void GameObject::SetCellPos(const Vector2Int& pos)
 {
-	_objInfo.mutable_posinfo()->set_posx(pos.x);
-	_objInfo.mutable_posinfo()->set_posy(pos.y);
+	PosInfo()->set_posx(pos.x);
+	PosInfo()->set_posy(pos.y);
 }
 
 Vector2Int GameObject::GetFrontCellPos(const Protocol::MoveDir& dir)
@@ -74,4 +75,35 @@ Vector2Int GameObject::GetFrontCellPos(const Protocol::MoveDir& dir)
 Vector2Int GameObject::GetFrontCellPos()
 {
 	return GetFrontCellPos(PosInfo()->movedir());
+}
+
+void GameObject::OnDamaged(GameObjectRef attacker, int damage)
+{
+	RoomRef room = _room.load().lock();
+	if (room == nullptr)
+		return;
+	
+	auto stat = StatInfo();
+	int32 hp = stat->hp();
+	hp = std::max(hp - damage, 0);
+	stat->set_hp(hp);
+
+
+	Protocol::S2C_CHANGE_HP resPkt;
+	resPkt.set_objectid(Id());
+	resPkt.set_hp(stat->hp());
+	
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
+	room->Broadcast(sendBuffer);
+	
+
+	if (stat->hp() <= 0)
+	{
+		OnDead(attacker);
+	}
+}
+
+void GameObject::OnDead(GameObjectRef attacker)
+{
+
 }

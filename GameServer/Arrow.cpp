@@ -36,7 +36,7 @@ void Arrow::Update()
 		if (target != nullptr)
 		{
 			cout << "arrow target match" << endl;
-			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage);
+			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage + _owner->StatInfo()->attack());
 		}
 
 		// ¼Ò¸ê

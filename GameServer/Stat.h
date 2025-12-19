@@ -16,6 +16,7 @@ namespace Data
 		int level;
 		int maxHp;
 		int attack;
+		float speed;
 		int totalExp;
 	};
 
@@ -24,6 +25,7 @@ namespace Data
 		j.at("level").get_to(stat.level);
 		j.at("maxHp").get_to(stat.maxHp);
 		j.at("attack").get_to(stat.attack);
+		j.at("speed").get_to(stat.speed);
 		j.at("totalExp").get_to(stat.totalExp);
 	}
 

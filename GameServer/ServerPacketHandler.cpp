@@ -27,15 +27,8 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 	cout << "C2S_ENTER_GAME  called!" << endl;
 
 	PlayerRef player = ObjectManager::Instance().Add<Player>();
+	player->Create(session);
 
-	player->session = static_pointer_cast<GameSession>(session);
-	player->_objInfo.set_objectid(player->Id());
-	player->_objInfo.set_name("Player_" + std::to_string(player->_objInfo.objectid()));
-	auto posInfo = player->_objInfo.mutable_posinfo();
-	posInfo->set_state(Protocol::CreatureState::Idle);
-	posInfo->set_movedir(Protocol::MoveDir::Down);
-	posInfo->set_posx(0);
-	posInfo->set_posy(0);
 
 	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
 

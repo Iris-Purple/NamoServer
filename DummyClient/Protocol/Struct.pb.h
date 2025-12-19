@@ -699,11 +699,23 @@ class StatInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kHpFieldNumber = 1,
-    kMaxHpFieldNumber = 2,
-    kSpeedFieldNumber = 3,
+    kLevelFieldNumber = 1,
+    kHpFieldNumber = 2,
+    kMaxHpFieldNumber = 3,
+    kAttackFieldNumber = 4,
+    kSpeedFieldNumber = 5,
+    kTotalExpFieldNumber = 6,
   };
-  // int32 hp = 1;
+  // int32 level = 1;
+  void clear_level();
+  ::PROTOBUF_NAMESPACE_ID::int32 level() const;
+  void set_level(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_level() const;
+  void _internal_set_level(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 hp = 2;
   void clear_hp();
   ::PROTOBUF_NAMESPACE_ID::int32 hp() const;
   void set_hp(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -712,7 +724,7 @@ class StatInfo final :
   void _internal_set_hp(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 maxHp = 2;
+  // int32 maxHp = 3;
   void clear_maxhp();
   ::PROTOBUF_NAMESPACE_ID::int32 maxhp() const;
   void set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -721,13 +733,31 @@ class StatInfo final :
   void _internal_set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // float speed = 3;
+  // int32 attack = 4;
+  void clear_attack();
+  ::PROTOBUF_NAMESPACE_ID::int32 attack() const;
+  void set_attack(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_attack() const;
+  void _internal_set_attack(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // float speed = 5;
   void clear_speed();
   float speed() const;
   void set_speed(float value);
   private:
   float _internal_speed() const;
   void _internal_set_speed(float value);
+  public:
+
+  // int32 totalExp = 6;
+  void clear_totalexp();
+  ::PROTOBUF_NAMESPACE_ID::int32 totalexp() const;
+  void set_totalexp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_totalexp() const;
+  void _internal_set_totalexp(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.StatInfo)
@@ -737,9 +767,12 @@ class StatInfo final :
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 level_;
   ::PROTOBUF_NAMESPACE_ID::int32 hp_;
   ::PROTOBUF_NAMESPACE_ID::int32 maxhp_;
+  ::PROTOBUF_NAMESPACE_ID::int32 attack_;
   float speed_;
+  ::PROTOBUF_NAMESPACE_ID::int32 totalexp_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Struct_2eproto;
 };
@@ -1112,7 +1145,27 @@ inline void SkillInfo::set_skillid(::PROTOBUF_NAMESPACE_ID::int32 value) {
 
 // StatInfo
 
-// int32 hp = 1;
+// int32 level = 1;
+inline void StatInfo::clear_level() {
+  level_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StatInfo::_internal_level() const {
+  return level_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StatInfo::level() const {
+  // @@protoc_insertion_point(field_get:Protocol.StatInfo.level)
+  return _internal_level();
+}
+inline void StatInfo::_internal_set_level(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  level_ = value;
+}
+inline void StatInfo::set_level(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_level(value);
+  // @@protoc_insertion_point(field_set:Protocol.StatInfo.level)
+}
+
+// int32 hp = 2;
 inline void StatInfo::clear_hp() {
   hp_ = 0;
 }
@@ -1132,7 +1185,7 @@ inline void StatInfo::set_hp(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:Protocol.StatInfo.hp)
 }
 
-// int32 maxHp = 2;
+// int32 maxHp = 3;
 inline void StatInfo::clear_maxhp() {
   maxhp_ = 0;
 }
@@ -1152,7 +1205,27 @@ inline void StatInfo::set_maxhp(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:Protocol.StatInfo.maxHp)
 }
 
-// float speed = 3;
+// int32 attack = 4;
+inline void StatInfo::clear_attack() {
+  attack_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StatInfo::_internal_attack() const {
+  return attack_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StatInfo::attack() const {
+  // @@protoc_insertion_point(field_get:Protocol.StatInfo.attack)
+  return _internal_attack();
+}
+inline void StatInfo::_internal_set_attack(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  attack_ = value;
+}
+inline void StatInfo::set_attack(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_attack(value);
+  // @@protoc_insertion_point(field_set:Protocol.StatInfo.attack)
+}
+
+// float speed = 5;
 inline void StatInfo::clear_speed() {
   speed_ = 0;
 }
@@ -1170,6 +1243,26 @@ inline void StatInfo::_internal_set_speed(float value) {
 inline void StatInfo::set_speed(float value) {
   _internal_set_speed(value);
   // @@protoc_insertion_point(field_set:Protocol.StatInfo.speed)
+}
+
+// int32 totalExp = 6;
+inline void StatInfo::clear_totalexp() {
+  totalexp_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StatInfo::_internal_totalexp() const {
+  return totalexp_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StatInfo::totalexp() const {
+  // @@protoc_insertion_point(field_get:Protocol.StatInfo.totalExp)
+  return _internal_totalexp();
+}
+inline void StatInfo::_internal_set_totalexp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  totalexp_ = value;
+}
+inline void StatInfo::set_totalexp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_totalexp(value);
+  // @@protoc_insertion_point(field_set:Protocol.StatInfo.totalExp)
 }
 
 #ifdef __GNUC__

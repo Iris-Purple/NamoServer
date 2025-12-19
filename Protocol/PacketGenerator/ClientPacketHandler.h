@@ -15,6 +15,7 @@ enum : uint16
 	PKT_S2C_MOVE = 2003,
 	PKT_C2S_SKILL = 2004,
 	PKT_S2C_SKILL = 2005,
+	PKT_S2C_CHANGE_HP = 2006,
 };
 
 // Custom Handlers
@@ -25,6 +26,7 @@ bool Handle_S2C_SPAWN(PacketSessionRef& session, Protocol::S2C_SPAWN& pkt);
 bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt);
 bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt);
 bool Handle_S2C_SKILL(PacketSessionRef& session, Protocol::S2C_SKILL& pkt);
+bool Handle_S2C_CHANGE_HP(PacketSessionRef& session, Protocol::S2C_CHANGE_HP& pkt);
 
 class ClientPacketHandler
 {
@@ -39,6 +41,7 @@ public:
 		GPacketHandler[PKT_S2C_DESPAWN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_DESPAWN>(Handle_S2C_DESPAWN, session, buffer, len); };
 		GPacketHandler[PKT_S2C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_MOVE>(Handle_S2C_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_S2C_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_SKILL>(Handle_S2C_SKILL, session, buffer, len); };
+		GPacketHandler[PKT_S2C_CHANGE_HP] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_CHANGE_HP>(Handle_S2C_CHANGE_HP, session, buffer, len); };
 	}
 
 	static bool HandlePacket(PacketSessionRef& session, BYTE* buffer, int32 len)

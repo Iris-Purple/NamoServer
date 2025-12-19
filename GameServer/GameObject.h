@@ -31,6 +31,7 @@ public:
 	Vector2Int GetFrontCellPos();
 
 public:
-	virtual void OnDamaged(GameObjectRef attacker, int damage) { }
+	virtual void OnDamaged(GameObjectRef attacker, int damage);
+	virtual void OnDead(GameObjectRef attacker);
 };
 

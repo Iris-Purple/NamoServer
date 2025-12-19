@@ -40,13 +40,6 @@ int main()
 	ConfigManager::Instance().LoadConfig();
 	const string& configPath = ConfigManager::Instance().GetDataPath();
 	DataManager::Instance().Init(configPath);
-	
-	//auto skillInfo = DataManager::Instance().GetSkill(2);
-	//cout << "skillInfo: " << skillInfo->id << ", " << skillInfo->skillType << endl;
-
-	Protocol::SkillType::SKILL_AUTO;
-
-
 
 	RoomManager::Instance().Add(1);
 

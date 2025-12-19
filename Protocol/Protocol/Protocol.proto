@@ -19,6 +19,7 @@ enum PacketId
 	PKT_S2C_MOVE = 2003;
 	PKT_C2S_SKILL = 2004;
 	PKT_S2C_SKILL = 2005;
+	PKT_S2C_CHANGE_HP = 2006;
 }
 
 
@@ -56,4 +57,10 @@ message S2C_SKILL
 {
 	int32 objectId = 1;
 	SkillInfo info = 2;
+}
+
+message S2C_CHANGE_HP
+{
+	int32 objectId = 1;
+	int32 hp = 2;
 }

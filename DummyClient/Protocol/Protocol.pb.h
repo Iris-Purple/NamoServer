@@ -49,7 +49,7 @@ struct TableStruct_Protocol_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[9]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[10]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -66,6 +66,9 @@ extern C2S_MOVEDefaultTypeInternal _C2S_MOVE_default_instance_;
 class C2S_SKILL;
 struct C2S_SKILLDefaultTypeInternal;
 extern C2S_SKILLDefaultTypeInternal _C2S_SKILL_default_instance_;
+class S2C_CHANGE_HP;
+struct S2C_CHANGE_HPDefaultTypeInternal;
+extern S2C_CHANGE_HPDefaultTypeInternal _S2C_CHANGE_HP_default_instance_;
 class S2C_DESPAWN;
 struct S2C_DESPAWNDefaultTypeInternal;
 extern S2C_DESPAWNDefaultTypeInternal _S2C_DESPAWN_default_instance_;
@@ -89,6 +92,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C2S_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::C2S_ENTER_GAME>(Arena*);
 template<> ::Protocol::C2S_MOVE* Arena::CreateMaybeMessage<::Protocol::C2S_MOVE>(Arena*);
 template<> ::Protocol::C2S_SKILL* Arena::CreateMaybeMessage<::Protocol::C2S_SKILL>(Arena*);
+template<> ::Protocol::S2C_CHANGE_HP* Arena::CreateMaybeMessage<::Protocol::S2C_CHANGE_HP>(Arena*);
 template<> ::Protocol::S2C_DESPAWN* Arena::CreateMaybeMessage<::Protocol::S2C_DESPAWN>(Arena*);
 template<> ::Protocol::S2C_ENTER_GAME* Arena::CreateMaybeMessage<::Protocol::S2C_ENTER_GAME>(Arena*);
 template<> ::Protocol::S2C_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::S2C_LEAVE_GAME>(Arena*);
@@ -109,12 +113,13 @@ enum PacketId : int {
   PKT_S2C_MOVE = 2003,
   PKT_C2S_SKILL = 2004,
   PKT_S2C_SKILL = 2005,
+  PKT_S2C_CHANGE_HP = 2006,
   PacketId_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   PacketId_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool PacketId_IsValid(int value);
 constexpr PacketId PacketId_MIN = PKT_NONE;
-constexpr PacketId PacketId_MAX = PKT_S2C_SKILL;
+constexpr PacketId PacketId_MAX = PKT_S2C_CHANGE_HP;
 constexpr int PacketId_ARRAYSIZE = PacketId_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* PacketId_descriptor();
@@ -1446,6 +1451,156 @@ class S2C_SKILL final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class S2C_CHANGE_HP final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S2C_CHANGE_HP) */ {
+ public:
+  inline S2C_CHANGE_HP() : S2C_CHANGE_HP(nullptr) {}
+  ~S2C_CHANGE_HP() override;
+  explicit constexpr S2C_CHANGE_HP(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S2C_CHANGE_HP(const S2C_CHANGE_HP& from);
+  S2C_CHANGE_HP(S2C_CHANGE_HP&& from) noexcept
+    : S2C_CHANGE_HP() {
+    *this = ::std::move(from);
+  }
+
+  inline S2C_CHANGE_HP& operator=(const S2C_CHANGE_HP& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S2C_CHANGE_HP& operator=(S2C_CHANGE_HP&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S2C_CHANGE_HP& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S2C_CHANGE_HP* internal_default_instance() {
+    return reinterpret_cast<const S2C_CHANGE_HP*>(
+               &_S2C_CHANGE_HP_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(S2C_CHANGE_HP& a, S2C_CHANGE_HP& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S2C_CHANGE_HP* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S2C_CHANGE_HP* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline S2C_CHANGE_HP* New() const final {
+    return new S2C_CHANGE_HP();
+  }
+
+  S2C_CHANGE_HP* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<S2C_CHANGE_HP>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S2C_CHANGE_HP& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const S2C_CHANGE_HP& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message*to, const ::PROTOBUF_NAMESPACE_ID::Message&from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S2C_CHANGE_HP* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S2C_CHANGE_HP";
+  }
+  protected:
+  explicit S2C_CHANGE_HP(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kHpFieldNumber = 2,
+  };
+  // int32 objectId = 1;
+  void clear_objectid();
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid() const;
+  void set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_objectid() const;
+  void _internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 hp = 2;
+  void clear_hp();
+  ::PROTOBUF_NAMESPACE_ID::int32 hp() const;
+  void set_hp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_hp() const;
+  void _internal_set_hp(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S2C_CHANGE_HP)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 objectid_;
+  ::PROTOBUF_NAMESPACE_ID::int32 hp_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -2043,9 +2198,55 @@ inline void S2C_SKILL::set_allocated_info(::Protocol::SkillInfo* info) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.S2C_SKILL.info)
 }
 
+// -------------------------------------------------------------------
+
+// S2C_CHANGE_HP
+
+// int32 objectId = 1;
+inline void S2C_CHANGE_HP::clear_objectid() {
+  objectid_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_CHANGE_HP::_internal_objectid() const {
+  return objectid_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_CHANGE_HP::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S2C_CHANGE_HP.objectId)
+  return _internal_objectid();
+}
+inline void S2C_CHANGE_HP::_internal_set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  objectid_ = value;
+}
+inline void S2C_CHANGE_HP::set_objectid(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S2C_CHANGE_HP.objectId)
+}
+
+// int32 hp = 2;
+inline void S2C_CHANGE_HP::clear_hp() {
+  hp_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_CHANGE_HP::_internal_hp() const {
+  return hp_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 S2C_CHANGE_HP::hp() const {
+  // @@protoc_insertion_point(field_get:Protocol.S2C_CHANGE_HP.hp)
+  return _internal_hp();
+}
+inline void S2C_CHANGE_HP::_internal_set_hp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  hp_ = value;
+}
+inline void S2C_CHANGE_HP::set_hp(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_hp(value);
+  // @@protoc_insertion_point(field_set:Protocol.S2C_CHANGE_HP.hp)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
