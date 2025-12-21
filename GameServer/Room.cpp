@@ -6,6 +6,7 @@
 #include "Monster.h"
 #include "Arrow.h"
 #include "DataManager.h"
+#include "Monster.h"
 
 Room::Room(int32 roomId) : _roomId(roomId) { }
 
@@ -14,11 +15,19 @@ Room::~Room() {	}
 void Room::Init(int mapId)
 {
 	_map.LoadMap(mapId);
+
+	MonsterRef monster = ObjectManager::Instance().Add<Monster>();
+	monster->SetCellPos(Vector2Int(5, 5));
+	HandleEnterGame(monster);
 }
 
 void Room::Update()
 {
 	WRITE_LOCK;
+	for (auto [_, monster] : _monsters)
+	{
+		monster->Update();
+	}
 	for (auto [_, projectile] : _projectiles)
 	{
 		projectile->Update();
@@ -295,6 +304,16 @@ void Room::HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt)
 		}
 		break;
 	}
+}
+
+PlayerRef Room::FindPlayer(function<bool(GameObjectRef)> condition)
+{
+	for (auto& [id, player] : _players)
+	{
+		if (condition(player))
+			return player;
+	}
+	return nullptr;
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)

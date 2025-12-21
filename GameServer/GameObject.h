@@ -33,5 +33,8 @@ public:
 public:
 	virtual void OnDamaged(GameObjectRef attacker, int damage);
 	virtual void OnDead(GameObjectRef attacker);
+	virtual void Update() { }
+
+	static Protocol::MoveDir GetDirFromVec(Vector2Int dir);
 };
 

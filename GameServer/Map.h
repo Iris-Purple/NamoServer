@@ -46,9 +46,18 @@ struct Vector2Int
     static Vector2Int Left() { return Vector2Int(-1, 0); }
     static Vector2Int Right() { return Vector2Int(1, 0); }
 
+
+    int sqrMagnitude() const { return x * x + y * y; }
+    float magnitude() const { return std::sqrt(static_cast<float>(sqrMagnitude())); }
+    int CellDistFromZero() const { return std::abs(x) + std::abs(y); }
+
     Vector2Int operator+(const Vector2Int& other) const
     {
         return Vector2Int(x + other.x, y + other.y);
+    }
+    Vector2Int operator-(const Vector2Int& other) const
+    {
+        return Vector2Int(x - other.x, y - other.y);
     }
 
     bool operator==(const Vector2Int& other) const
@@ -87,7 +96,7 @@ public:
 
     // A* ±Ê√£±‚
     std::vector<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos,
-        bool ignoreDestCollision = false);
+        bool checkObject = true);
 
 private:
     // ¡¬«• ∫Ø»Ø «Ô∆€

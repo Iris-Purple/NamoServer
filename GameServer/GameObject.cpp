@@ -77,6 +77,19 @@ Vector2Int GameObject::GetFrontCellPos()
 	return GetFrontCellPos(PosInfo()->movedir());
 }
 
+Protocol::MoveDir GameObject::GetDirFromVec(Vector2Int dir)
+{
+	if (dir.x > 0)
+		return Protocol::MoveDir::Right;
+	else if (dir.x < 0)
+		return Protocol::MoveDir::Left;
+	else if (dir.y > 0)
+		return Protocol::MoveDir::Up;
+	else
+		return Protocol::MoveDir::Down;
+
+}
+
 void GameObject::OnDamaged(GameObjectRef attacker, int damage)
 {
 	RoomRef room = _room.load().lock();

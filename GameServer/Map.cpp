@@ -127,7 +127,7 @@ Vector2Int Map::Pos2Cell(Pos pos) const
 }
 
 std::vector<Vector2Int> Map::FindPath(Vector2Int startCellPos, Vector2Int destCellPos,
-    bool ignoreDestCollision)
+    bool checkObject)
 {
     int sizeX = GetSizeX();
     int sizeY = GetSizeY();
@@ -182,9 +182,9 @@ std::vector<Vector2Int> Map::FindPath(Vector2Int startCellPos, Vector2Int destCe
                 continue;
 
             // 이동 가능 체크
-            if (!ignoreDestCollision || next.Y != dest.Y || next.X != dest.X)
+            if (next.Y != dest.Y || next.X != dest.X)
             {
-                if (!CanGo(Pos2Cell(next)))
+                if (CanGo(Pos2Cell(next), checkObject) == false)
                     continue;
             }
 

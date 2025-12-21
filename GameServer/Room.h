@@ -15,6 +15,7 @@ public:
 	void HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt);
 	void HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt);
 
+	PlayerRef FindPlayer(function<bool(GameObjectRef)> condition);
 private:
 	bool EnterPlayer(PlayerRef player);
 	bool LeavePlayer(int32 objectId);
