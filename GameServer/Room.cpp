@@ -61,14 +61,14 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 	{
 		MonsterRef monster = static_pointer_cast<Monster>(gameObject);
 
- 		monster->_room.store(shared_from_this());
+ 		monster->_room.store(static_pointer_cast<Room>(shared_from_this()));
 		_monsters.insert(make_pair(gameObject->Id(), monster));
 		_map.ApplyMove(monster, Vector2Int{ monster->PosInfo()->posx(), monster->PosInfo()->posy() });
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = static_pointer_cast<Projectile>(gameObject);
-		projectile->_room.store(shared_from_this());
+		projectile->_room.store(static_pointer_cast<Room>(shared_from_this()));
 		_projectiles.insert(make_pair(gameObject->Id(), projectile));
 	}
 
@@ -145,7 +145,7 @@ bool Room::EnterPlayer(PlayerRef player)
 		return false;
 
 	_players.insert(make_pair(player->Id(), player));
-	player->_room.store(shared_from_this());
+	player->_room.store(static_pointer_cast<Room>(shared_from_this()));
 
 	// ������ �� ��ġ ���� (�浹 �� Ÿ��)
 	_map.ApplyMove(player, Vector2Int{ player->PosInfo()->posx(), player->PosInfo()->posy() });
