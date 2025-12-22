@@ -64,12 +64,22 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
  		monster->_room.store(static_pointer_cast<Room>(shared_from_this()));
 		_monsters.insert(make_pair(gameObject->Id(), monster));
 		_map.ApplyMove(monster, Vector2Int{ monster->PosInfo()->posx(), monster->PosInfo()->posy() });
+
+		// 삭제 예약 목록에서 제거 (재입장 시)
+		auto it = std::find(_removeMonsterIds.begin(), _removeMonsterIds.end(), gameObject->Id());
+		if (it != _removeMonsterIds.end())
+			_removeMonsterIds.erase(it);
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = static_pointer_cast<Projectile>(gameObject);
 		projectile->_room.store(static_pointer_cast<Room>(shared_from_this()));
 		_projectiles.insert(make_pair(gameObject->Id(), projectile));
+
+		// 삭제 예약 목록에서 제거 (재입장 시)
+		auto it = std::find(_removeProjectileIds.begin(), _removeProjectileIds.end(), gameObject->Id());
+		if (it != _removeProjectileIds.end())
+			_removeProjectileIds.erase(it);
 	}
 
 	// ���� ����� �ٸ� �÷��̾�� �˸���
