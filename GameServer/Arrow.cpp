@@ -8,7 +8,7 @@ void Arrow::Update()
 	RoomRef room = _room.load().lock();
 	if (Data.skillType == Protocol::SkillType::SKILL_NONE || _owner == nullptr || room == nullptr)
 		return;
-	
+
 	auto getTickCount = ::GetTickCount64();
 	if (_nextMoveTick >= getTickCount)
 		return;

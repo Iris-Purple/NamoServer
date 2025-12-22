@@ -182,7 +182,7 @@ void Monster::UpdateSkill()
 
 	_coolTick = 0;
 }
-void Monster::UpdateDead()
-{
-
+void Monster::UpdateDead() 
+{ 
+	cout << "Monster::UpdateDead()......" << endl;
 }

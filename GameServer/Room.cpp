@@ -28,6 +28,13 @@ void Room::Update()
 	{
 		monster->Update();
 	}
+	for (int32 id : _removeMonsterIds)
+	{
+		_monsters.erase(id);
+	}
+	_removeMonsterIds.clear();
+		
+
 	for (auto [_, projectile] : _projectiles)
 	{
 		projectile->Update();
@@ -43,6 +50,7 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 	if (gameObject == nullptr)
 		return false;
 
+	//WRITE_LOCK;
 	auto type = ObjectManager::GetObjectTypeById(gameObject->Id());
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
@@ -53,11 +61,10 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 	else if (type == Protocol::GameObjectType::MONSTER)
 	{
 		MonsterRef monster = static_pointer_cast<Monster>(gameObject);
-		monster->_room.store(shared_from_this());
-		_monsters.insert(make_pair(gameObject->Id(), monster));
 
+ 		monster->_room.store(shared_from_this());
+		_monsters.insert(make_pair(gameObject->Id(), monster));
 		_map.ApplyMove(monster, Vector2Int{ monster->PosInfo()->posx(), monster->PosInfo()->posy() });
-		
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
@@ -99,16 +106,14 @@ bool Room::HandleLeaveGame(int32 objectId)
 	{
 		MonsterRef monster = _monsters[objectId];
 		monster->_room.store(weak_ptr<Room>());
-		_monsters.erase(objectId);
-
 		_map.ApplyLeave(monster);
+		_removeMonsterIds.push_back(objectId);
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = _projectiles[objectId];
 		projectile->_room.store(weak_ptr<Room>());
 		_removeProjectileIds.push_back(objectId);
-		//_projectiles.erase(objectId);
 	}
 
 	// 퇴장 사실을 알린다
