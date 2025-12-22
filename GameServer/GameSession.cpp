@@ -19,7 +19,7 @@ void GameSession::OnDisconnected()
 	int32 objectId = myPlayer.load()->Id();
 	RoomRef room = RoomManager::Instance().Find(1);
 	if (room)
-		room->HandleLeaveGame(objectId);
+		room->DoAsync(&Room::HandleLeaveGame, objectId);
 
 	ObjectManager::Instance().Remove(objectId);
 
@@ -31,7 +31,7 @@ void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 	PacketSessionRef session = GetPacketSessionRef();
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-	// TODO : packetId 措开 眉农
+	// TODO : packetId 锟诫开 眉农
 	ServerPacketHandler::HandlePacket(session, buffer, len);
 }
 

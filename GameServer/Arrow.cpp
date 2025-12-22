@@ -20,7 +20,7 @@ void Arrow::Update()
 	if (room->_map.CanGo(destPos))
 	{
 		cout << "Arrow move : " << destPos.x << "," << destPos.y << endl;
-		// memory À§Ä¡ °»½Å 
+		// memory ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ 
 		SetCellPos(destPos);
 
 		Protocol::S2C_MOVE pkt;
@@ -39,9 +39,9 @@ void Arrow::Update()
 			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage + _owner->StatInfo()->attack());
 		}
 
-		// ¼Ò¸ê
+		// ï¿½Ò¸ï¿½
 		cout << "Arrow Remove" << endl;
-		room->HandleLeaveGame(Id());
+		room->DoAsync(&Room::HandleLeaveGame, Id());
 	}
 }
 

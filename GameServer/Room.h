@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Map.h"
+#include "JobQueue.h"
 
-class Room : public enable_shared_from_this<Room>
+class Room : public JobQueue
 {
 public:
 	Room(int32 roomId);
@@ -12,15 +13,13 @@ public:
 	void Update();
 	bool HandleEnterGame(GameObjectRef gameObject);
 	bool HandleLeaveGame(int32 objectId);
-	void HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt);
-	void HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt);
+	void HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt);
+	void HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt);
 
 	PlayerRef FindPlayer(function<bool(GameObjectRef)> condition);
 private:
 	bool EnterPlayer(PlayerRef player);
 	bool LeavePlayer(int32 objectId);
-
-	USE_LOCK;
 
 public:
 	void Broadcast(SendBufferRef sendBuffer, uint64 exceptId = 0);

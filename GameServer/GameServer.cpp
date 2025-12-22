@@ -70,7 +70,7 @@ int main()
 		auto room = RoomManager::Instance().Find(1);
 		if (room)
 		{
-			room->Update();
+			room->DoAsync(&Room::Update);
 		}
 		this_thread::sleep_for(100ms);
 	}

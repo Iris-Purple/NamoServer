@@ -23,7 +23,6 @@ void Room::Init(int mapId)
 
 void Room::Update()
 {
-	WRITE_LOCK;
 	for (auto [_, monster] : _monsters)
 	{
 		monster->Update();
@@ -55,7 +54,7 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
 		PlayerRef player = static_pointer_cast<Player>(gameObject);
-		// TODO return Ã³¸®
+		// TODO return Ã³ï¿½ï¿½
 		EnterPlayer(player);
 	}
 	else if (type == Protocol::GameObjectType::MONSTER)
@@ -73,7 +72,7 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 		_projectiles.insert(make_pair(gameObject->Id(), projectile));
 	}
 
-	// ÀÔÀå »ç½ÇÀ» ´Ù¸¥ ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½
 	{
 		Protocol::S2C_SPAWN spawnPkt;
 		spawnPkt.add_objects()->CopyFrom(gameObject->_objInfo);
@@ -99,7 +98,7 @@ bool Room::HandleLeaveGame(int32 objectId)
 
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
-		// TODO return Ã³¸®
+		// TODO return Ã³ï¿½ï¿½
 		LeavePlayer(objectId);
 	}
 	else if (type == Protocol::GameObjectType::MONSTER)
@@ -116,7 +115,7 @@ bool Room::HandleLeaveGame(int32 objectId)
 		_removeProjectileIds.push_back(objectId);
 	}
 
-	// ÅðÀå »ç½ÇÀ» ¾Ë¸°´Ù
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½
 	{
 		Protocol::S2C_DESPAWN despawnPkt;
 		despawnPkt.add_objectids(objectId);
@@ -129,7 +128,7 @@ bool Room::HandleLeaveGame(int32 objectId)
 		
 			if (auto session = item.second->session.lock())
 			{
-				//cout << "ÇÃ·¹ÀÌ¾î: " << player->_playerId << " ÅðÀåÇÔÀ» ÇÃ·¹ÀÌ¾î: " << item.second->_playerId << " ¾Ë·ÁÁÝ´Ï´Ù" << endl;
+				//cout << "ï¿½Ã·ï¿½ï¿½Ì¾ï¿½: " << player->_playerId << " ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½: " << item.second->_playerId << " ï¿½Ë·ï¿½ï¿½Ý´Ï´ï¿½" << endl;
 				session->Send(sendBuffer);
 			}
 				
@@ -141,16 +140,16 @@ bool Room::HandleLeaveGame(int32 objectId)
 
 bool Room::EnterPlayer(PlayerRef player)
 {
-	// ÀÌ¹Ì player Á¸ÀçÇÔ
+	// ï¿½Ì¹ï¿½ player ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (_players.find(player->Id()) != _players.end())
 		return false;
 
 	_players.insert(make_pair(player->Id(), player));
 	player->_room.store(shared_from_this());
 
-	// Áöµµ¿¡ ³» À§Ä¡ ÀúÀå (Ãæµ¹ ¹× Å¸ÄÏ)
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ (ï¿½æµ¹ ï¿½ï¿½ Å¸ï¿½ï¿½)
 	_map.ApplyMove(player, Vector2Int{ player->PosInfo()->posx(), player->PosInfo()->posy() });
-	// ÀÔÀå »ç½ÇÀ» ½ÅÀÔ ÇÃ·¹ÀÌ¾î¿¡°Ô ¾Ë¸°´Ù
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½
 	{
 		
 		Protocol::S2C_ENTER_GAME enterGamePkt;
@@ -164,7 +163,7 @@ bool Room::EnterPlayer(PlayerRef player)
 		}
 
 	}
-	// ±âÁ¸¿¡ ÀÔÀåÇÑ ÇÃ·¹ÀÌ¾î ¸ñ·ÏÀ» ½ÅÀÔ ÇÃ·¹ÀÌ¾îÇÑÅ× ¾Ë·ÁÁØ´Ù
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½
 	{
 		Protocol::S2C_SPAWN spawnPkt;
 		for (auto& item : _players)
@@ -179,7 +178,7 @@ bool Room::EnterPlayer(PlayerRef player)
 		for (auto& item : _projectiles)
 			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
 
-		// ÇöÀç È¥ÀÚÀÖÀ» ¶§µµ Àü¼ÛÁß...
+		// ï¿½ï¿½ï¿½ï¿½ È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½...
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		if (auto session = player->session.lock())
 		{
@@ -192,7 +191,7 @@ bool Room::EnterPlayer(PlayerRef player)
 
 bool Room::LeavePlayer(int32 objectId)
 {
-	// ¾ø´Ù¸é ¹®Á¦°¡ ÀÖ´Ù
+	// ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½
 	if (_players.find(objectId) == _players.end())
 		return true;
 
@@ -202,7 +201,7 @@ bool Room::LeavePlayer(int32 objectId)
 	
 	_map.ApplyLeave(player);
 
-	// ÅðÀå »ç½ÇÀ» º»ÀÎ¿¡°Ô ¾Ë¸°´Ù
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½ï¿½ï¿½
 	{
 		Protocol::S2C_LEAVE_GAME leaveGamePkt;
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
@@ -215,15 +214,13 @@ bool Room::LeavePlayer(int32 objectId)
 	return true;
 }
 
-void Room::HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt)
+void Room::HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt)
 {
 	if (player == nullptr)
 		return;
+	// TODO ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
 
-	WRITE_LOCK;
-	// TODO ÀÌµ¿ °ËÁõ
-
-	// ´Ù¸¥ ÁÂÇ¥·Î ÀÌµ¿ÇÒ °æ¿ì , °¥ ¼ö ÀÖ´ÂÁö Ã¼Å©
+	// ï¿½Ù¸ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ , ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ Ã¼Å©
 	const auto& movePosInfo = pkt.posinfo();
 	
 	auto posInfo = player->PosInfo();
@@ -237,7 +234,7 @@ void Room::HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt)
 
 	_map.ApplyMove(player, Vector2Int{ movePosInfo.posx(), movePosInfo.posy() });
 
-	// ´Ù¸¥ ÇÃ·¹ÀÌ¾îÇÑÅ×µµ ¾Ë·ÁÁØ´Ù
+	// ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½×µï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½
 	Protocol::S2C_MOVE resPkt;
 	resPkt.set_objectid(player->Id());
 	resPkt.mutable_posinfo()->CopyFrom(pkt.posinfo());
@@ -246,24 +243,22 @@ void Room::HandleMove(PlayerRef player, const Protocol::C2S_MOVE& pkt)
 	Broadcast(sendBuffer, player->Id());
 }
 
-void Room::HandleSkill(PlayerRef player, const Protocol::C2S_SKILL& pkt)
+void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 {
 	if (player == nullptr)
 		return;
-
-	WRITE_LOCK;
 	
 	auto posInfo = player->PosInfo();
 	if (posInfo->state() != Protocol::CreatureState::Idle)
 		return;
 	
-	// TODO ½ºÅ³ »ç¿ë °¡´É ¿©ºÎ Ã¼Å©
+	// TODO ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
 	
 
 	posInfo->set_state(Protocol::CreatureState::Skill);
 
 	int32 skillId = pkt.info().skillid();
-	// ´Ù¸¥ ÇÃ·¹ÀÌ¾îÇÑÅ×µµ ¾Ë·ÁÁØ´Ù
+	// ï¿½Ù¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½×µï¿½ ï¿½Ë·ï¿½ï¿½Ø´ï¿½
 	Protocol::S2C_SKILL resPkt;
 	resPkt.set_objectid(player->Id());
 	resPkt.mutable_info()->set_skillid(skillId);
