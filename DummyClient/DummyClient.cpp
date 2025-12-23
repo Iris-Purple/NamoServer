@@ -125,6 +125,13 @@ void RemoveActiveSession(PacketSessionRef session)
 	g_activeSessions.erase(session);
 }
 
+void UpdateSessionPosition(PacketSessionRef session, int32 posX, int32 posY)
+{
+	auto serverSession = static_pointer_cast<ServerSession>(session);
+	serverSession->_posX = posX;
+	serverSession->_posY = posY;
+}
+
 // 부하테스트 설정
 const int32 CLIENT_COUNT = 100;		// 클라이언트 수
 const int32 WORKER_THREAD_COUNT = 4;	// IOCP 워커 스레드 수
