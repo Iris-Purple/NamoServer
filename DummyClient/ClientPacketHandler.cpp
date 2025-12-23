@@ -6,7 +6,7 @@ PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 // DummyClient.cpp에서 정의된 함수
 extern void AddActiveSession(PacketSessionRef session);
-extern void UpdateSessionPosition(PacketSessionRef session, int32 posX, int32 posY);
+extern void OnMoveResponse(PacketSessionRef session, int32 posX, int32 posY);
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
@@ -40,9 +40,9 @@ bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt)
 
 bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt)
 {
-	// 서버가 보낸 위치로 클라이언트 위치 동기화
+	// 서버 응답 처리: 위치 저장 + 랜덤 딜레이 후 다음 이동 가능
 	const auto& posInfo = pkt.posinfo();
-	UpdateSessionPosition(session, posInfo.posx(), posInfo.posy());
+	OnMoveResponse(session, posInfo.posx(), posInfo.posy());
 
 	return true;
 }

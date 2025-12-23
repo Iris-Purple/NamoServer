@@ -65,6 +65,7 @@ public:
 	int32 _nextDelayMs = 0;
 	int32 _posX = 0;
 	int32 _posY = 0;
+	bool _canMove = true;  // 서버 응답 받은 후에만 이동 가능
 
 	void ResetDelay()
 	{
@@ -74,6 +75,9 @@ public:
 
 	bool IsTimeToSend()
 	{
+		if (!_canMove)
+			return false;
+
 		auto now = chrono::steady_clock::now();
 		auto elapsed = chrono::duration_cast<chrono::milliseconds>(now - _lastSendTime).count();
 		return elapsed >= _nextDelayMs;
@@ -104,7 +108,15 @@ public:
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 		Send(sendBuffer);
 
-		ResetDelay();
+		_canMove = false;  // 서버 응답 올 때까지 대기
+	}
+
+	void OnMoveResponse(int32 posX, int32 posY)
+	{
+		_posX = posX;
+		_posY = posY;
+		_canMove = true;
+		ResetDelay();  // 서버 응답 받은 시점부터 랜덤 딜레이 시작
 	}
 };
 
@@ -125,11 +137,10 @@ void RemoveActiveSession(PacketSessionRef session)
 	g_activeSessions.erase(session);
 }
 
-void UpdateSessionPosition(PacketSessionRef session, int32 posX, int32 posY)
+void OnMoveResponse(PacketSessionRef session, int32 posX, int32 posY)
 {
 	auto serverSession = static_pointer_cast<ServerSession>(session);
-	serverSession->_posX = posX;
-	serverSession->_posY = posY;
+	serverSession->OnMoveResponse(posX, posY);
 }
 
 // 부하테스트 설정
