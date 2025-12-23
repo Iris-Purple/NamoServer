@@ -20,8 +20,7 @@ void Room::Init(int mapId)
 	monster->SetCellPos(Vector2Int(5, 5));
 	HandleEnterGame(monster);
 
-	// 0.1초 후 Update 시작
-	DoTimer(100, &Room::Update);
+	DoTimer(50, &Room::Update);
 }
 
 void Room::Update()
@@ -36,8 +35,8 @@ void Room::Update()
 		projectile->Update();
 	}
 
-	// 0.1초 후 다시 Update 호출
-	DoTimer(100, &Room::Update);
+	// 50ms 후 다시 Update 호출
+	DoTimer(50, &Room::Update);
 }
 
 bool Room::HandleEnterGame(GameObjectRef gameObject)
@@ -98,15 +97,17 @@ bool Room::HandleLeaveGame(int32 objectId)
 	else if (type == Protocol::GameObjectType::MONSTER)
 	{
 		MonsterRef monster = _monsters[objectId];
-		monster->_room.store(weak_ptr<Room>());
-		_map.ApplyLeave(monster);
+		
 		_monsters.erase(objectId);
+		_map.ApplyLeave(monster);
+		monster->_room.store(weak_ptr<Room>());
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = _projectiles[objectId];
-		projectile->_room.store(weak_ptr<Room>());
+
 		_projectiles.erase(objectId);
+		projectile->_room.store(weak_ptr<Room>());
 	}
 
 	{

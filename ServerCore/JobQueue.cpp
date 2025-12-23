@@ -31,7 +31,7 @@ void JobQueue::Push(JobRef job, bool pushOnly)
 void JobQueue::Execute()
 {
 	LCurrentJobQueue = this;
-
+	
 	while (true)
 	{
 		vector<JobRef> jobs;

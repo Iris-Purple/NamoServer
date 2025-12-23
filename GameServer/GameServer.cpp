@@ -63,7 +63,6 @@ int main()
 
 	// Main Thread
 	cout << "Listen Server....." << endl << endl;
-	DoWorkerJob(service);
 
 	GThreadManager->Join();
 }
