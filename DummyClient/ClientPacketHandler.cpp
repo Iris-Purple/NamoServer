@@ -4,6 +4,9 @@
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
+// DummyClient.cpp에서 정의된 함수
+extern void AddActiveSession(PacketSessionRef session);
+
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	return false;
@@ -12,28 +15,9 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& pkt)
 {
 	cout << "client recv S2C_ENTER_GAME" << endl;
-	auto p = pkt.player();
-	
-	this_thread::sleep_for(chrono::milliseconds(5000));
-	cout << "client send C2S_MOVE" << endl;
-	Protocol::C2S_MOVE resPkt;
-	Protocol::PositionInfo* posInfo = resPkt.mutable_posinfo();
-	posInfo->set_state(Protocol::CreatureState::Moving);
-	posInfo->set_movedir(Protocol::MoveDir::Left);
-	posInfo->set_posx(10);
-	posInfo->set_posy(10);
 
-	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(resPkt);
-	session->Send(sendBuffer);
-	
-	///////////
-	this_thread::sleep_for(chrono::milliseconds(5000));
-	cout << "client send C2S_SKILL" << endl;
-	Protocol::C2S_SKILL res2Pkt;
-	Protocol::SkillInfo* info = res2Pkt.mutable_info();
-	info->set_skillid(1);
-	sendBuffer = ClientPacketHandler::MakeSendBuffer(res2Pkt);
-	session->Send(sendBuffer);
+	// 활성 세션 목록에 등록 (main 스레드에서 랜덤 딜레이로 Move 패킷 전송)
+	AddActiveSession(session);
 
 	return true;
 }
