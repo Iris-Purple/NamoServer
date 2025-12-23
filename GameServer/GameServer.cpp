@@ -36,7 +36,7 @@ void DoWorkerJob(ServerServiceRef& service)
 }
 
 int main()
-{	
+{
 	ConfigManager::Instance().LoadConfig();
 	const string& configPath = ConfigManager::Instance().GetDataPath();
 	DataManager::Instance().Init(configPath);
@@ -62,20 +62,8 @@ int main()
 	}
 
 	// Main Thread
-	//DoWorkerJob(service);
 	cout << "Listen Server....." << endl << endl;
+	DoWorkerJob(service);
 
-	while (true)
-	{
-		RoomRef room = RoomManager::Instance().Find(1);
-		if (room)
-		{
-			room->DoAsync(&Room::Update);
-		}
-		this_thread::sleep_for(100ms);
-	}
-
-
-	
 	GThreadManager->Join();
 }

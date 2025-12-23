@@ -15,11 +15,13 @@ Room::~Room() {	}
 void Room::Init(int mapId)
 {
 	_map.LoadMap(mapId);
-	
+
 	MonsterRef monster = ObjectManager::Instance().Add<Monster>();
 	monster->SetCellPos(Vector2Int(5, 5));
 	HandleEnterGame(monster);
 
+	// 0.1초 후 Update 시작
+	DoTimer(100, &Room::Update);
 }
 
 void Room::Update()
@@ -33,6 +35,9 @@ void Room::Update()
 	{
 		projectile->Update();
 	}
+
+	// 0.1초 후 다시 Update 호출
+	DoTimer(100, &Room::Update);
 }
 
 bool Room::HandleEnterGame(GameObjectRef gameObject)
@@ -62,7 +67,7 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 		_projectiles.insert(make_pair(gameObject->Id(), projectile));
 	}
 
-	
+
 	{
 		Protocol::S2C_SPAWN spawnPkt;
 		spawnPkt.add_objects()->CopyFrom(gameObject->_objInfo);
@@ -77,7 +82,7 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 				session->Send(sendBuffer);
 		}
 	}
-	
+
 
 	return true;
 }
@@ -111,17 +116,17 @@ bool Room::HandleLeaveGame(int32 objectId)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
 		for (auto& item : _players)
 		{
-			if (item.second->Id() == objectId) 
+			if (item.second->Id() == objectId)
 				continue;
-		
+
 			if (auto session = item.second->session.lock())
 			{
 				session->Send(sendBuffer);
 			}
-				
+
 		}
 	}
-	
+
 	return true;
 }
 
@@ -135,7 +140,7 @@ bool Room::EnterPlayer(PlayerRef player)
 
 	_map.ApplyMove(player, Vector2Int{ player->PosInfo()->posx(), player->PosInfo()->posy() });
 	{
-		
+
 		Protocol::S2C_ENTER_GAME enterGamePkt;
 		enterGamePkt.mutable_player()->CopyFrom(player->_objInfo);
 
@@ -168,7 +173,7 @@ bool Room::EnterPlayer(PlayerRef player)
 			session->Send(sendBuffer);
 		}
 	}
-	
+
 	return true;
 }
 
@@ -179,7 +184,7 @@ bool Room::LeavePlayer(int32 objectId)
 
 	PlayerRef player = _players[objectId];
 	_players.erase(objectId);
-	
+
 	_map.ApplyLeave(player);
 	player->_room.store(weak_ptr<Room>());
 
@@ -201,7 +206,7 @@ void Room::HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt)
 		return;
 
 	const auto& movePosInfo = pkt.posinfo();
-	
+
 	auto posInfo = player->PosInfo();
 	if (movePosInfo.posx() != posInfo->posx() || movePosInfo.posy() != posInfo->posy())
 	{
@@ -225,11 +230,11 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 {
 	if (player == nullptr)
 		return;
-	
+
 	auto posInfo = player->PosInfo();
 	if (posInfo->state() != Protocol::CreatureState::Idle)
 		return;
-	
+
 
 	posInfo->set_state(Protocol::CreatureState::Skill);
 
@@ -239,13 +244,13 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 	resPkt.mutable_info()->set_skillid(skillId);
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 	Broadcast(sendBuffer);
-	
+
 	const Data::Skill* skillData = DataManager::Instance().GetSkill(skillId);
 	if (skillData == nullptr)
 		return;
 
 	switch (skillData->skillType)
-	{	
+	{
 	case Protocol::SkillType::SKILL_AUTO:
 		{
 			Vector2Int skillPos = player->GetFrontCellPos(posInfo->movedir());
@@ -272,7 +277,7 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 			posInfo->set_movedir(player->PosInfo()->movedir());
 			posInfo->set_posx(player->PosInfo()->posx());
 			posInfo->set_posy(player->PosInfo()->posy());
-			
+
 			arrow->StatInfo()->set_speed(skillData->projectile->speed);
 
 			HandleEnterGame(arrow);
