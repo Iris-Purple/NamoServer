@@ -13,9 +13,6 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 {
 	cout << "client recv S2C_ENTER_GAME" << endl;
 	auto p = pkt.player();
-	cout << "player name: " << p.name() << endl;
-	cout << "player x, y: " << p.posinfo().posx() << ", " << p.posinfo().posy() << endl;
-
 	
 	this_thread::sleep_for(chrono::milliseconds(5000));
 	cout << "client send C2S_MOVE" << endl;
@@ -48,21 +45,30 @@ bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& 
 bool Handle_S2C_SPAWN(PacketSessionRef& session, Protocol::S2C_SPAWN& pkt)
 {
 	cout << "client recv S2C_SPAWN" << endl;
-	return false;
+	return true;
 }
 
 bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt)
 {
-	return false;
+	return true;
 }
 
 bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt)
 {
-	return false;
+	return true;
 }
 
 bool Handle_S2C_SKILL(PacketSessionRef& session, Protocol::S2C_SKILL& pkt)
 {
-	return false;
+	return true;
+}
+
+bool Handle_S2C_CHANGE_HP(PacketSessionRef& session, Protocol::S2C_CHANGE_HP& pkt)\
+{
+	return true;
+}
+bool Handle_S2C_DIE(PacketSessionRef& session, Protocol::S2C_DIE& pkt)
+{
+	return true;
 }
 
