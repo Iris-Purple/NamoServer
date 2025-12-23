@@ -63,6 +63,8 @@ public:
 	// 부하테스트용
 	chrono::steady_clock::time_point _lastSendTime;
 	int32 _nextDelayMs = 0;
+	int32 _posX = 0;
+	int32 _posY = 0;
 
 	void ResetDelay()
 	{
@@ -79,15 +81,25 @@ public:
 
 	void SendMovePacket()
 	{
+		// 랜덤 방향 선택
+		static uniform_int_distribution<> dirDist(0, 3);
+		Protocol::MoveDir dir = static_cast<Protocol::MoveDir>(dirDist(g_gen));
+
+		// 방향에 따라 위치 변경
+		switch (dir)
+		{
+		case Protocol::MoveDir::Up:    _posY--; break;
+		case Protocol::MoveDir::Down:  _posY++; break;
+		case Protocol::MoveDir::Left:  _posX--; break;
+		case Protocol::MoveDir::Right: _posX++; break;
+		}
+
 		Protocol::C2S_MOVE pkt;
 		Protocol::PositionInfo* posInfo = pkt.mutable_posinfo();
 		posInfo->set_state(Protocol::CreatureState::Moving);
-
-		// 랜덤 방향
-		static uniform_int_distribution<> dirDist(0, 3);
-		posInfo->set_movedir(static_cast<Protocol::MoveDir>(dirDist(g_gen)));
-		posInfo->set_posx(0);
-		posInfo->set_posy(0);
+		posInfo->set_movedir(dir);
+		posInfo->set_posx(_posX);
+		posInfo->set_posy(_posY);
 
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 		Send(sendBuffer);
