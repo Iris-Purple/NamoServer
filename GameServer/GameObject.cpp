@@ -129,7 +129,7 @@ void GameObject::OnDead(GameObjectRef attacker)
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 	room->Broadcast(sendBuffer);
 	
-	room->DoAsync(&Room::HandleLeaveGame, Id());
+	room->HandleLeaveGame(Id());
 
 	auto stat = StatInfo();
 	stat->set_hp(stat->maxhp());
@@ -140,5 +140,5 @@ void GameObject::OnDead(GameObjectRef attacker)
 	posInfo->set_posx(0);
 	posInfo->set_posy(0);
 
-	room->DoAsync(&Room::HandleEnterGame, shared_from_this());
+	room->HandleEnterGame(shared_from_this());
 }

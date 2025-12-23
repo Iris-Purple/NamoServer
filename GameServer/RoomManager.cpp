@@ -7,9 +7,9 @@ RoomRef RoomManager::Add(int mapId)
 {
 	RoomRef room = make_shared<Room>(_roomId);
 	
-	WRITE_LOCK;
-	room->Init(mapId);
+	room->DoAsync(&Room::Init, mapId);
 	
+	WRITE_LOCK;
 	_rooms.emplace(_roomId, room);
 	_roomId++;
 	cout << "RoomManager  Add() called" << endl;

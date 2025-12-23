@@ -67,7 +67,7 @@ int main()
 
 	while (true)
 	{
-		auto room = RoomManager::Instance().Find(1);
+		RoomRef room = RoomManager::Instance().Find(1);
 		if (room)
 		{
 			room->DoAsync(&Room::Update);

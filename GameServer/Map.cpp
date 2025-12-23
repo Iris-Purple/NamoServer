@@ -33,6 +33,10 @@ GameObjectRef Map::Find(const Vector2Int& cellPos) const
 
 bool Map::ApplyLeave(GameObjectRef gameObject)
 {
+    RoomRef room = gameObject->_room.load().lock();
+    if (room == nullptr)
+        return false;
+
     auto posInfo = gameObject->PosInfo();
     int posX = posInfo->posx();
     int posY = posInfo->posy();

@@ -27,8 +27,6 @@ private:
 	unordered_map<int32, PlayerRef> _players;
 	unordered_map<int32, MonsterRef> _monsters;
 	unordered_map<int32, ProjectileRef> _projectiles;
-	vector<int32> _removeProjectileIds;
-	vector<int32> _removeMonsterIds;
 	int _roomId;
 	
 public:

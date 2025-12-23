@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Room.h"
 #include "Player.h"
 #include "GameSession.h"
@@ -15,10 +15,11 @@ Room::~Room() {	}
 void Room::Init(int mapId)
 {
 	_map.LoadMap(mapId);
-
+	
 	MonsterRef monster = ObjectManager::Instance().Add<Monster>();
 	monster->SetCellPos(Vector2Int(5, 5));
 	HandleEnterGame(monster);
+
 }
 
 void Room::Update()
@@ -27,21 +28,11 @@ void Room::Update()
 	{
 		monster->Update();
 	}
-	for (int32 id : _removeMonsterIds)
-	{
-		_monsters.erase(id);
-	}
-	_removeMonsterIds.clear();
-		
 
 	for (auto [_, projectile] : _projectiles)
 	{
 		projectile->Update();
 	}
-	for (int32 id : _removeProjectileIds)
-		_projectiles.erase(id);
-
-	_removeProjectileIds.clear();
 }
 
 bool Room::HandleEnterGame(GameObjectRef gameObject)
@@ -54,7 +45,6 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
 		PlayerRef player = static_pointer_cast<Player>(gameObject);
-		// TODO return ó��
 		EnterPlayer(player);
 	}
 	else if (type == Protocol::GameObjectType::MONSTER)
@@ -64,25 +54,15 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
  		monster->_room.store(static_pointer_cast<Room>(shared_from_this()));
 		_monsters.insert(make_pair(gameObject->Id(), monster));
 		_map.ApplyMove(monster, Vector2Int{ monster->PosInfo()->posx(), monster->PosInfo()->posy() });
-
-		// 삭제 예약 목록에서 제거 (재입장 시)
-		auto it = std::find(_removeMonsterIds.begin(), _removeMonsterIds.end(), gameObject->Id());
-		if (it != _removeMonsterIds.end())
-			_removeMonsterIds.erase(it);
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = static_pointer_cast<Projectile>(gameObject);
 		projectile->_room.store(static_pointer_cast<Room>(shared_from_this()));
 		_projectiles.insert(make_pair(gameObject->Id(), projectile));
-
-		// 삭제 예약 목록에서 제거 (재입장 시)
-		auto it = std::find(_removeProjectileIds.begin(), _removeProjectileIds.end(), gameObject->Id());
-		if (it != _removeProjectileIds.end())
-			_removeProjectileIds.erase(it);
 	}
 
-	// ���� ����� �ٸ� �÷��̾�� �˸���
+	
 	{
 		Protocol::S2C_SPAWN spawnPkt;
 		spawnPkt.add_objects()->CopyFrom(gameObject->_objInfo);
@@ -108,7 +88,6 @@ bool Room::HandleLeaveGame(int32 objectId)
 
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
-		// TODO return ó��
 		LeavePlayer(objectId);
 	}
 	else if (type == Protocol::GameObjectType::MONSTER)
@@ -116,16 +95,15 @@ bool Room::HandleLeaveGame(int32 objectId)
 		MonsterRef monster = _monsters[objectId];
 		monster->_room.store(weak_ptr<Room>());
 		_map.ApplyLeave(monster);
-		_removeMonsterIds.push_back(objectId);
+		_monsters.erase(objectId);
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = _projectiles[objectId];
 		projectile->_room.store(weak_ptr<Room>());
-		_removeProjectileIds.push_back(objectId);
+		_projectiles.erase(objectId);
 	}
 
-	// ���� ����� �˸���
 	{
 		Protocol::S2C_DESPAWN despawnPkt;
 		despawnPkt.add_objectids(objectId);
@@ -138,7 +116,6 @@ bool Room::HandleLeaveGame(int32 objectId)
 		
 			if (auto session = item.second->session.lock())
 			{
-				//cout << "�÷��̾�: " << player->_playerId << " �������� �÷��̾�: " << item.second->_playerId << " �˷��ݴϴ�" << endl;
 				session->Send(sendBuffer);
 			}
 				
@@ -150,16 +127,13 @@ bool Room::HandleLeaveGame(int32 objectId)
 
 bool Room::EnterPlayer(PlayerRef player)
 {
-	// �̹� player ������
 	if (_players.find(player->Id()) != _players.end())
 		return false;
 
 	_players.insert(make_pair(player->Id(), player));
 	player->_room.store(static_pointer_cast<Room>(shared_from_this()));
 
-	// ������ �� ��ġ ���� (�浹 �� Ÿ��)
 	_map.ApplyMove(player, Vector2Int{ player->PosInfo()->posx(), player->PosInfo()->posy() });
-	// ���� ����� ���� �÷��̾�� �˸���
 	{
 		
 		Protocol::S2C_ENTER_GAME enterGamePkt;
@@ -173,7 +147,7 @@ bool Room::EnterPlayer(PlayerRef player)
 		}
 
 	}
-	// ������ ������ �÷��̾� ����� ���� �÷��̾����� �˷��ش�
+
 	{
 		Protocol::S2C_SPAWN spawnPkt;
 		for (auto& item : _players)
@@ -188,7 +162,6 @@ bool Room::EnterPlayer(PlayerRef player)
 		for (auto& item : _projectiles)
 			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
 
-		// ���� ȥ������ ���� ������...
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		if (auto session = player->session.lock())
 		{
@@ -201,17 +174,15 @@ bool Room::EnterPlayer(PlayerRef player)
 
 bool Room::LeavePlayer(int32 objectId)
 {
-	// ���ٸ� ������ �ִ�
 	if (_players.find(objectId) == _players.end())
 		return true;
 
 	PlayerRef player = _players[objectId];
-	player->_room.store(weak_ptr<Room>());
 	_players.erase(objectId);
 	
 	_map.ApplyLeave(player);
+	player->_room.store(weak_ptr<Room>());
 
-	// ���� ����� ���ο��� �˸���
 	{
 		Protocol::S2C_LEAVE_GAME leaveGamePkt;
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
@@ -228,9 +199,7 @@ void Room::HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt)
 {
 	if (player == nullptr)
 		return;
-	// TODO �̵� ����
 
-	// �ٸ� ��ǥ�� �̵��� ��� , �� �� �ִ��� üũ
 	const auto& movePosInfo = pkt.posinfo();
 	
 	auto posInfo = player->PosInfo();
@@ -244,7 +213,6 @@ void Room::HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt)
 
 	_map.ApplyMove(player, Vector2Int{ movePosInfo.posx(), movePosInfo.posy() });
 
-	// �ٸ� �÷��̾����׵� �˷��ش�
 	Protocol::S2C_MOVE resPkt;
 	resPkt.set_objectid(player->Id());
 	resPkt.mutable_posinfo()->CopyFrom(pkt.posinfo());
@@ -262,13 +230,10 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 	if (posInfo->state() != Protocol::CreatureState::Idle)
 		return;
 	
-	// TODO ��ų ��� ���� ���� üũ
-	
 
 	posInfo->set_state(Protocol::CreatureState::Skill);
 
 	int32 skillId = pkt.info().skillid();
-	// �ٸ� �÷��̾����׵� �˷��ش�
 	Protocol::S2C_SKILL resPkt;
 	resPkt.set_objectid(player->Id());
 	resPkt.mutable_info()->set_skillid(skillId);
