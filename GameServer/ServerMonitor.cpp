@@ -118,17 +118,11 @@ void ServerMonitor::PrintStats()
 	double avgLatencyMs = (intervalLatencyCount > 0) ? (intervalLatencyUs / 1000.0) / intervalLatencyCount : 0.0;
 	double maxLatencyMs = maxLatencyUs / 1000.0;
 
-	// 피크 업데이트
-	if (sessionCount > _peakSessionCount) _peakSessionCount = sessionCount;
-	if (totalPPS > _peakPPS) _peakPPS = totalPPS;
-	if (maxLatencyMs > _peakLatencyMs) _peakLatencyMs = maxLatencyMs;
-
 	// 간단한 한 줄 출력
 	cout << "[Stats] Sessions: " << sessionCount << "/" << maxSessionCount
-		 << " (peak:" << _peakSessionCount << ")"
 		 << " | CPU: " << fixed << setprecision(1) << cpuUsage << "%"
 		 << " | Mem: " << memoryMB << "MB"
-		 << " | PPS: " << totalPPS << " (peak:" << _peakPPS << ")"
+		 << " | PPS: " << totalPPS
 		 << " | Latency: " << setprecision(2) << avgLatencyMs << "ms (max:" << maxLatencyMs << "ms)"
 		 << endl;
 }

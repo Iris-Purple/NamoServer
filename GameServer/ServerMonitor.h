@@ -73,11 +73,6 @@ private:
 	atomic<int64> _intervalBytesSent = 0;
 	atomic<int64> _intervalBytesRecv = 0;
 
-	// 피크 기록
-	int32 _peakSessionCount = 0;
-	int64 _peakPPS = 0;
-	double _peakLatencyMs = 0.0;
-
 	// Latency 측정용
 	atomic<int64> _totalLatencyUs = 0;  // 마이크로초 단위 누적
 	atomic<int64> _latencyCount = 0;
