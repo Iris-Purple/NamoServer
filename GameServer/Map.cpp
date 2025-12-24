@@ -63,13 +63,9 @@ bool Map::ApplyMove(GameObjectRef gameObject, Vector2Int dest)
         return false;
 
     auto posInfo = gameObject->PosInfo();
-    int posX = posInfo->posx();
-    int posY = posInfo->posy();
-
     if (CanGo(dest, true) == false)
         return false;
-
-  
+ 
     // 새 위치에 등록
     {
         int x = dest.x - _minX;

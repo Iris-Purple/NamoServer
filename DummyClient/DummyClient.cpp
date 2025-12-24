@@ -65,7 +65,6 @@ public:
 	int32 _nextDelayMs = 0;
 	int32 _posX = 0;
 	int32 _posY = 0;
-	bool _canMove = true;  // 서버 응답 받은 후에만 이동 가능
 
 	void ResetDelay()
 	{
@@ -75,9 +74,6 @@ public:
 
 	bool IsTimeToSend()
 	{
-		if (!_canMove)
-			return false;
-
 		auto now = chrono::steady_clock::now();
 		auto elapsed = chrono::duration_cast<chrono::milliseconds>(now - _lastSendTime).count();
 		return elapsed >= _nextDelayMs;
@@ -92,8 +88,8 @@ public:
 		// 방향에 따라 위치 변경
 		switch (dir)
 		{
-		case Protocol::MoveDir::Up:    _posY--; break;
-		case Protocol::MoveDir::Down:  _posY++; break;
+		case Protocol::MoveDir::Up:    _posY++; break;
+		case Protocol::MoveDir::Down:  _posY--; break;
 		case Protocol::MoveDir::Left:  _posX--; break;
 		case Protocol::MoveDir::Right: _posX++; break;
 		}
@@ -104,19 +100,11 @@ public:
 		posInfo->set_movedir(dir);
 		posInfo->set_posx(_posX);
 		posInfo->set_posy(_posY);
-
+		cout << "SendMove: " << _posX << ", " << _posY << endl;
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 		Send(sendBuffer);
 
-		_canMove = false;  // 서버 응답 올 때까지 대기
-	}
-
-	void OnMoveResponse(int32 posX, int32 posY)
-	{
-		_posX = posX;
-		_posY = posY;
-		_canMove = true;
-		ResetDelay();  // 서버 응답 받은 시점부터 랜덤 딜레이 시작
+		ResetDelay();
 	}
 };
 
@@ -137,14 +125,8 @@ void RemoveActiveSession(PacketSessionRef session)
 	g_activeSessions.erase(session);
 }
 
-void OnMoveResponse(PacketSessionRef session, int32 posX, int32 posY)
-{
-	auto serverSession = static_pointer_cast<ServerSession>(session);
-	serverSession->OnMoveResponse(posX, posY);
-}
-
 // 부하테스트 설정
-const int32 CLIENT_COUNT = 100;		// 클라이언트 수
+const int32 CLIENT_COUNT = 5;		// 클라이언트 수
 const int32 WORKER_THREAD_COUNT = 4;	// IOCP 워커 스레드 수
 
 int main()

@@ -214,15 +214,13 @@ void Room::HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt)
 		if (_map.CanGo(Vector2Int{ movePosInfo.posx(), movePosInfo.posy() }) == false)
 			return;
 	}
+	
+	_map.ApplyMove(player, Vector2Int{ movePosInfo.posx(), movePosInfo.posy() });
 	posInfo->set_state(movePosInfo.state());
 	posInfo->set_movedir(movePosInfo.movedir());
-
-	_map.ApplyMove(player, Vector2Int{ movePosInfo.posx(), movePosInfo.posy() });
-
 	Protocol::S2C_MOVE resPkt;
 	resPkt.set_objectid(player->Id());
-	resPkt.mutable_posinfo()->CopyFrom(pkt.posinfo());
-
+	resPkt.mutable_posinfo()->CopyFrom(*posInfo);
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 	Broadcast(sendBuffer, player->Id());
 }
