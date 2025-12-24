@@ -28,6 +28,10 @@ public:
 	void OnPacketSend(int32 bytes);
 	void OnPacketRecv(int32 bytes);
 
+	// Latency 측정 (패킷 처리 시작/완료)
+	void OnPacketProcessStart();
+	void OnPacketProcessEnd();
+
 	// 연결 카운터 콜백 설정
 	void SetSessionCountGetter(function<int32()> getter) { _getSessionCount = getter; }
 	void SetMaxSessionCountGetter(function<int32()> getter) { _getMaxSessionCount = getter; }
@@ -71,10 +75,15 @@ private:
 
 	// 피크 기록
 	int32 _peakSessionCount = 0;
-	int32 _peakPlayerCount = 0;
-	double _peakCpuUsage = 0.0;
-	size_t _peakMemoryMB = 0;
 	int64 _peakPPS = 0;
+	double _peakLatencyMs = 0.0;
+
+	// Latency 측정용
+	atomic<int64> _totalLatencyUs = 0;  // 마이크로초 단위 누적
+	atomic<int64> _latencyCount = 0;
+	atomic<int64> _intervalLatencyUs = 0;
+	atomic<int64> _intervalLatencyCount = 0;
+	atomic<int64> _maxLatencyUs = 0;
 
 	// CPU 측정용
 	ULARGE_INTEGER _lastCPU = {};

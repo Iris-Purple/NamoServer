@@ -61,12 +61,6 @@ int main()
 	ServerMonitor::Instance().SetMaxSessionCountGetter([&service]() {
 		return service->GetMaxSessionCount();
 	});
-	ServerMonitor::Instance().SetPlayerCountGetter([]() {
-		return RoomManager::Instance().GetTotalPlayerCount();
-	});
-	ServerMonitor::Instance().SetRoomCountGetter([]() {
-		return RoomManager::Instance().GetRoomCount();
-	});
 	ServerMonitor::Instance().Start(5000); // 5초 간격으로 모니터링
 
 	for (int32 i = 0; i < 5; i++)
