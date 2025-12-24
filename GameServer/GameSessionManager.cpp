@@ -24,3 +24,9 @@ void GameSessionManager::Broadcast(SendBufferRef sendBuffer)
 		session->Send(sendBuffer);
 	}
 }
+
+int32 GameSessionManager::GetSessionCount()
+{
+	WRITE_LOCK;
+	return static_cast<int32>(_sessions.size());
+}

@@ -6,6 +6,7 @@
 #include "Room.h"
 #include "ObjectManager.h"
 #include "Player.h"
+#include "ServerMonitor.h"
 
 void GameSession::OnConnected()
 {
@@ -28,13 +29,19 @@ void GameSession::OnDisconnected()
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
+	ServerMonitor::Instance().OnPacketRecv(len);
+	ServerMonitor::Instance().OnPacketProcessStart();
+
 	PacketSessionRef session = GetPacketSessionRef();
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-	// TODO : packetId �뿪 üũ
+	// TODO : packetId 대역 체크
 	ServerPacketHandler::HandlePacket(session, buffer, len);
+
+	ServerMonitor::Instance().OnPacketProcessEnd();
 }
 
 void GameSession::OnSend(int32 len)
 {
+	ServerMonitor::Instance().OnPacketSend(len);
 }
