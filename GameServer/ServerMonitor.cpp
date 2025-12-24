@@ -1,10 +1,6 @@
 #include "pch.h"
 #include "ServerMonitor.h"
-#include <psapi.h>
 #include <iomanip>
-#include <sstream>
-
-#pragma comment(lib, "psapi.lib")
 
 ServerMonitor::~ServerMonitor()
 {
@@ -92,7 +88,6 @@ void ServerMonitor::PrintStats()
 	// 현재 값 수집
 	int32 sessionCount = _getSessionCount ? _getSessionCount() : 0;
 	int32 maxSessionCount = _getMaxSessionCount ? _getMaxSessionCount() : 0;
-	size_t memoryMB = GetMemoryUsageMB();
 
 	// 구간 통계 가져오기 및 리셋
 	int64 intervalSent = _intervalPacketsSent.exchange(0);
@@ -111,18 +106,7 @@ void ServerMonitor::PrintStats()
 
 	// 간단한 한 줄 출력
 	cout << "[Stats] Sessions: " << sessionCount << "/" << maxSessionCount
-		 << " | Mem: " << memoryMB << "MB"
 		 << " | PPS: " << totalPPS
 		 << " | Latency: " << fixed << setprecision(2) << avgLatencyMs << "ms (max:" << maxLatencyMs << "ms)"
 		 << endl;
-}
-
-size_t ServerMonitor::GetMemoryUsageMB()
-{
-	PROCESS_MEMORY_COUNTERS_EX pmc;
-	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
-	{
-		return pmc.PrivateUsage / (1024 * 1024);
-	}
-	return 0;
 }

@@ -51,9 +51,6 @@ private:
 	void MonitorLoop();
 	void PrintStats();
 
-	// 메모리 측정
-	size_t GetMemoryUsageMB();
-
 private:
 	atomic<bool> _running = false;
 	thread _monitorThread;
