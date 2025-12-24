@@ -19,13 +19,6 @@ void ServerMonitor::Start(int32 intervalMs)
 	_intervalMs = intervalMs;
 	_running = true;
 
-	// CPU 측정 초기화
-	SYSTEM_INFO sysInfo;
-	GetSystemInfo(&sysInfo);
-	_numProcessors = sysInfo.dwNumberOfProcessors;
-	_self = GetCurrentProcess();
-	_cpuInitialized = false;
-
 	cout << "[Monitor] Started (interval: " << _intervalMs / 1000 << "s)" << endl;
 
 	_monitorThread = thread(&ServerMonitor::MonitorLoop, this);
@@ -99,8 +92,6 @@ void ServerMonitor::PrintStats()
 	// 현재 값 수집
 	int32 sessionCount = _getSessionCount ? _getSessionCount() : 0;
 	int32 maxSessionCount = _getMaxSessionCount ? _getMaxSessionCount() : 0;
-
-	double cpuUsage = GetCpuUsage();
 	size_t memoryMB = GetMemoryUsageMB();
 
 	// 구간 통계 가져오기 및 리셋
@@ -120,65 +111,18 @@ void ServerMonitor::PrintStats()
 
 	// 간단한 한 줄 출력
 	cout << "[Stats] Sessions: " << sessionCount << "/" << maxSessionCount
-		 << " | CPU: " << fixed << setprecision(1) << cpuUsage << "%"
 		 << " | Mem: " << memoryMB << "MB"
 		 << " | PPS: " << totalPPS
-		 << " | Latency: " << setprecision(2) << avgLatencyMs << "ms (max:" << maxLatencyMs << "ms)"
+		 << " | Latency: " << fixed << setprecision(2) << avgLatencyMs << "ms (max:" << maxLatencyMs << "ms)"
 		 << endl;
-}
-
-double ServerMonitor::GetCpuUsage()
-{
-	FILETIME ftime, fsys, fuser;
-	ULARGE_INTEGER now, sys, user;
-
-	GetSystemTimeAsFileTime(&ftime);
-	memcpy(&now, &ftime, sizeof(FILETIME));
-
-	if (!GetProcessTimes(_self, &ftime, &ftime, &fsys, &fuser))
-		return 0.0;
-
-	memcpy(&sys, &fsys, sizeof(FILETIME));
-	memcpy(&user, &fuser, sizeof(FILETIME));
-
-	if (!_cpuInitialized)
-	{
-		_lastCPU = now;
-		_lastSysCPU = sys;
-		_lastUserCPU = user;
-		_cpuInitialized = true;
-		return 0.0;
-	}
-
-	double percent = static_cast<double>((sys.QuadPart - _lastSysCPU.QuadPart) +
-		(user.QuadPart - _lastUserCPU.QuadPart));
-	percent /= (now.QuadPart - _lastCPU.QuadPart);
-	percent /= _numProcessors;
-	percent *= 100.0;
-
-	_lastCPU = now;
-	_lastSysCPU = sys;
-	_lastUserCPU = user;
-
-	return percent;
 }
 
 size_t ServerMonitor::GetMemoryUsageMB()
 {
 	PROCESS_MEMORY_COUNTERS_EX pmc;
-	if (GetProcessMemoryInfo(_self, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
+	if (GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
 	{
 		return pmc.PrivateUsage / (1024 * 1024);
-	}
-	return 0;
-}
-
-size_t ServerMonitor::GetWorkingSetMB()
-{
-	PROCESS_MEMORY_COUNTERS_EX pmc;
-	if (GetProcessMemoryInfo(_self, (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc)))
-	{
-		return pmc.WorkingSetSize / (1024 * 1024);
 	}
 	return 0;
 }

@@ -51,10 +51,8 @@ private:
 	void MonitorLoop();
 	void PrintStats();
 
-	// CPU/메모리 측정
-	double GetCpuUsage();
+	// 메모리 측정
 	size_t GetMemoryUsageMB();
-	size_t GetWorkingSetMB();
 
 private:
 	atomic<bool> _running = false;
@@ -79,14 +77,6 @@ private:
 	atomic<int64> _intervalLatencyUs = 0;
 	atomic<int64> _intervalLatencyCount = 0;
 	atomic<int64> _maxLatencyUs = 0;
-
-	// CPU 측정용
-	ULARGE_INTEGER _lastCPU = {};
-	ULARGE_INTEGER _lastSysCPU = {};
-	ULARGE_INTEGER _lastUserCPU = {};
-	int _numProcessors = 0;
-	HANDLE _self = nullptr;
-	bool _cpuInitialized = false;
 
 	// 콜백
 	function<int32()> _getSessionCount;
