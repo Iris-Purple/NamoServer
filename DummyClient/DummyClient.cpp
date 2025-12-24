@@ -27,12 +27,12 @@ class ServerSession : public PacketSession
 public:
 	~ServerSession()
 	{
-		cout << "~ServerSession" << endl;
+		//cout << "~ServerSession" << endl;
 	}
 
 	virtual void OnConnected() override
 	{
-		cout << "OnConnected" << endl;
+		//cout << "OnConnected" << endl;
 
 		Protocol::C2S_ENTER_GAME pkt;
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
@@ -100,7 +100,7 @@ public:
 		posInfo->set_movedir(dir);
 		posInfo->set_posx(_posX);
 		posInfo->set_posy(_posY);
-		cout << "SendMove: " << _posX << ", " << _posY << endl;
+		//cout << "SendMove: " << _posX << ", " << _posY << endl;
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 		Send(sendBuffer);
 
@@ -126,8 +126,8 @@ void RemoveActiveSession(PacketSessionRef session)
 }
 
 // 부하테스트 설정
-const int32 CLIENT_COUNT = 500;			// 총 클라이언트 수
-const int32 BATCH_SIZE = 100;			// 한 번에 입장시킬 클라이언트 수
+const int32 CLIENT_COUNT = 10;			// 총 클라이언트 수
+const int32 BATCH_SIZE = 20;			// 한 번에 입장시킬 클라이언트 수
 const int32 BATCH_INTERVAL_SEC = 10;	// 배치 간격 (초)
 const int32 WORKER_THREAD_COUNT = 4;	// IOCP 워커 스레드 수
 

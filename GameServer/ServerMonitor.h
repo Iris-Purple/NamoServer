@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <atomic>
 #include <thread>
@@ -69,7 +69,7 @@ private:
 	atomic<int64> _intervalBytesRecv = 0;
 
 	// Latency 측정용
-	atomic<int64> _totalLatencyUs = 0;  // 마이크로초 단위 누적
+	atomic<int64> _totalLatencyUs = 0;    // 마이크로초 단위 누적
 	atomic<int64> _latencyCount = 0;
 	atomic<int64> _intervalLatencyUs = 0;
 	atomic<int64> _intervalLatencyCount = 0;

@@ -14,7 +14,7 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& pkt)
 {
-	cout << "client recv S2C_ENTER_GAME" << endl;
+	//cout << "client recv S2C_ENTER_GAME" << endl;
 
 	// 활성 세션 목록에 등록 (main 스레드에서 랜덤 딜레이로 Move 패킷 전송)
 	AddActiveSession(session);
@@ -28,7 +28,7 @@ bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& 
 
 bool Handle_S2C_SPAWN(PacketSessionRef& session, Protocol::S2C_SPAWN& pkt)
 {
-	cout << "client recv S2C_SPAWN" << endl;
+	//cout << "client recv S2C_SPAWN" << endl;
 	return true;
 }
 

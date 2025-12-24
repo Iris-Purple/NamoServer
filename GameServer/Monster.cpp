@@ -98,7 +98,7 @@ void Monster::UpdateMoving()
 	}
 	
 	// 스킬 
-	if (dist <= _skillRange && dir.x == 0 || dir.y == 0)
+	if (dist <= _skillRange && (dir.x == 0 || dir.y == 0))
 	{
 		_coolTick = 0;
 		posInfo->set_state(Protocol::CreatureState::Skill);
@@ -135,7 +135,7 @@ void Monster::UpdateSkill()
 		if (_target == nullptr || _target->StatInfo()->hp() == 0)
 		{
 			_target = nullptr;
-			posInfo->set_state(Protocol::CreatureState::Moving);
+			posInfo->set_state(Protocol::CreatureState::Idle);
 			BroadcastMove(room, posInfo);
 			return;
 		}
@@ -164,14 +164,14 @@ void Monster::UpdateSkill()
 
 		// 데미지 판정
 		_target->OnDamaged(static_pointer_cast<Monster>(shared_from_this()), skillData->damage + StatInfo()->attack());
-
+		
 		// 스킬 사용 Broadcast
 		Protocol::S2C_SKILL resPkt;
 		resPkt.set_objectid(Id());
 		resPkt.mutable_info()->set_skillid(skillData->id);
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 		room->Broadcast(sendBuffer);
-		
+
 		// 스킬 쿨타임 적용
 		int coolTick = (int)(1000 * skillData->cooldown);
 		_coolTick = ::GetTickCount64() + coolTick;

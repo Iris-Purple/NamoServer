@@ -16,10 +16,13 @@ void Room::Init(int mapId)
 {
 	_map.LoadMap(mapId);
 
-	MonsterRef monster = ObjectManager::Instance().Add<Monster>();
-	monster->SetCellPos(Vector2Int(5, 5));
-	HandleEnterGame(monster);
 
+	for (int i = 1; i <= _monsterCount; i++)
+	{
+		MonsterRef monster = ObjectManager::Instance().Add<Monster>();
+		monster->SetCellPos(Vector2Int(i, i));  // 위치 분산
+		HandleEnterGame(monster);
+	}
 	DoTimer(50, &Room::Update);
 }
 
@@ -149,7 +152,7 @@ bool Room::EnterPlayer(PlayerRef player)
 		if (auto session = player->session.lock())
 		{
 			session->Send(sendBuffer);
-			cout << "EnterPlayerId: " << player->Id() << endl;
+			//cout << "EnterPlayerId: " << player->Id() << endl;
 		}
 
 	}

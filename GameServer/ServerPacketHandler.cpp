@@ -24,7 +24,7 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt)
 {
-	cout << "C2S_ENTER_GAME  called!" << endl;
+	//cout << "C2S_ENTER_GAME  called!" << endl;
 
 	PlayerRef player = ObjectManager::Instance().Add<Player>();
 	player->Create(session);
@@ -51,7 +51,7 @@ bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 		return false;
 
 	room->DoAsync(&Room::HandleMove, myPlayer, pkt);
-	cout << myPlayer->Id() << " : C2S_MOVE(" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
+	//cout << myPlayer->Id() << " : C2S_MOVE(" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
 	return true;
 }
 
@@ -67,6 +67,6 @@ bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 		return false;
 
 	room->DoAsync(&Room::HandleSkill, myPlayer, pkt);
-	cout << myPlayer->Id() << " : C2S_SKILL" << endl;
+	//cout << myPlayer->Id() << " : C2S_SKILL" << endl;
 	return true;
 }

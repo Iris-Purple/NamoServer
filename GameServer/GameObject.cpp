@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Map.h"
 #include "Room.h"
-
+#include "Monster.h"
 
 GameObject::GameObject(Protocol::GameObjectType objType) : _objType(objType)
 { }
@@ -112,6 +112,7 @@ void GameObject::OnDamaged(GameObjectRef attacker, int damage)
 
 	if (stat->hp() <= 0)
 	{
+		cout << "OnDeaded attacker Id: " << attacker->Id() << endl;
 		OnDead(attacker);
 	}
 }
@@ -130,6 +131,14 @@ void GameObject::OnDead(GameObjectRef attacker)
 	room->Broadcast(sendBuffer);
 	
 	room->HandleLeaveGame(Id());
+
+	// attacker가 Monster면 타겟 초기화
+	if (attacker->GetObjectType() == Protocol::GameObjectType::MONSTER)
+	{
+		cout << "Monster kill......" << endl;
+		MonsterRef monster = static_pointer_cast<Monster>(attacker);
+		monster->_target = nullptr;
+	}
 
 	auto stat = StatInfo();
 	stat->set_hp(stat->maxhp());
