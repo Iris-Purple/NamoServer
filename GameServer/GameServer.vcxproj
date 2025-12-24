@@ -222,6 +222,7 @@
     </ClCompile>
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomManager.cpp" />
+    <ClCompile Include="ServerMonitor.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -245,6 +246,7 @@
     <ClInclude Include="Protocol\Struct.pb.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="RoomManager.h" />
+    <ClInclude Include="ServerMonitor.h" />
     <ClInclude Include="ServerPacketHandler.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

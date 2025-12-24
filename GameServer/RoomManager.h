@@ -15,6 +15,8 @@ public:
 	RoomRef Add(int mapId);
 	bool Remove(int32 roomId);
 	RoomRef Find(int32 roomId);
+	int32 GetRoomCount();
+	int32 GetTotalPlayerCount();
 
 private:
 	RoomManager() = default;

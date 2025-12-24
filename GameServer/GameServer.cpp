@@ -11,6 +11,7 @@
 #include "Room.h"
 #include "DataManager.h"
 #include "ConfigManager.h"
+#include "ServerMonitor.h"
 
 
 enum
@@ -52,6 +53,21 @@ int main()
 		100);
 
 	ASSERT_CRASH(service->Start());
+
+	// 서버 모니터링 설정 및 시작
+	ServerMonitor::Instance().SetSessionCountGetter([&service]() {
+		return service->GetCurrentSessionCount();
+	});
+	ServerMonitor::Instance().SetMaxSessionCountGetter([&service]() {
+		return service->GetMaxSessionCount();
+	});
+	ServerMonitor::Instance().SetPlayerCountGetter([]() {
+		return RoomManager::Instance().GetTotalPlayerCount();
+	});
+	ServerMonitor::Instance().SetRoomCountGetter([]() {
+		return RoomManager::Instance().GetRoomCount();
+	});
+	ServerMonitor::Instance().Start(5000); // 5초 간격으로 모니터링
 
 	for (int32 i = 0; i < 5; i++)
 	{

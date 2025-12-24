@@ -17,6 +17,7 @@ public:
 	void HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt);
 
 	PlayerRef FindPlayer(function<bool(GameObjectRef)> condition);
+	int32 GetPlayerCount() const { return static_cast<int32>(_players.size()); }
 private:
 	bool EnterPlayer(PlayerRef player);
 	bool LeavePlayer(int32 objectId);

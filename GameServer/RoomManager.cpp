@@ -28,3 +28,20 @@ RoomRef RoomManager::Find(int32 roomId)
 	auto it = _rooms.find(roomId);
 	return it != _rooms.end() ? it->second : nullptr;
 }
+
+int32 RoomManager::GetRoomCount()
+{
+	WRITE_LOCK;
+	return static_cast<int32>(_rooms.size());
+}
+
+int32 RoomManager::GetTotalPlayerCount()
+{
+	WRITE_LOCK;
+	int32 total = 0;
+	for (auto& [id, room] : _rooms)
+	{
+		total += room->GetPlayerCount();
+	}
+	return total;
+}
