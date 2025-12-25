@@ -40,10 +40,10 @@ public:
 		auto gameObject = std::make_shared<T>();
 
 		WRITE_LOCK;
-		gameObject->SetId(GenerateId(gameObject->GetObjectType()));
-		if (gameObject->GetObjectType() == Protocol::GameObjectType::PLAYER) 
+		gameObject->_objectId = GenerateId(gameObject->_objType);
+		if (gameObject->_objType == Protocol::GameObjectType::PLAYER) 
 		{
-			_players[gameObject->Id()] = std::dynamic_pointer_cast<Player>(gameObject);
+			_players[gameObject->_objectId] = std::dynamic_pointer_cast<Player>(gameObject);
 		}
 
 		return gameObject;

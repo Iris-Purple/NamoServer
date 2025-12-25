@@ -20,12 +20,11 @@ void Arrow::Update()
 	if (room->_map.CanGo(destPos))
 	{
 		cout << "Arrow move : " << destPos.x << "," << destPos.y << endl;
-		// memory ��ġ ���� 
 		SetCellPos(destPos);
 
 		Protocol::S2C_MOVE pkt;
-		pkt.set_objectid(Id());
-		pkt.mutable_posinfo()->CopyFrom(*PosInfo());
+		pkt.set_objectid(_objectId);
+		pkt.mutable_posinfo()->CopyFrom(ToPositionInfo());
 		
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 		room->Broadcast(sendBuffer);
@@ -36,12 +35,11 @@ void Arrow::Update()
 		if (target != nullptr)
 		{
 			cout << "arrow target match" << endl;
-			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage + _owner->StatInfo()->attack());
+			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage + _owner->_attack);
 		}
 
-		// �Ҹ�
 		cout << "Arrow Remove" << endl;
-		room->DoAsync(&Room::HandleLeaveGame, Id());
+		room->DoAsync(&Room::HandleLeaveGame, _objectId);
 	}
 }
 

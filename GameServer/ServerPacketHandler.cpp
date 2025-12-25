@@ -17,8 +17,7 @@ PacketHandlerFunc GPacketHandler[UINT16_MAX];
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
-	//GRoom->HandleEnterPlayerLocked(make_shared<Player>());
-	// TODO : Log
+
 	return false;
 }
 

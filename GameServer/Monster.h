@@ -26,6 +26,6 @@ protected:
 	virtual void UpdateDead();
 
 private:
-	void BroadcastMove(RoomRef room, Protocol::PositionInfo* posInfo);
+	void BroadcastMove(RoomRef room, Protocol::PositionInfo posInfo);
 };
 

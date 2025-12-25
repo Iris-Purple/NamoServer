@@ -15,21 +15,18 @@ Player::~Player()
 void Player::Create(PacketSessionRef packetSession)
 {
 	session = static_pointer_cast<GameSession>(packetSession);
-	_objInfo.set_name("Player_" + std::to_string(Id()));
-	auto posInfo = PosInfo();
-	posInfo->set_state(Protocol::CreatureState::Idle);
-	posInfo->set_movedir(Protocol::MoveDir::Down);
-	posInfo->set_posx(0);
-	posInfo->set_posy(0);
+	_name = "Player_" + std::to_string(_objectId);
 
-	auto statInfo = StatInfo();
+	_state = Protocol::CreatureState::Idle;
+	_moveDir = Protocol::MoveDir::Down;
+	_posX = _posY = 0;
+
 	const auto stat = DataManager::Instance().GetStat(1);
-	statInfo->set_level(stat->level);
-	statInfo->set_hp(stat->maxHp);
-	statInfo->set_maxhp(stat->maxHp);
-	statInfo->set_attack(stat->attack);
-	statInfo->set_speed(stat->speed);
-	statInfo->set_totalexp(stat->totalExp);
+	_level = stat->level;
+	_hp = _maxHp = stat->maxHp;
+	_attack = stat->attack;
+	_speed = stat->speed;
+	_totalExp = stat->totalExp;
 }
 
 

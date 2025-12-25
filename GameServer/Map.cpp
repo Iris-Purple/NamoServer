@@ -37,10 +37,8 @@ bool Map::ApplyLeave(GameObjectRef gameObject)
     if (room == nullptr)
         return false;
 
-    auto posInfo = gameObject->PosInfo();
-    int posX = posInfo->posx();
-    int posY = posInfo->posy();
-
+    int posX = gameObject->_posX;
+    int posY = gameObject->_posY;
     if (posX < _minX || posX > _maxX)
         return false;
     if (posY < _minY || posY > _maxY)
@@ -62,7 +60,6 @@ bool Map::ApplyMove(GameObjectRef gameObject, Vector2Int dest)
     if (ApplyLeave(gameObject) == false)
         return false;
 
-    auto posInfo = gameObject->PosInfo();
     if (CanGo(dest, true) == false)
         return false;
  
@@ -74,8 +71,8 @@ bool Map::ApplyMove(GameObjectRef gameObject, Vector2Int dest)
     }
 
     // 실제 좌표 이동
-    posInfo->set_posx(dest.x);
-    posInfo->set_posy(dest.y);
+    gameObject->_posX = dest.x;
+    gameObject->_posY = dest.y;
     return true;
 }
 

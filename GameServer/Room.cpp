@@ -48,7 +48,7 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 		return false;
 
 	//WRITE_LOCK;
-	auto type = ObjectManager::GetObjectTypeById(gameObject->Id());
+	auto type = ObjectManager::GetObjectTypeById(gameObject->_objectId);
 	if (type == Protocol::GameObjectType::PLAYER)
 	{
 		PlayerRef player = static_pointer_cast<Player>(gameObject);
@@ -59,25 +59,25 @@ bool Room::HandleEnterGame(GameObjectRef gameObject)
 		MonsterRef monster = static_pointer_cast<Monster>(gameObject);
 
  		monster->_room.store(static_pointer_cast<Room>(shared_from_this()));
-		_monsters.insert(make_pair(gameObject->Id(), monster));
-		_map.ApplyMove(monster, Vector2Int{ monster->PosInfo()->posx(), monster->PosInfo()->posy() });
+		_monsters.insert(make_pair(gameObject->_objectId, monster));
+		_map.ApplyMove(monster, Vector2Int{ monster->_posX, monster->_posY });
 	}
 	else if (type == Protocol::GameObjectType::PROJECTILE)
 	{
 		ProjectileRef projectile = static_pointer_cast<Projectile>(gameObject);
 		projectile->_room.store(static_pointer_cast<Room>(shared_from_this()));
-		_projectiles.insert(make_pair(gameObject->Id(), projectile));
+		_projectiles.insert(make_pair(gameObject->_objectId, projectile));
 	}
 
 
 	{
 		Protocol::S2C_SPAWN spawnPkt;
-		spawnPkt.add_objects()->CopyFrom(gameObject->_objInfo);
+		spawnPkt.add_objects()->CopyFrom(gameObject->ToObjectInfo());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		for (auto& item : _players)
 		{
-			if (item.second->Id() == gameObject->Id())
+			if (item.second->_objectId == gameObject->_objectId)
 				continue;
 
 			if (auto session = item.second->session.lock())
@@ -120,7 +120,7 @@ bool Room::HandleLeaveGame(int32 objectId)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(despawnPkt);
 		for (auto& item : _players)
 		{
-			if (item.second->Id() == objectId)
+			if (item.second->_objectId == objectId)
 				continue;
 
 			if (auto session = item.second->session.lock())
@@ -136,17 +136,17 @@ bool Room::HandleLeaveGame(int32 objectId)
 
 bool Room::EnterPlayer(PlayerRef player)
 {
-	if (_players.find(player->Id()) != _players.end())
+	if (_players.find(player->_objectId) != _players.end())
 		return false;
 
-	_players.insert(make_pair(player->Id(), player));
+	_players.insert(make_pair(player->_objectId, player));
 	player->_room.store(static_pointer_cast<Room>(shared_from_this()));
 
-	_map.ApplyMove(player, Vector2Int{ player->PosInfo()->posx(), player->PosInfo()->posy() });
+	_map.ApplyMove(player, Vector2Int{ player->_posX, player->_posY });
 	{
 
 		Protocol::S2C_ENTER_GAME enterGamePkt;
-		enterGamePkt.mutable_player()->CopyFrom(player->_objInfo);
+		enterGamePkt.mutable_player()->CopyFrom(player->ToObjectInfo());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(enterGamePkt);
 		if (auto session = player->session.lock())
@@ -161,15 +161,15 @@ bool Room::EnterPlayer(PlayerRef player)
 		Protocol::S2C_SPAWN spawnPkt;
 		for (auto& item : _players)
 		{
-			if (item.second->Id() == player->Id()) continue;
+			if (item.second->_objectId == player->_objectId) continue;
 
-			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
+			spawnPkt.add_objects()->CopyFrom(item.second->ToObjectInfo());
 		}
 		for (auto& item : _monsters)
-			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
+			spawnPkt.add_objects()->CopyFrom(item.second->ToObjectInfo());
 
 		for (auto& item : _projectiles)
-			spawnPkt.add_objects()->CopyFrom(item.second->_objInfo);
+			spawnPkt.add_objects()->CopyFrom(item.second->ToObjectInfo());
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		if (auto session = player->session.lock())
@@ -210,22 +210,21 @@ void Room::HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt)
 		return;
 
 	const auto& movePosInfo = pkt.posinfo();
-
-	auto posInfo = player->PosInfo();
-	if (movePosInfo.posx() != posInfo->posx() || movePosInfo.posy() != posInfo->posy())
+	if (movePosInfo.posx() != player->_posX || movePosInfo.posy() != player->_posY)
 	{
 		if (_map.CanGo(Vector2Int{ movePosInfo.posx(), movePosInfo.posy() }) == false)
 			return;
 	}
 	
 	_map.ApplyMove(player, Vector2Int{ movePosInfo.posx(), movePosInfo.posy() });
-	posInfo->set_state(movePosInfo.state());
-	posInfo->set_movedir(movePosInfo.movedir());
+	player->_state = movePosInfo.state();
+	player->_moveDir = movePosInfo.movedir();
+
 	Protocol::S2C_MOVE resPkt;
-	resPkt.set_objectid(player->Id());
-	resPkt.mutable_posinfo()->CopyFrom(*posInfo);
+	resPkt.set_objectid(player->_objectId);
+	resPkt.mutable_posinfo()->CopyFrom(player->ToPositionInfo());
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
-	Broadcast(sendBuffer, player->Id());
+	Broadcast(sendBuffer, player->_objectId);
 }
 
 void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
@@ -233,16 +232,14 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 	if (player == nullptr)
 		return;
 
-	auto posInfo = player->PosInfo();
-	if (posInfo->state() != Protocol::CreatureState::Idle)
+	if (player->_state != Protocol::CreatureState::Idle)
 		return;
 
-
-	posInfo->set_state(Protocol::CreatureState::Skill);
+	player->_state = Protocol::CreatureState::Skill;
 
 	int32 skillId = pkt.info().skillid();
 	Protocol::S2C_SKILL resPkt;
-	resPkt.set_objectid(player->Id());
+	resPkt.set_objectid(player->_objectId);
 	resPkt.mutable_info()->set_skillid(skillId);
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(resPkt);
 	Broadcast(sendBuffer);
@@ -255,7 +252,7 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 	{
 	case Protocol::SkillType::SKILL_AUTO:
 		{
-			Vector2Int skillPos = player->GetFrontCellPos(posInfo->movedir());
+			Vector2Int skillPos = player->GetFrontCellPos(player->_moveDir);
 			GameObjectRef target = _map.Find(skillPos);
 			if (target != nullptr)
 			{
@@ -267,20 +264,18 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 	case Protocol::SkillType::SKILL_PROJECTILE:
 		{
 			ArrowRef arrow = ObjectManager::Instance().Add<Arrow>();
-			cout << "Arrow Created : " << arrow->Id() << endl;
+			cout << "Arrow Created : " << arrow->_objectId << endl;
 			if (arrow == nullptr)
 				return;
 
 			arrow->_owner = player;
 			arrow->Data = *skillData;
 
-			auto posInfo = arrow->PosInfo();
-			posInfo->set_state(Protocol::CreatureState::Moving);
-			posInfo->set_movedir(player->PosInfo()->movedir());
-			posInfo->set_posx(player->PosInfo()->posx());
-			posInfo->set_posy(player->PosInfo()->posy());
-
-			arrow->StatInfo()->set_speed(skillData->projectile->speed);
+			arrow->_state = Protocol::CreatureState::Moving;
+			arrow->_moveDir = player->_moveDir;
+			arrow->_posX = player->_posX;
+			arrow->_posY = player->_posY;
+			arrow->_speed = skillData->projectile->speed;
 
 			HandleEnterGame(arrow);
 		}
@@ -303,7 +298,7 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 	for (auto& item : _players)
 	{
 		PlayerRef player = item.second;
-		if (player->Id() == exceptId)
+		if (player->_objectId == exceptId)
 			continue;
 
 		if (GameSessionRef session = player->session.lock())

@@ -17,7 +17,7 @@ void GameSession::OnDisconnected()
 {
 	cout << "GameSession::OnDisconnected" << endl;
 
-	int32 objectId = myPlayer.load()->Id();
+	int32 objectId = myPlayer.load()->_objectId;
 	RoomRef room = RoomManager::Instance().Find(1);
 	if (room)
 		room->DoAsync(&Room::HandleLeaveGame, objectId);
