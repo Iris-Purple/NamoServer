@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ServerPacketHandler.h"
 #include "BufferReader.h"
 #include "BufferWriter.h"
@@ -23,7 +23,6 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 
 bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt)
 {
-	//cout << "C2S_ENTER_GAME  called!" << endl;
 
 	PlayerRef player = ObjectManager::Instance().Add<Player>();
 	player->Create(session);

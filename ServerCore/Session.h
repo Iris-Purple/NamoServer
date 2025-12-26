@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IocpCore.h"
 #include "IocpEvent.h"
 #include "NetAddress.h"
@@ -77,7 +77,6 @@ private:
 
 private:
 	USE_LOCK;
-							/* ���� ���� */
 	RecvBuffer				_recvBuffer;
 
 							/* �۽� ���� */
