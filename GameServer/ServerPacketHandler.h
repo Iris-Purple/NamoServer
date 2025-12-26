@@ -69,7 +69,7 @@ private:
 		const uint16 packetSize = dataSize + sizeof(PacketHeader);
 
 		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
-		// 레이턴시 시작 시간은 Session::Send()에서 설정됨
+		sendBuffer->SetStartTime();  // Send Latency 측정 시작
 
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 		header->size = packetSize;

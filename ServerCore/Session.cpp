@@ -22,10 +22,6 @@ void Session::Send(SendBufferRef sendBuffer)
 	if (IsConnected() == false)
 		return;
 
-	// 레이턴시 측정: 패킷 수신 시점을 SendBuffer에 복사
-	if (_recvStartTime.time_since_epoch().count() > 0)
-		sendBuffer->SetStartTime(_recvStartTime);
-
 	bool registerSend = false;
 
 	// ���� RegisterSend�� �ɸ��� ���� ���¶��, �ɾ��ش�
@@ -340,9 +336,6 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		// ����� ��ϵ� ��Ŷ ũ�⸦ �Ľ��� �� �־�� �Ѵ�
 		if (dataSize < header.size)
 			break;
-
-		// 레이턴시 측정 시작 (패킷 처리 직전)
-		_recvStartTime = chrono::steady_clock::now();
 
 		// ��Ŷ ���� ����
 		OnRecvPacket(&buffer[processLen], header.size);

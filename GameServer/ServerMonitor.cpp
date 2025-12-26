@@ -87,6 +87,6 @@ void ServerMonitor::PrintStats()
 	// 간단한 한 줄 출력
 	cout << "[Stats] Sessions: " << sessionCount << "/" << maxSessionCount
 		 << " | TPS: " << tps
-		 << " | Latency: " << fixed << setprecision(2) << avgLatencyMs << "ms (max: " << maxLatencyMs << "ms)"
+		 << " | SendLatency: " << fixed << setprecision(2) << avgLatencyMs << "ms (max: " << maxLatencyMs << "ms)"
 		 << endl;
 }

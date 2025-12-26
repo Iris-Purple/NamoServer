@@ -29,8 +29,6 @@ void GameSession::OnDisconnected()
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
-	// 레이턴시 시작 시간은 Session::OnRecv()에서 자동 설정됨
-
 	ServerMonitor::Instance().OnTransaction();
 
 	PacketSessionRef session = GetPacketSessionRef();
