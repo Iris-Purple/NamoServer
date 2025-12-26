@@ -69,7 +69,7 @@ private:
 		const uint16 packetSize = dataSize + sizeof(PacketHeader);
 
 		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
-		sendBuffer->SetStartTime();  // 현재 시간으로 측정 (패킷 생성 시점)
+		// 레이턴시 시작 시간은 Session::Send()에서 설정됨
 
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 		header->size = packetSize;

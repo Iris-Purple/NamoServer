@@ -84,6 +84,9 @@ private:
 	queue<SendBufferRef>	_sendQueue;
 	atomic<bool>			_sendRegistered = false;
 
+							/* 레이턴시 측정 */
+	chrono::steady_clock::time_point _recvStartTime;
+
 private:
 						/* IocpEvent ���� */
 	ConnectEvent		_connectEvent;
