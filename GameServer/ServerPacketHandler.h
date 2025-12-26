@@ -69,7 +69,7 @@ private:
 		const uint16 packetSize = dataSize + sizeof(PacketHeader);
 
 		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
-		sendBuffer->SetStartTime(LRecvStartTime);  // 패킷 수신 시점부터 측정
+		sendBuffer->SetStartTime();  // 현재 시간으로 측정 (패킷 생성 시점)
 
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 		header->size = packetSize;
