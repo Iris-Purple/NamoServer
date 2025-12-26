@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 class SendBufferChunk;
 
@@ -19,7 +19,7 @@ public:
 	void CopyData(void* data, int32 len);
 	void Close(uint32 writeSize);
 
-	// 레이턴시 측정용 타임스탬프
+	// 레이턴시 측정용 타임스탬프 
 	void SetStartTime() { _startTime = chrono::steady_clock::now(); }
 	void SetStartTime(chrono::steady_clock::time_point time) { _startTime = time; }
 	chrono::steady_clock::time_point GetStartTime() const { return _startTime; }

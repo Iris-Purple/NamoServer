@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Session.h"
 #include "SocketUtils.h"
 #include "Service.h"
@@ -268,7 +268,7 @@ void Session::ProcessSend(int32 numOfBytes)
 		}
 	}
 
-	_sendEvent.owner = nullptr; // RELEASE_REF
+	_sendEvent.owner = nullptr; // RELEASE_REF 
 	_sendEvent.sendBuffers.clear(); // RELEASE_REF
 
 	if (numOfBytes == 0)
