@@ -21,6 +21,7 @@ public:
 
 	// 레이턴시 측정용 타임스탬프
 	void SetStartTime() { _startTime = chrono::steady_clock::now(); }
+	void SetStartTime(chrono::steady_clock::time_point time) { _startTime = time; }
 	chrono::steady_clock::time_point GetStartTime() const { return _startTime; }
 
 private:

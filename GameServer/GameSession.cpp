@@ -29,6 +29,9 @@ void GameSession::OnDisconnected()
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
+	// 레이턴시 측정 시작 (패킷 수신 시점)
+	LRecvStartTime = chrono::steady_clock::now();
+
 	ServerMonitor::Instance().OnTransaction();
 
 	PacketSessionRef session = GetPacketSessionRef();
