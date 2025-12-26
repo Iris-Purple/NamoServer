@@ -29,18 +29,15 @@ void GameSession::OnDisconnected()
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
-	ServerMonitor::Instance().OnPacketRecv(len);
-	ServerMonitor::Instance().OnPacketProcessStart();
+	ServerMonitor::Instance().OnTransaction();
 
 	PacketSessionRef session = GetPacketSessionRef();
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
 	ServerPacketHandler::HandlePacket(session, buffer, len);
-
-	ServerMonitor::Instance().OnPacketProcessEnd();
 }
 
 void GameSession::OnSend(int32 len)
 {
-	ServerMonitor::Instance().OnPacketSend(len);
+	// 송신 통계는 TPS에 포함하지 않음 (클라이언트 요청만 카운트)
 }
