@@ -66,6 +66,5 @@ bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
 		return false;
 
 	room->DoAsync(&Room::HandleSkill, myPlayer, pkt);
-	//cout << myPlayer->Id() << " : C2S_SKILL" << endl;
 	return true;
 }

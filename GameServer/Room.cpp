@@ -16,13 +16,13 @@ void Room::Init(int mapId)
 {
 	_map.LoadMap(mapId);
 
-
 	for (int i = 1; i <= _monsterCount; i++)
 	{
 		MonsterRef monster = ObjectManager::Instance().Add<Monster>();
 		monster->SetCellPos(Vector2Int(i, i));  // 위치 분산
 		HandleEnterGame(monster);
 	}
+	
 	DoTimer(50, &Room::Update);
 }
 
@@ -234,9 +234,8 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 
 	if (player->_state != Protocol::CreatureState::Idle)
 		return;
-
+		
 	player->_state = Protocol::CreatureState::Skill;
-
 	int32 skillId = pkt.info().skillid();
 	Protocol::S2C_SKILL resPkt;
 	resPkt.set_objectid(player->_objectId);
@@ -264,7 +263,6 @@ void Room::HandleSkill(PlayerRef player, Protocol::C2S_SKILL pkt)
 	case Protocol::SkillType::SKILL_PROJECTILE:
 		{
 			ArrowRef arrow = ObjectManager::Instance().Add<Arrow>();
-			cout << "Arrow Created : " << arrow->_objectId << endl;
 			if (arrow == nullptr)
 				return;
 

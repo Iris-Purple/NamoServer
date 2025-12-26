@@ -19,7 +19,7 @@ void Arrow::Update()
 	Vector2Int destPos = GetFrontCellPos();
 	if (room->_map.CanGo(destPos))
 	{
-		cout << "Arrow move : " << destPos.x << "," << destPos.y << endl;
+		//cout << "Arrow move : " << destPos.x << "," << destPos.y << endl;
 		SetCellPos(destPos);
 
 		Protocol::S2C_MOVE pkt;
@@ -34,11 +34,11 @@ void Arrow::Update()
 		GameObjectRef target = room->_map.Find(destPos);
 		if (target != nullptr)
 		{
-			cout << "arrow target match" << endl;
+			//cout << "arrow target match" << endl;
 			target->OnDamaged(static_pointer_cast<Arrow>(shared_from_this()), Data.damage + _owner->_attack);
 		}
 
-		cout << "Arrow Remove" << endl;
+		//cout << "Arrow Remove" << endl;
 		room->DoAsync(&Room::HandleLeaveGame, _objectId);
 	}
 }

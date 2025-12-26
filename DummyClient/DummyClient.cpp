@@ -24,6 +24,9 @@ void RemoveActiveSession(PacketSessionRef session);
 
 class ServerSession : public PacketSession
 {
+private:
+	bool isAttack = false;
+
 public:
 	~ServerSession()
 	{
@@ -79,6 +82,27 @@ public:
 		return elapsed >= _nextDelayMs;
 	}
 
+	void SendMoveOrAttack()
+	{
+		if (isAttack)
+		{
+			SendAttackPacket();
+		}
+		else
+		{
+			SendMovePacket();
+		}
+
+		isAttack = !isAttack;
+	}
+	void SendAttackPacket()
+	{
+		Protocol::C2S_SKILL pkt;
+		pkt.mutable_info()->set_skillid(2);
+		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+		Send(sendBuffer);
+		ResetDelay();
+	}
 	void SendMovePacket()
 	{
 		// 랜덤 방향 선택
@@ -104,6 +128,11 @@ public:
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 		Send(sendBuffer);
 
+		this_thread::sleep_for(100ms);
+		posInfo->set_state(Protocol::CreatureState::Idle);
+		sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
+		Send(sendBuffer);
+
 		ResetDelay();
 	}
 };
@@ -126,7 +155,7 @@ void RemoveActiveSession(PacketSessionRef session)
 }
 
 // 부하테스트 설정
-const int32 CLIENT_COUNT = 10;			// 총 클라이언트 수
+const int32 CLIENT_COUNT = 3;			// 총 클라이언트 수
 const int32 BATCH_SIZE = 20;			// 한 번에 입장시킬 클라이언트 수
 const int32 BATCH_INTERVAL_SEC = 10;	// 배치 간격 (초)
 const int32 WORKER_THREAD_COUNT = 4;	// IOCP 워커 스레드 수
@@ -197,7 +226,7 @@ int main()
 				auto serverSession = static_pointer_cast<ServerSession>(session);
 				if (serverSession->IsTimeToSend())
 				{
-					serverSession->SendMovePacket();
+					serverSession->SendMoveOrAttack();
 				}
 			}
 		}

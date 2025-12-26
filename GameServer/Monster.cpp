@@ -60,7 +60,7 @@ void Monster::UpdateMoving()
 	if (_nextMoveTick > getTickCount)
 		return;
 	int moveTick = (int)(1000 / _speed);
-	_nextMoveTick = getTickCount + 1000;
+	_nextMoveTick = getTickCount + moveTick;
 
 	if (_target == nullptr || _target->_room.load().lock() != room)
 	{
@@ -80,16 +80,7 @@ void Monster::UpdateMoving()
 		BroadcastMove(room, ToPositionInfo());
 		return;
 	}
-	// 길찾는 중 멀리있음
-	vector<Vector2Int> path = room->_map.FindPath(GetCellPos(), _target->GetCellPos(), false);
-	if (path.size() < 2 || path.size() > _chaseCellDist)
-	{
-		_target = nullptr;
-		_state = Protocol::CreatureState::Idle;
-		BroadcastMove(room, ToPositionInfo());
-		return;
-	}
-	
+
 	// 스킬 
 	if (dist <= _skillRange && (dir.x == 0 || dir.y == 0))
 	{
@@ -98,10 +89,23 @@ void Monster::UpdateMoving()
 		return;
 	}
 
+	// 길찾는 중 멀리있음
+	vector<Vector2Int> path = room->_map.FindPath(GetCellPos(), _target->GetCellPos(), false);
+	if (path.size() < 2 || path.size() > _chaseCellDist + 1)
+	{
+		_target = nullptr;
+		_state = Protocol::CreatureState::Idle;
+		BroadcastMove(room, ToPositionInfo());
+		return;
+	}
+	
 	// 이동
 	_moveDir = GetDirFromVec(path[1] - GetCellPos());
-	room->_map.ApplyMove(static_pointer_cast<Monster>(shared_from_this()), path[1]);
-	BroadcastMove(room, ToPositionInfo());
+	if (room->_map.ApplyMove(static_pointer_cast<Monster>(shared_from_this()), path[1]))
+	{
+		BroadcastMove(room, ToPositionInfo());
+		return;
+	}
 }
 
 void Monster::BroadcastMove(RoomRef room, Protocol::PositionInfo posInfo)
