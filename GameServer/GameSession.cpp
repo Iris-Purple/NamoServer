@@ -41,3 +41,8 @@ void GameSession::OnSend(int32 len)
 {
 	// 송신 통계는 TPS에 포함하지 않음 (클라이언트 요청만 카운트)
 }
+
+void GameSession::OnLatency(int64 latencyUs)
+{
+	ServerMonitor::Instance().OnLatency(latencyUs);
+}

@@ -27,6 +27,9 @@ public:
 	// TPS 카운터 (클라이언트 요청 처리 시 호출)
 	void OnTransaction();
 
+	// 레이턴시 기록 (마이크로초 단위)
+	void OnLatency(int64 latencyUs);
+
 	// 연결 카운터 콜백 설정
 	void SetSessionCountGetter(function<int32()> getter) { _getSessionCount = getter; }
 	void SetMaxSessionCountGetter(function<int32()> getter) { _getMaxSessionCount = getter; }
@@ -51,6 +54,11 @@ private:
 	// TPS 통계
 	atomic<int64> _totalTransactions = 0;
 	atomic<int64> _intervalTransactions = 0;
+
+	// 레이턴시 통계 (마이크로초 단위)
+	atomic<int64> _totalLatency = 0;
+	atomic<int64> _latencyCount = 0;
+	atomic<int64> _maxLatency = 0;
 
 	// 콜백
 	function<int32()> _getSessionCount;

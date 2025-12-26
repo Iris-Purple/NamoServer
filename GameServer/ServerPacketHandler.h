@@ -69,6 +69,7 @@ private:
 		const uint16 packetSize = dataSize + sizeof(PacketHeader);
 
 		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
+		sendBuffer->SetStartTime();  // 레이턴시 측정 시작
 
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 		header->size = packetSize;

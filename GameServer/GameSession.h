@@ -15,6 +15,7 @@ public:
 	virtual void OnDisconnected() override;
 	virtual void OnRecvPacket(BYTE* buffer, int32 len) override;
 	virtual void OnSend(int32 len) override;
+	virtual void OnLatency(int64 latencyUs) override;
 
 public:
 	atomic<shared_ptr<Player>> myPlayer;
