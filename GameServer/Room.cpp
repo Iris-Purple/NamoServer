@@ -24,6 +24,58 @@ void Room::Init(int mapId)
 	}
 	
 	DoTimer(50, &Room::Update);
+	DoTimer(_pingInterval, &Room::SendPing);
+}
+
+void Room::SendPing()
+{
+	uint64 now = ::GetTickCount64();
+	vector<int32> timeoutPlayers;
+
+	for (auto& [id, player] : _players)
+	{
+		if (auto session = player->session.lock())
+		{
+			uint64 lastPing = session->_lastPingTime.load();
+			uint64 pongTime = session->_pongTime.load();
+			
+			// 이전 Ping에 대한 Pong 체크 (첫 Ping 제외)
+			if (lastPing > 0)
+			{
+				// Pong 안 왔거나, 1초 초과
+				if (pongTime == 0 || (pongTime - lastPing) > _pongTimeout)
+				{
+					timeoutPlayers.push_back(id);
+					continue;
+				}
+			}
+			// 새 Ping 준비
+			session->_lastPingTime.store(now);
+			session->_pongTime.store(0);    // 리셋
+			
+		}
+	}
+
+	// 타임아웃 처리
+	for (int32 id : timeoutPlayers)
+	{
+		if (auto player = _players[id])
+		{
+			if (auto session = player->session.lock())
+			{
+				session->Disconnect(L"Pong timeout");
+			}
+		}
+	}
+
+	// Ping 전송
+	Protocol::S2C_PING ping;
+	ping.set_timestamp(now);
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(ping);
+	Broadcast(sendBuffer);
+
+	// 다음 Ping 예약
+	DoTimer(_pingInterval, &Room::SendPing);
 }
 
 void Room::Update()
@@ -188,10 +240,8 @@ bool Room::LeavePlayer(int32 objectId)
 
 	PlayerRef player = _players[objectId];
 	_players.erase(objectId);
-
 	_map.ApplyLeave(player);
 	player->_room.store(weak_ptr<Room>());
-
 	{
 		Protocol::S2C_LEAVE_GAME leaveGamePkt;
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
@@ -300,6 +350,9 @@ void Room::Broadcast(SendBufferRef sendBuffer, uint64 exceptId)
 			continue;
 
 		if (GameSessionRef session = player->session.lock())
+		{
 			session->Send(sendBuffer);
+		}
+			
 	}
 }

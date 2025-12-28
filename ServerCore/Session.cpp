@@ -205,13 +205,10 @@ void Session::ProcessConnect()
 
 	_connected.store(true);
 
-	// ���� ���
 	GetService()->AddSession(GetSessionRef());
 
-	// ������ �ڵ忡�� ������
 	OnConnected();
 
-	// ���� ���
 	RegisterRecv();
 }
 
@@ -219,7 +216,7 @@ void Session::ProcessDisconnect()
 {
 	_disconnectEvent.owner = nullptr; // RELEASE_REF
 
-	OnDisconnected(); // ������ �ڵ忡�� ������
+	OnDisconnected();
 	GetService()->ReleaseSession(GetSessionRef());
 }
 

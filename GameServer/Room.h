@@ -11,6 +11,7 @@ public:
 
 	void Init(int mapId);
 	void Update();
+
 	bool HandleEnterGame(GameObjectRef gameObject);
 	bool HandleLeaveGame(int32 objectId);
 	void HandleMove(PlayerRef player, Protocol::C2S_MOVE pkt);
@@ -33,5 +34,11 @@ private:
 	
 public:
 	Map _map;
+
+private:
+	static const uint64 _pingInterval = 10000;
+	static const uint64 _pongTimeout = 3000;
+public:
+	void SendPing();
 };
 

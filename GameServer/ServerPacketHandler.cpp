@@ -27,7 +27,6 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 	PlayerRef player = ObjectManager::Instance().Add<Player>();
 	player->Create(session);
 
-
 	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
 
 	RoomRef room = RoomManager::Instance().Find(1);
@@ -38,6 +37,10 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 
 bool Handle_C2S_PONG(PacketSessionRef& session, Protocol::C2S_PONG& pkt)
 {
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+	
+	uint64 expected = 0;
+	gameSession->_pongTime.compare_exchange_strong(expected, ::GetTickCount64());
 	return true;
 }
 

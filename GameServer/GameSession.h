@@ -17,5 +17,9 @@ public:
 	virtual void OnSend(int32 len) override;
 
 public:
-	atomic<shared_ptr<Player>> myPlayer;
+	atomic<PlayerRef> myPlayer;
+
+public:
+	atomic<uint64> _lastPingTime = 0;
+	atomic<uint64> _pongTime = 0;
 };

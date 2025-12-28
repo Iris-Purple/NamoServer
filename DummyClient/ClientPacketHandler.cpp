@@ -23,6 +23,11 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 }
 bool Handle_S2C_PING(PacketSessionRef& session, Protocol::S2C_PING& pkt)
 {
+	Protocol::C2S_PONG pong;
+	pong.set_timestamp(pkt.timestamp());
+
+	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pong);
+	session->Send(sendBuffer);
 	return true;
 }
 bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt)

@@ -23,7 +23,6 @@ void GameSession::OnDisconnected()
 		room->DoAsync(&Room::HandleLeaveGame, objectId);
 
 	ObjectManager::Instance().Remove(objectId);
-
 	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }
 
