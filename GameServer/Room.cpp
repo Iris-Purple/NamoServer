@@ -197,7 +197,7 @@ bool Room::LeavePlayer(int32 objectId)
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(leaveGamePkt);
 		if (auto session = player->session.lock())
 		{
-			cout << "LeavePlayerId: " << objectId << endl;
+			//cout << "LeavePlayerId: " << objectId << endl;
 			session->Send(sendBuffer);
 		}
 	}

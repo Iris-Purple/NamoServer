@@ -9,6 +9,8 @@ enum : uint16
 	PKT_C2S_ENTER_GAME = 1000,
 	PKT_S2C_ENTER_GAME = 1001,
 	PKT_S2C_LEAVE_GAME = 1002,
+	PKT_S2C_PING = 1003,
+	PKT_C2S_PONG = 1004,
 	PKT_S2C_SPAWN = 2000,
 	PKT_S2C_DESPAWN = 2001,
 	PKT_C2S_MOVE = 2002,
@@ -22,6 +24,7 @@ enum : uint16
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt);
+bool Handle_C2S_PONG(PacketSessionRef& session, Protocol::C2S_PONG& pkt);
 bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt);
 bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt);
 
@@ -33,6 +36,7 @@ public:
 		for (int32 i = 0; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_C2S_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_ENTER_GAME>(Handle_C2S_ENTER_GAME, session, buffer, len); };
+		GPacketHandler[PKT_C2S_PONG] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_PONG>(Handle_C2S_PONG, session, buffer, len); };
 		GPacketHandler[PKT_C2S_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_MOVE>(Handle_C2S_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_C2S_SKILL] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C2S_SKILL>(Handle_C2S_SKILL, session, buffer, len); };
 	}
@@ -44,6 +48,7 @@ public:
 	}
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S2C_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_LEAVE_GAME& pkt) { return MakeSendBuffer(pkt, PKT_S2C_LEAVE_GAME); }
+	static SendBufferRef MakeSendBuffer(Protocol::S2C_PING& pkt) { return MakeSendBuffer(pkt, PKT_S2C_PING); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_SPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S2C_SPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_DESPAWN& pkt) { return MakeSendBuffer(pkt, PKT_S2C_DESPAWN); }
 	static SendBufferRef MakeSendBuffer(Protocol::S2C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_S2C_MOVE); }

@@ -36,6 +36,11 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 	return true;
 }
 
+bool Handle_C2S_PONG(PacketSessionRef& session, Protocol::C2S_PONG& pkt)
+{
+	return true;
+}
+
 bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);

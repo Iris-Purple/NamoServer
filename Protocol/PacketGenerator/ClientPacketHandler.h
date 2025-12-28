@@ -9,6 +9,8 @@ enum : uint16
 	PKT_C2S_ENTER_GAME = 1000,
 	PKT_S2C_ENTER_GAME = 1001,
 	PKT_S2C_LEAVE_GAME = 1002,
+	PKT_S2C_PING = 1003,
+	PKT_C2S_PONG = 1004,
 	PKT_S2C_SPAWN = 2000,
 	PKT_S2C_DESPAWN = 2001,
 	PKT_C2S_MOVE = 2002,
@@ -23,6 +25,7 @@ enum : uint16
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& pkt);
 bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt);
+bool Handle_S2C_PING(PacketSessionRef& session, Protocol::S2C_PING& pkt);
 bool Handle_S2C_SPAWN(PacketSessionRef& session, Protocol::S2C_SPAWN& pkt);
 bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt);
 bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt);
@@ -39,6 +42,7 @@ public:
 			GPacketHandler[i] = Handle_INVALID;
 		GPacketHandler[PKT_S2C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_ENTER_GAME>(Handle_S2C_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_S2C_LEAVE_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_LEAVE_GAME>(Handle_S2C_LEAVE_GAME, session, buffer, len); };
+		GPacketHandler[PKT_S2C_PING] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_PING>(Handle_S2C_PING, session, buffer, len); };
 		GPacketHandler[PKT_S2C_SPAWN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_SPAWN>(Handle_S2C_SPAWN, session, buffer, len); };
 		GPacketHandler[PKT_S2C_DESPAWN] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_DESPAWN>(Handle_S2C_DESPAWN, session, buffer, len); };
 		GPacketHandler[PKT_S2C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::S2C_MOVE>(Handle_S2C_MOVE, session, buffer, len); };
@@ -53,6 +57,7 @@ public:
 		return GPacketHandler[header->id](session, buffer, len);
 	}
 	static SendBufferRef MakeSendBuffer(Protocol::C2S_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C2S_ENTER_GAME); }
+	static SendBufferRef MakeSendBuffer(Protocol::C2S_PONG& pkt) { return MakeSendBuffer(pkt, PKT_C2S_PONG); }
 	static SendBufferRef MakeSendBuffer(Protocol::C2S_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_C2S_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::C2S_SKILL& pkt) { return MakeSendBuffer(pkt, PKT_C2S_SKILL); }
 

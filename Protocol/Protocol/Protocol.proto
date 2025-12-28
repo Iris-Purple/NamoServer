@@ -12,6 +12,8 @@ enum PacketId
 	PKT_C2S_ENTER_GAME = 1000;
 	PKT_S2C_ENTER_GAME = 1001;
 	PKT_S2C_LEAVE_GAME = 1002;
+	PKT_S2C_PING = 1003;
+	PKT_C2S_PONG = 1004;
 	
 	PKT_S2C_SPAWN = 2000;
 	PKT_S2C_DESPAWN = 2001;	
@@ -31,6 +33,15 @@ message S2C_ENTER_GAME
 	ObjectInfo player = 1;
 }
 message S2C_LEAVE_GAME { }
+
+message S2C_PING
+{ 
+	uint64 timestamp = 1;
+}
+message C2S_PONG
+{ 
+	uint64 timestamp = 1;
+}
 
 
 message S2C_SPAWN 

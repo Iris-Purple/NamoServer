@@ -134,7 +134,7 @@ void GameObject::OnDamaged(GameObjectRef attacker, int damage)
 	
 	if (_hp <= 0)
 	{
-		cout << "OnDeaded attacker Id: " << attacker->_objectId << endl;
+		//cout << "OnDeaded attacker Id: " << attacker->_objectId << endl;
 		OnDead(attacker);
 	}
 }

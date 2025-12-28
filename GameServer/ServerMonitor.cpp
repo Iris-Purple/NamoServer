@@ -71,4 +71,5 @@ void ServerMonitor::PrintStats()
 		 << endl;
 
 	GJobStats->PrintAndReset();
+	cout << endl;
 }
