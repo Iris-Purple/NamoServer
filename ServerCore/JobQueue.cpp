@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "JobQueue.h"
 #include "GlobalQueue.h"
+#include "JobStats.h"
 
 /*--------------
 	JobQueue
@@ -39,7 +40,16 @@ void JobQueue::Execute()
 
 		const int32 jobCount = static_cast<int32>(jobs.size());
 		for (int32 i = 0; i < jobCount; i++)
+		{
+			uint64 now = ::GetTickCount64();
+			uint64 waitTime = now - jobs[i]->GetCreatedTime();
+
 			jobs[i]->Execute();
+
+			uint64 processTime = ::GetTickCount64() - now;
+			GJobStats->Record(waitTime, processTime);
+		}
+			
 
 		// 남은 일감이 0개라면 종료
 		if (_jobCount.fetch_sub(jobCount) == jobCount)

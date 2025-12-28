@@ -155,7 +155,7 @@ void RemoveActiveSession(PacketSessionRef session)
 }
 
 // 부하테스트 설정
-const int32 CLIENT_COUNT = 3;			// 총 클라이언트 수
+const int32 CLIENT_COUNT = 10;		// 총 클라이언트 수
 const int32 BATCH_SIZE = 20;			// 한 번에 입장시킬 클라이언트 수
 const int32 BATCH_INTERVAL_SEC = 10;	// 배치 간격 (초)
 const int32 WORKER_THREAD_COUNT = 4;	// IOCP 워커 스레드 수

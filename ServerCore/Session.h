@@ -66,7 +66,6 @@ protected:
 	virtual void		OnConnected() { }
 	virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
 	virtual void		OnSend(int32 len) { }
-	virtual void		OnLatency(int64 latencyUs) { }  // 레이턴시 콜백 (마이크로초)
 	virtual void		OnDisconnected() { }
 
 private:

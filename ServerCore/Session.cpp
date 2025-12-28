@@ -256,18 +256,6 @@ void Session::ProcessRecv(int32 numOfBytes)
 
 void Session::ProcessSend(int32 numOfBytes)
 {
-	// 레이턴시 계산
-	auto now = chrono::steady_clock::now();
-	for (const auto& sendBuffer : _sendEvent.sendBuffers)
-	{
-		auto startTime = sendBuffer->GetStartTime();
-		if (startTime.time_since_epoch().count() > 0)
-		{
-			int64 latencyUs = chrono::duration_cast<chrono::microseconds>(now - startTime).count();
-			OnLatency(latencyUs);
-		}
-	}
-
 	_sendEvent.owner = nullptr; // RELEASE_REF 
 	_sendEvent.sendBuffers.clear(); // RELEASE_REF
 

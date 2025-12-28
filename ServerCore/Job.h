@@ -12,6 +12,7 @@ class Job
 public:
 	Job(CallbackType&& callback) : _callback(std::move(callback))
 	{
+		_createdTime = ::GetTickCount64();
 	}
 
 	template<typename T, typename Ret, typename... Args>
@@ -21,6 +22,7 @@ public:
 		{
 			(owner.get()->*memFunc)(args...);
 		};
+		_createdTime = ::GetTickCount64();
 	}
 
 	void Execute()
@@ -28,7 +30,11 @@ public:
 		_callback();
 	}
 
+	uint64 GetCreatedTime() const { return _createdTime; }
+
 private:
 	CallbackType _callback;
+	uint64 _createdTime = 0;
+
 };
 

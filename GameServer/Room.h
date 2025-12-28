@@ -29,7 +29,7 @@ private:
 	unordered_map<int32, MonsterRef> _monsters;
 	unordered_map<int32, ProjectileRef> _projectiles;
 	int _roomId;
-	int _monsterCount = 2;
+	int _monsterCount = 5;
 	
 public:
 	Map _map;
