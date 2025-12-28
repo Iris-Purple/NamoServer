@@ -21,6 +21,10 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 
 	return true;
 }
+bool Handle_S2C_PING(PacketSessionRef& session, Protocol::S2C_PING& pkt)
+{
+	return true;
+}
 bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt)
 {
 	return true;
