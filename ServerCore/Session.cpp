@@ -320,23 +320,31 @@ SendBufferRef Session::EncryptBuffer(SendBufferRef sendBuffer)
 	if (_crypto == nullptr)
 		return sendBuffer;
 
+	// 원본: [size(2)][id(2)][data...]
+	// 암호화: [size(2)][encrypted(id+data)...]
 	int32 plainSize = sendBuffer->WriteSize();
-	int32 encryptedSize = AESCrypto::GetEncryptedSize(plainSize);
+	if (plainSize < sizeof(uint16))
+		return sendBuffer;
 
-	// 새 버퍼 생성: [enc_size(2)][encrypted_data]
-	int32 totalSize = sizeof(uint16) + encryptedSize;
+	// id+data 부분만 암호화 (size 제외)
+	int32 payloadSize = plainSize - sizeof(uint16);
+	int32 encryptedPayloadSize = AESCrypto::GetEncryptedSize(payloadSize);
+
+	// 새 버퍼 생성: [size(2)][encrypted(id+data)]
+	int32 totalSize = sizeof(uint16) + encryptedPayloadSize;
 	SendBufferRef encryptedBuffer = make_shared<SendBuffer>(totalSize);
 
-	// 암호화된 크기를 먼저 기록
 	BYTE* bufferPtr = encryptedBuffer->Buffer();
-	*(reinterpret_cast<uint16*>(bufferPtr)) = static_cast<uint16>(encryptedSize);
 
-	// 암호화 데이터 기록
+	// size 기록 (전체 패킷 크기)
+	*(reinterpret_cast<uint16*>(bufferPtr)) = static_cast<uint16>(totalSize);
+
+	// id+data 부분 암호화
 	int32 resultLen = _crypto->Encrypt(
-		sendBuffer->Buffer(),
-		plainSize,
+		sendBuffer->Buffer() + sizeof(uint16),  // id+data 시작점
+		payloadSize,
 		bufferPtr + sizeof(uint16),
-		encryptedSize
+		encryptedPayloadSize
 	);
 
 	if (resultLen < 0)
@@ -361,69 +369,67 @@ PacketSession::~PacketSession()
 {
 }
 
-// 평문:  [size(2)][id(2)][data....][size(2)][id(2)][data....]
-// 암호화: [enc_size(2)][encrypted_data...][enc_size(2)][encrypted_data...]
+// 평문:   [size(2)][id(2)][data....]
+// 암호화: [size(2)][encrypted(id+data)...]
 int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 {
 	int32 processLen = 0;
 
-	// 암호화 OFF 또는 crypto 미초기화 -> 기존 평문 처리
-	if (GEncryptionEnabled == false || _crypto == nullptr)
-	{
-		while (true)
-		{
-			int32 dataSize = len - processLen;
-			if (dataSize < sizeof(PacketHeader))
-				break;
-
-			PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
-			if (dataSize < header.size)
-				break;
-
-			OnRecvPacket(&buffer[processLen], header.size);
-			processLen += header.size;
-		}
-		return processLen;
-	}
-
-	// 암호화 ON -> 복호화 처리
-	// 패킷 구조: [enc_size(2)][encrypted_data(enc_size)]
 	while (true)
 	{
 		int32 dataSize = len - processLen;
 
-		// 최소 2바이트 (암호화된 크기) 필요
+		// 최소 size(2) 필요
 		if (dataSize < sizeof(uint16))
 			break;
-			
-		uint16 encryptedSize = *(reinterpret_cast<uint16*>(&buffer[processLen]));
 
-		// 암호화된 전체 패킷 수신 대기
-		if (dataSize < sizeof(uint16) + encryptedSize)
+		// size 읽기 (공통)
+		uint16 packetSize = *(reinterpret_cast<uint16*>(&buffer[processLen]));
+
+		// 전체 패킷 수신 대기
+		if (dataSize < packetSize)
 			break;
-		
-		// 복호화
-		int32 decryptedLen = _crypto->Decrypt(
-			&buffer[processLen + sizeof(uint16)],
-			encryptedSize,
-			_decryptBuffer,
-			sizeof(_decryptBuffer)
-		);
 
-		if (decryptedLen < 0)
+		// 암호화 OFF 또는 crypto 미초기화 -> 평문 처리
+		if (GEncryptionEnabled == false || _crypto == nullptr)
 		{
-			// 복호화 실패
-			cout << "Decryption failed" << endl;
-			return -1;
+			OnRecvPacket(&buffer[processLen], packetSize);
+		}
+		else
+		{
+			// 암호화 ON -> id+data 복호화
+			int32 encryptedPayloadSize = packetSize - sizeof(uint16);
+
+			// size를 _decryptBuffer에 먼저 복사
+			*(reinterpret_cast<uint16*>(_decryptBuffer)) = packetSize;
+
+			// id+data 복호화
+			int32 decryptedLen = _crypto->Decrypt(
+				&buffer[processLen + sizeof(uint16)],
+				encryptedPayloadSize,
+				_decryptBuffer + sizeof(uint16),
+				sizeof(_decryptBuffer) - sizeof(uint16)
+			);
+
+			if (decryptedLen < 0)
+			{
+				cout << "Decryption failed" << endl;
+				return -1;
+			}
+
+			// 복호화된 패킷 처리 (size + 복호화된 id+data)
+			int32 totalDecryptedSize = sizeof(uint16) + decryptedLen;
+
+			// 복호화된 실제 크기로 size 업데이트
+			*(reinterpret_cast<uint16*>(_decryptBuffer)) = static_cast<uint16>(totalDecryptedSize);
+
+			if (decryptedLen >= sizeof(uint16))  // 최소 id(2) 필요
+			{
+				OnRecvPacket(_decryptBuffer, totalDecryptedSize);
+			}
 		}
 
-		// 복호화된 패킷 처리
-		if (decryptedLen >= sizeof(PacketHeader))
-		{
-			OnRecvPacket(_decryptBuffer, decryptedLen);
-		}
-
-		processLen += sizeof(uint16) + encryptedSize;
+		processLen += packetSize;
 	}
 
 	return processLen;
