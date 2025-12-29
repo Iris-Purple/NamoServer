@@ -47,7 +47,6 @@ bool Handle_C2S_PONG(PacketSessionRef& session, Protocol::C2S_PONG& pkt)
 bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-	
 
 	PlayerRef myPlayer = gameSession->myPlayer.load();
 	if (myPlayer == nullptr)

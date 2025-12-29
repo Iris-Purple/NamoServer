@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ConfigManager.h"
 
 
@@ -14,7 +14,7 @@
 
         json j;
         file >> j;
-
+         
         _config = j.get<ServerConfig>();
 
         // 전역 암호화 설정 적용

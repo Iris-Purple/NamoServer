@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <fstream>
 #include "nlohmann/json.hpp"
@@ -18,7 +18,7 @@ using json = nlohmann::json;
 		// encryptionEnabled는 선택적 (없으면 기본값 false)
 		if (j.contains("encryptionEnabled"))
 			j.at("encryptionEnabled").get_to(config.encryptionEnabled);
-	}
+	} 
 
 	class ConfigManager
 	{
