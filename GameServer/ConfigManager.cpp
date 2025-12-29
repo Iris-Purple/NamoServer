@@ -17,6 +17,10 @@
 
         _config = j.get<ServerConfig>();
 
+        // 전역 암호화 설정 적용
+        GEncryptionEnabled = _config.encryptionEnabled;
+
         cout << "[ConfigManager] Config loaded" << endl;
         cout << "  - dataPath: " << _config.dataPath << endl;
+        cout << "  - encryptionEnabled: " << (_config.encryptionEnabled ? "true" : "false") << endl;
     }

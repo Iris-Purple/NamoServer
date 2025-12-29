@@ -1,3 +1,4 @@
 {
-    "dataPath": "../Common/Data/"
+    "dataPath": "../Common/Data/",
+    "encryptionEnabled": true
 }
