@@ -390,20 +390,14 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		if (dataSize < packetSize)
 			break;
 
-		// 암호화 OFF 또는 crypto 미초기화 -> 평문 처리
-		if (GEncryptionEnabled == false || _crypto == nullptr)
+		BYTE* packetData = &buffer[processLen];
+		int32 packetLen = packetSize;
+
+		// 암호화 ON -> id+data 복호화
+		if (GEncryptionEnabled && _crypto)
 		{
-			OnRecvPacket(&buffer[processLen], packetSize);
-		}
-		else
-		{
-			// 암호화 ON -> id+data 복호화
 			int32 encryptedPayloadSize = packetSize - sizeof(uint16);
 
-			// size를 _decryptBuffer에 먼저 복사
-			*(reinterpret_cast<uint16*>(_decryptBuffer)) = packetSize;
-
-			// id+data 복호화
 			int32 decryptedLen = _crypto->Decrypt(
 				&buffer[processLen + sizeof(uint16)],
 				encryptedPayloadSize,
@@ -417,16 +411,16 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 				return -1;
 			}
 
-			// 복호화된 패킷 처리 (size + 복호화된 id+data)
-			int32 totalDecryptedSize = sizeof(uint16) + decryptedLen;
+			// 복호화된 크기로 size 설정
+			packetLen = sizeof(uint16) + decryptedLen;
+			*(reinterpret_cast<uint16*>(_decryptBuffer)) = static_cast<uint16>(packetLen);
+			packetData = _decryptBuffer;
+		}
 
-			// 복호화된 실제 크기로 size 업데이트
-			*(reinterpret_cast<uint16*>(_decryptBuffer)) = static_cast<uint16>(totalDecryptedSize);
-
-			if (decryptedLen >= sizeof(uint16))  // 최소 id(2) 필요
-			{
-				OnRecvPacket(_decryptBuffer, totalDecryptedSize);
-			}
+		// 패킷 처리 (공통)
+		if (packetLen >= sizeof(PacketHeader))
+		{
+			OnRecvPacket(packetData, packetLen);
 		}
 
 		processLen += packetSize;
