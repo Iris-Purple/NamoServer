@@ -395,13 +395,13 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		// 최소 2바이트 (암호화된 크기) 필요
 		if (dataSize < sizeof(uint16))
 			break;
-
+			
 		uint16 encryptedSize = *(reinterpret_cast<uint16*>(&buffer[processLen]));
 
 		// 암호화된 전체 패킷 수신 대기
 		if (dataSize < sizeof(uint16) + encryptedSize)
 			break;
-
+		
 		// 복호화
 		int32 decryptedLen = _crypto->Decrypt(
 			&buffer[processLen + sizeof(uint16)],

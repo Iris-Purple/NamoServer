@@ -1,4 +1,4 @@
 {
     "dataPath": "../Common/Data/",
-    "encryptionEnabled": true
+    "encryptionEnabled": false
 }
