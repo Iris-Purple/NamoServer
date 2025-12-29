@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "AESCrypto.h"
 
 /*--------------
@@ -140,6 +140,6 @@ int32 AESCrypto::Decrypt(const BYTE* input, int32 inputLen, BYTE* output, int32 
 int32 AESCrypto::GetEncryptedSize(int32 plainSize)
 {
 	// PKCS7 패딩: 16바이트 블록 단위로 올림
-	// 정확히 16의 배수인 경우에도 16바이트 패딩 추가
+	// 정확히 16의 배수인 경우에도 16바이트 패딩 추가 
 	return ((plainSize / 16) + 1) * 16;
 }

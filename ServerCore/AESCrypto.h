@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <windows.h>
 #include <bcrypt.h>
 #pragma comment(lib, "bcrypt.lib")
@@ -32,5 +32,5 @@ private:
 	BYTE				_ivBackup[16] = {};		// IV 원본 보관 (매 암호화/복호화 시 복원)
 	PBYTE				_keyObject = nullptr;
 	DWORD				_keyObjectSize = 0;
-	bool				_initialized = false;
+	bool				_initialized = false; 
 };

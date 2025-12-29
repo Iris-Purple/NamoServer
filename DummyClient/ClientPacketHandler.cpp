@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
 
@@ -16,7 +16,7 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 {
 	//cout << "client recv S2C_ENTER_GAME" << endl;
 
-	// 활성 세션 목록에 등록 (main 스레드에서 랜덤 딜레이로 Move 패킷 전송)
+	// 활성 세션 목록에 등록 (main 스레드에서 랜덤 딜레이로 Move 패킷 전송) 
 	AddActiveSession(session);
 
 	return true;
