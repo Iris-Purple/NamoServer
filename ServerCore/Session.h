@@ -3,6 +3,7 @@
 #include "IocpEvent.h"
 #include "NetAddress.h"
 #include "RecvBuffer.h"
+#include "AESCrypto.h"
 
 class Service;
 
@@ -74,6 +75,14 @@ private:
 	NetAddress			_netAddress = {};
 	atomic<bool>		_connected = false;
 
+protected:
+	/* 암호화 */
+	AESCrypto*			_crypto = nullptr;
+
+public:
+	void				InitEncryption(const BYTE* key, int32 keyLen);
+	SendBufferRef		EncryptBuffer(SendBufferRef sendBuffer);
+
 private:
 	USE_LOCK;
 	RecvBuffer				_recvBuffer;
@@ -111,4 +120,8 @@ public:
 protected:
 	virtual int32		OnRecv(BYTE* buffer, int32 len) sealed;
 	virtual void		OnRecvPacket(BYTE* buffer, int32 len) abstract;
+
+private:
+	// 복호화용 버퍼 (최대 패킷 크기)
+	BYTE				_decryptBuffer[0x10000];
 };

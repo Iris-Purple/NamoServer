@@ -11,6 +11,9 @@
 void GameSession::OnConnected()
 {
 	GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
+
+	// 암호화 초기화 (GEncryptionEnabled가 true일 때만 실제 동작)
+	InitEncryption(GEncryptionKey, 16);
 }
 
 void GameSession::OnDisconnected()

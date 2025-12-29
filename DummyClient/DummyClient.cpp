@@ -37,6 +37,9 @@ public:
 	{
 		//cout << "OnConnected" << endl;
 
+		// 암호화 초기화 (GEncryptionEnabled가 true일 때만 실제 동작)
+		InitEncryption(GEncryptionKey, 16);
+
 		Protocol::C2S_ENTER_GAME pkt;
 		auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 		Send(sendBuffer);
