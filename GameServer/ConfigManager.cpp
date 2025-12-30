@@ -25,9 +25,20 @@
         {
             memcpy(GEncryptionKey, _config.encryptionKey.c_str(), 16);
         }
+        else if (!_config.encryptionKey.empty())
+        {
+            cerr << "[ConfigManager] WARNING: encryptionKey must be exactly 16 bytes! "
+                 << "(got " << _config.encryptionKey.length() << " bytes, using default key)" << endl;
+        }
 
         cout << "[ConfigManager] Config loaded" << endl;
         cout << "  - dataPath: " << _config.dataPath << endl;
         cout << "  - encryptionEnabled: " << (_config.encryptionEnabled ? "true" : "false") << endl;
-        cout << "  - encryptionKey: " << (_config.encryptionKey.empty() ? "(default)" : "(loaded)") << endl;
+
+        if (_config.encryptionKey.empty())
+            cout << "  - encryptionKey: (default)" << endl;
+        else if (_config.encryptionKey.length() == 16)
+            cout << "  - encryptionKey: (loaded from config)" << endl;
+        else
+            cout << "  - encryptionKey: (invalid length, using default)" << endl;
     }
