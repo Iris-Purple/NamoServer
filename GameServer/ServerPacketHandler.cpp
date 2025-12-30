@@ -21,9 +21,8 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
-bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt)
+bool Handle_C2S_ENTER_GAME(GameSessionRef& session, Protocol::C2S_ENTER_GAME& pkt)
 {
-
 	PlayerRef player = ObjectManager::Instance().Add<Player>();
 	player->Create(session);
 
@@ -35,20 +34,16 @@ bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& 
 	return true;
 }
 
-bool Handle_C2S_PONG(PacketSessionRef& session, Protocol::C2S_PONG& pkt)
-{
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-	
+bool Handle_C2S_PONG(GameSessionRef& session, Protocol::C2S_PONG& pkt)
+{	
 	uint64 expected = 0;
-	gameSession->_pongTime.compare_exchange_strong(expected, ::GetTickCount64());
+	session->_pongTime.compare_exchange_strong(expected, ::GetTickCount64());
 	return true;
 }
 
-bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
+bool Handle_C2S_MOVE(GameSessionRef& session, Protocol::C2S_MOVE& pkt)
 {
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-
-	PlayerRef myPlayer = gameSession->myPlayer.load();
+	PlayerRef myPlayer = session->myPlayer.load();
 	if (myPlayer == nullptr)
 		return false;
 	RoomRef room = myPlayer->_room.load().lock();
@@ -60,11 +55,9 @@ bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt)
 	return true;
 }
 
-bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt)
+bool Handle_C2S_SKILL(GameSessionRef& session, Protocol::C2S_SKILL& pkt)
 {
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-
-	PlayerRef myPlayer = gameSession->myPlayer.load();
+	PlayerRef myPlayer = session->myPlayer.load();
 	if (myPlayer == nullptr)
 		return false;
 	RoomRef room = myPlayer->_room.load().lock();

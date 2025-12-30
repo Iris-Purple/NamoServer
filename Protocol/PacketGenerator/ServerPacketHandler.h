@@ -1,6 +1,9 @@
 #pragma once
 #include "Protocol/Protocol.pb.h"
 
+class GameSession;
+using GameSessionRef = std::shared_ptr<GameSession>;
+
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -23,10 +26,10 @@ enum : uint16
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-bool Handle_C2S_ENTER_GAME(PacketSessionRef& session, Protocol::C2S_ENTER_GAME& pkt);
-bool Handle_C2S_PONG(PacketSessionRef& session, Protocol::C2S_PONG& pkt);
-bool Handle_C2S_MOVE(PacketSessionRef& session, Protocol::C2S_MOVE& pkt);
-bool Handle_C2S_SKILL(PacketSessionRef& session, Protocol::C2S_SKILL& pkt);
+bool Handle_C2S_ENTER_GAME(GameSessionRef& session, Protocol::C2S_ENTER_GAME& pkt);
+bool Handle_C2S_PONG(GameSessionRef& session, Protocol::C2S_PONG& pkt);
+bool Handle_C2S_MOVE(GameSessionRef& session, Protocol::C2S_MOVE& pkt);
+bool Handle_C2S_SKILL(GameSessionRef& session, Protocol::C2S_SKILL& pkt);
 
 class ServerPacketHandler
 {
@@ -64,7 +67,8 @@ private:
 		if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
 			return false;
 
-		return func(session, pkt);
+		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+		return func(gameSession, pkt);
 	}
 
 	template<typename T>

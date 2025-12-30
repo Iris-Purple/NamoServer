@@ -106,7 +106,7 @@ private:
 struct PacketHeader
 {
 	uint16 size;
-	uint16 id; // ��������ID (ex. 1=�α���, 2=�̵���û)
+	uint16 id;
 };
 
 class PacketSession : public Session
@@ -115,7 +115,7 @@ public:
 	PacketSession();
 	virtual ~PacketSession();
 
-	PacketSessionRef	GetPacketSessionRef() { return static_pointer_cast<PacketSession>(shared_from_this()); }
+	PacketSessionRef	 GetPacketSessionRef() { return static_pointer_cast<PacketSession>(shared_from_this()); }
 
 protected:
 	virtual int32		OnRecv(BYTE* buffer, int32 len) sealed;
