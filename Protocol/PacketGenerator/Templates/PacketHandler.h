@@ -1,6 +1,9 @@
 #pragma once
 #include "Protocol/Protocol.pb.h"
 
+class GameSession;
+using GameSessionRef = std::shared_ptr<GameSession>;
+
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -15,7 +18,7 @@ enum : uint16
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 
 {%- for pkt in parser.recv_pkt %}
-bool Handle_{{pkt.name}}(PacketSessionRef& session, Protocol::{{pkt.name}}& pkt);
+bool Handle_{{pkt.name}}(GameSessionRef& session, Protocol::{{pkt.name}}& pkt);
 {%- endfor %}
 
 class {{output}}
@@ -49,7 +52,8 @@ private:
 		if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
 			return false;
 
-		return func(session, pkt);
+		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+		return func(gameSession, pkt);
 	}
 
 	template<typename T>

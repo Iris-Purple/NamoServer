@@ -20,12 +20,16 @@ void GameSession::OnDisconnected()
 {
 	cout << "GameSession::OnDisconnected" << endl;
 
-	int32 objectId = myPlayer.load()->_objectId;
-	RoomRef room = RoomManager::Instance().Find(1);
-	if (room)
-		room->DoAsync(&Room::HandleLeaveGame, objectId);
-
-	ObjectManager::Instance().Remove(objectId);
+	auto player = myPlayer.load();
+	if (player)
+	{
+		int32 objectId = player->_objectId;
+		RoomRef room = RoomManager::Instance().Find(1);
+		if (room)
+			room->DoAsync(&Room::HandleLeaveGame, objectId);
+		ObjectManager::Instance().Remove(objectId);
+	}
+	
 	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }
 
