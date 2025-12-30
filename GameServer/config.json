@@ -1,4 +1,5 @@
 {
     "dataPath": "../Common/Data/",
-    "encryptionEnabled": false
+    "encryptionEnabled": true,
+    "encryptionKey": "NamoServerKey123"
 }
