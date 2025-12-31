@@ -2,6 +2,7 @@
 #include "Session.h"
 #include "SocketUtils.h"
 #include "Service.h"
+#include "AESCrypto.h"
 
 /*--------------
 	Session
