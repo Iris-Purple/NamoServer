@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "ClientPacketHandler.h"
 #include "GameSession.h"
 #include "BufferReader.h"
@@ -55,9 +55,9 @@ bool Handle_S2C_SKILL(GameSessionRef& session, Protocol::S2C_SKILL& pkt)
 	return true;
 }
 
-bool Handle_S2C_CHANGE_HP(PacketSessionRef& session, Protocol::S2C_CHANGE_HP& pkt)
+bool Handle_S2C_CHANGE_HP(GameSessionRef& session, Protocol::S2C_CHANGE_HP& pkt)
 {
-	return true;
+	return true; 
 }
 bool Handle_S2C_DIE(GameSessionRef& session, Protocol::S2C_DIE& pkt)
 {

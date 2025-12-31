@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "GameSession.h"
 #include <random>
 #include <mutex>
@@ -13,7 +13,7 @@ uniform_int_distribution<> g_delayDist(500, 2000); // 0.5초 ~ 2초
 mutex g_sessionLock;
 set<PacketSessionRef> g_activeSessions;
 
-// 세션 관리 함수
+// 세션 관리 함수 
 void AddActiveSession(PacketSessionRef session)
 {
 	lock_guard<mutex> lock(g_sessionLock);

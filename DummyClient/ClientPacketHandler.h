@@ -26,15 +26,15 @@ enum : uint16
 
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
-bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& pkt);
-bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt);
-bool Handle_S2C_PING(PacketSessionRef& session, Protocol::S2C_PING& pkt);
-bool Handle_S2C_SPAWN(PacketSessionRef& session, Protocol::S2C_SPAWN& pkt);
-bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt);
-bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt);
-bool Handle_S2C_SKILL(PacketSessionRef& session, Protocol::S2C_SKILL& pkt);
-bool Handle_S2C_CHANGE_HP(PacketSessionRef& session, Protocol::S2C_CHANGE_HP& pkt);
-bool Handle_S2C_DIE(PacketSessionRef& session, Protocol::S2C_DIE& pkt);
+bool Handle_S2C_ENTER_GAME(GameSessionRef& session, Protocol::S2C_ENTER_GAME& pkt);
+bool Handle_S2C_LEAVE_GAME(GameSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt);
+bool Handle_S2C_PING(GameSessionRef& session, Protocol::S2C_PING& pkt);
+bool Handle_S2C_SPAWN(GameSessionRef& session, Protocol::S2C_SPAWN& pkt);
+bool Handle_S2C_DESPAWN(GameSessionRef& session, Protocol::S2C_DESPAWN& pkt);
+bool Handle_S2C_MOVE(GameSessionRef& session, Protocol::S2C_MOVE& pkt);
+bool Handle_S2C_SKILL(GameSessionRef& session, Protocol::S2C_SKILL& pkt);
+bool Handle_S2C_CHANGE_HP(GameSessionRef& session, Protocol::S2C_CHANGE_HP& pkt);
+bool Handle_S2C_DIE(GameSessionRef& session, Protocol::S2C_DIE& pkt);
 
 class ClientPacketHandler
 {
@@ -72,7 +72,8 @@ private:
 		if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
 			return false;
 
-		return func(session, pkt);
+		GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+		return func(gameSession, pkt);
 	}
 
 	template<typename T>
