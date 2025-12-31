@@ -1,18 +1,17 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "ClientPacketHandler.h"
+#include "GameSession.h"
 #include "BufferReader.h"
+#include "GameSession.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
-
-// DummyClient.cpp에서 정의된 함수
-extern void AddActiveSession(PacketSessionRef session);
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	return false;
 }
 
-bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& pkt)
+bool Handle_S2C_ENTER_GAME(GameSessionRef& session, Protocol::S2C_ENTER_GAME& pkt)
 {
 	//cout << "client recv S2C_ENTER_GAME" << endl;
 
@@ -21,7 +20,7 @@ bool Handle_S2C_ENTER_GAME(PacketSessionRef& session, Protocol::S2C_ENTER_GAME& 
 
 	return true;
 }
-bool Handle_S2C_PING(PacketSessionRef& session, Protocol::S2C_PING& pkt)
+bool Handle_S2C_PING(GameSessionRef& session, Protocol::S2C_PING& pkt)
 {
 	Protocol::C2S_PONG pong;
 	pong.set_timestamp(pkt.timestamp());
@@ -30,37 +29,37 @@ bool Handle_S2C_PING(PacketSessionRef& session, Protocol::S2C_PING& pkt)
 	session->Send(sendBuffer);
 	return true;
 }
-bool Handle_S2C_LEAVE_GAME(PacketSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt)
+bool Handle_S2C_LEAVE_GAME(GameSessionRef& session, Protocol::S2C_LEAVE_GAME& pkt)
 {
 	return true;
 }
 
-bool Handle_S2C_SPAWN(PacketSessionRef& session, Protocol::S2C_SPAWN& pkt)
+bool Handle_S2C_SPAWN(GameSessionRef& session, Protocol::S2C_SPAWN& pkt)
 {
 	//cout << "client recv S2C_SPAWN" << endl;
 	return true;
 }
 
-bool Handle_S2C_DESPAWN(PacketSessionRef& session, Protocol::S2C_DESPAWN& pkt)
+bool Handle_S2C_DESPAWN(GameSessionRef& session, Protocol::S2C_DESPAWN& pkt)
 {
 	return true;
 }
 
-bool Handle_S2C_MOVE(PacketSessionRef& session, Protocol::S2C_MOVE& pkt)
+bool Handle_S2C_MOVE(GameSessionRef& session, Protocol::S2C_MOVE& pkt)
 {
 	return true;
 }
 
-bool Handle_S2C_SKILL(PacketSessionRef& session, Protocol::S2C_SKILL& pkt)
+bool Handle_S2C_SKILL(GameSessionRef& session, Protocol::S2C_SKILL& pkt)
 {
 	return true;
 }
 
-bool Handle_S2C_CHANGE_HP(PacketSessionRef& session, Protocol::S2C_CHANGE_HP& pkt)\
+bool Handle_S2C_CHANGE_HP(PacketSessionRef& session, Protocol::S2C_CHANGE_HP& pkt)
 {
 	return true;
 }
-bool Handle_S2C_DIE(PacketSessionRef& session, Protocol::S2C_DIE& pkt)
+bool Handle_S2C_DIE(GameSessionRef& session, Protocol::S2C_DIE& pkt)
 {
 	return true;
 }

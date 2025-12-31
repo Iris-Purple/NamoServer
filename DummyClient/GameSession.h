@@ -2,10 +2,14 @@
 #include "Session.h"
 #include "ClientPacketHandler.h"
 
-// 외부 전역 변수 (DummyClient.cpp에서 정의)
+// 외부 전역 변수 (GameSession.cpp에서 정의)
 extern std::random_device g_rd;
 extern std::mt19937 g_gen;
 extern std::uniform_int_distribution<> g_delayDist;
+
+// 세션 관리 (GameSession.cpp에서 정의)
+extern std::mutex g_sessionLock;
+extern std::set<PacketSessionRef> g_activeSessions;
 
 // 세션 관리 함수
 void AddActiveSession(PacketSessionRef session);

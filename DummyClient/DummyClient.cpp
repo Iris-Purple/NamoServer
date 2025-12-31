@@ -1,38 +1,8 @@
 ﻿#include "pch.h"
 #include <iostream>
-#include <random>
-#include <mutex>
-#include <set>
 #include "ThreadManager.h"
 #include "Service.h"
-#include "Session.h"
 #include "GameSession.h"
-
-// 활성 세션 관리
-mutex g_sessionLock;
-set<PacketSessionRef> g_activeSessions;
-
-// 랜덤 딜레이 생성기
-random_device g_rd;
-mt19937 g_gen(g_rd());
-uniform_int_distribution<> g_delayDist(500, 2000); // 0.5초 ~ 2초
-
-// 세션 관리 함수
-void AddActiveSession(PacketSessionRef session)
-{
-	lock_guard<mutex> lock(g_sessionLock);
-	g_activeSessions.insert(session);
-
-	// 초기 딜레이 설정
-	auto gameSession = static_pointer_cast<GameSession>(session);
-	gameSession->ResetDelay();
-}
-
-void RemoveActiveSession(PacketSessionRef session)
-{
-	lock_guard<mutex> lock(g_sessionLock);
-	g_activeSessions.erase(session);
-}
 
 // 부하테스트 설정
 const int32 CLIENT_COUNT = 1;		// 총 클라이언트 수

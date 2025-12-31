@@ -1,6 +1,34 @@
 #include "pch.h"
 #include "GameSession.h"
 #include <random>
+#include <mutex>
+#include <set>
+
+// 랜덤 딜레이 생성기
+random_device g_rd;
+mt19937 g_gen(g_rd());
+uniform_int_distribution<> g_delayDist(500, 2000); // 0.5초 ~ 2초
+
+// 활성 세션 관리
+mutex g_sessionLock;
+set<PacketSessionRef> g_activeSessions;
+
+// 세션 관리 함수
+void AddActiveSession(PacketSessionRef session)
+{
+	lock_guard<mutex> lock(g_sessionLock);
+	g_activeSessions.insert(session);
+
+	// 초기 딜레이 설정
+	auto gameSession = static_pointer_cast<GameSession>(session);
+	gameSession->ResetDelay();
+}
+
+void RemoveActiveSession(PacketSessionRef session)
+{
+	lock_guard<mutex> lock(g_sessionLock);
+	g_activeSessions.erase(session);
+}
 
 GameSession::~GameSession()
 {
