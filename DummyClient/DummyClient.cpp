@@ -13,7 +13,7 @@ const int32 WORKER_THREAD_COUNT = 5;	// IOCP 워커 스레드 수
 int main()
 {
 	// 서버와 동일한 설정 필요 (config.json 값과 일치해야 함)
-	GEncryptionEnabled = false;   // 암호화 ON/OFF
+	GEncryptionEnabled = true;   // 암호화 ON/OFF
 
 	ClientPacketHandler::Init();
 
