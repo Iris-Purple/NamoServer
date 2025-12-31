@@ -22,15 +22,15 @@ uniform_int_distribution<> g_delayDist(500, 2000); // 0.5초 ~ 2초
 // 전방 선언
 void RemoveActiveSession(PacketSessionRef session);
 
-class ServerSession : public PacketSession
+class GameSession : public PacketSession
 {
 private:
 	bool isAttack = false;
 
 public:
-	~ServerSession()
+	~GameSession()
 	{
-		//cout << "~ServerSession" << endl;
+		//cout << "~GameSession" << endl;
 	}
 
 	virtual void OnConnected() override
@@ -140,14 +140,14 @@ public:
 	}
 };
 
-// 세션 관리 함수 (ServerSession 클래스 정의 이후)
+// 세션 관리 함수 (GameSession 클래스 정의 이후)
 void AddActiveSession(PacketSessionRef session)
 {
 	lock_guard<mutex> lock(g_sessionLock);
 	g_activeSessions.insert(session);
 
 	// 초기 딜레이 설정
-	auto serverSession = static_pointer_cast<ServerSession>(session);
+	auto serverSession = static_pointer_cast<GameSession>(session);
 	serverSession->ResetDelay();
 }
 
@@ -175,7 +175,7 @@ int main()
 	ClientServiceRef service = make_shared<ClientService>(
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
-		[=]() { return make_shared<ServerSession>(); },
+		[=]() { return make_shared<GameSession>(); },
 		CLIENT_COUNT);
 
 	// IOCP Core 등록만 (Start 호출 안함)
@@ -229,7 +229,7 @@ int main()
 			lock_guard<mutex> lock(g_sessionLock);
 			for (auto& session : g_activeSessions)
 			{
-				auto serverSession = static_pointer_cast<ServerSession>(session);
+				auto serverSession = static_pointer_cast<GameSession>(session);
 				if (serverSession->IsTimeToSend())
 				{
 					serverSession->SendMoveOrAttack();
