@@ -1,7 +1,8 @@
 #pragma once
 #include "Protocol/Protocol.pb.h"
 
-class GameSession;
+class ServerSession;
+using GameSession = ServerSession;
 using GameSessionRef = std::shared_ptr<GameSession>;
 
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
