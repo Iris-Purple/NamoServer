@@ -20,8 +20,6 @@ mt19937 g_gen(g_rd());
 uniform_int_distribution<> g_delayDist(500, 2000); // 0.5초 ~ 2초
 
 // 전방 선언
-class ServerSession;
-using GameSession = ServerSession;  // ClientPacketHandler에서 GameSession 사용
 void RemoveActiveSession(PacketSessionRef session);
 
 class ServerSession : public PacketSession
