@@ -321,7 +321,7 @@ SendBufferRef Session::EncryptBuffer(SendBufferRef sendBuffer)
 		return sendBuffer;
 
 	// 원본: [size(2)][id(2)][data...]
-	// 암호화: [size(2)][encrypted(id+data)...]
+	// 암호화+HMAC: [size(2)][encrypted(id+data)][HMAC(32)]
 	int32 plainSize = sendBuffer->WriteSize();
 	if (plainSize < sizeof(uint16))
 		return sendBuffer;
@@ -330,8 +330,8 @@ SendBufferRef Session::EncryptBuffer(SendBufferRef sendBuffer)
 	int32 payloadSize = plainSize - sizeof(uint16);
 	int32 encryptedPayloadSize = AESCrypto::GetEncryptedSize(payloadSize);
 
-	// 새 버퍼 생성: [size(2)][encrypted(id+data)]
-	int32 totalSize = sizeof(uint16) + encryptedPayloadSize;
+	// 새 버퍼 생성: [size(2)][encrypted(id+data)][HMAC(32)]
+	int32 totalSize = sizeof(uint16) + encryptedPayloadSize + HMAC_SIZE;
 	SendBufferRef encryptedBuffer = make_shared<SendBuffer>(totalSize);
 
 	BYTE* bufferPtr = encryptedBuffer->Buffer();
@@ -353,7 +353,17 @@ SendBufferRef Session::EncryptBuffer(SendBufferRef sendBuffer)
 		return nullptr;
 	}
 
-	encryptedBuffer->Close(sizeof(uint16) + resultLen);
+	// HMAC 계산 (암호화된 데이터에 대해)
+	BYTE* encryptedData = bufferPtr + sizeof(uint16);
+	BYTE* hmacPos = bufferPtr + sizeof(uint16) + resultLen;
+
+	if (!_crypto->ComputeHMAC(encryptedData, resultLen, hmacPos))
+	{
+		cout << "HMAC computation failed" << endl;
+		return nullptr;
+	}
+
+	encryptedBuffer->Close(sizeof(uint16) + resultLen + HMAC_SIZE);
 	return encryptedBuffer;
 }
 
@@ -370,7 +380,7 @@ PacketSession::~PacketSession()
 }
 
 // 평문:   [size(2)][id(2)][data....]
-// 암호화: [size(2)][encrypted(id+data)...]
+// 암호화+HMAC: [size(2)][encrypted(id+data)][HMAC(32)]
 int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 {
 	int32 processLen = 0;
@@ -393,13 +403,31 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		BYTE* packetData = &buffer[processLen];
 		int32 packetLen = packetSize;
 
-		// 암호화 ON -> id+data 복호화
+		// 암호화 ON -> HMAC 검증 + 복호화
 		if (GEncryptionEnabled && _crypto)
 		{
-			int32 encryptedPayloadSize = packetSize - sizeof(uint16);
+			// 패킷 구조: [size(2)][encrypted][HMAC(32)]
+			int32 encryptedPayloadSize = packetSize - sizeof(uint16) - HMAC_SIZE;
 
+			if (encryptedPayloadSize <= 0)
+			{
+				cout << "Invalid packet size for HMAC" << endl;
+				return -1;
+			}
+
+			BYTE* encryptedData = &buffer[processLen + sizeof(uint16)];
+			BYTE* receivedHmac = &buffer[processLen + sizeof(uint16) + encryptedPayloadSize];
+
+			// HMAC 검증 (실패 시 패킷 폐기)
+			if (!_crypto->VerifyHMAC(encryptedData, encryptedPayloadSize, receivedHmac))
+			{
+				cout << "HMAC verification failed - packet tampered!" << endl;
+				return -1;
+			}
+
+			// 복호화 진행
 			int32 decryptedLen = _crypto->Decrypt(
-				&buffer[processLen + sizeof(uint16)],
+				encryptedData,
 				encryptedPayloadSize,
 				_decryptBuffer + sizeof(uint16),
 				sizeof(_decryptBuffer) - sizeof(uint16)
