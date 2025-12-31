@@ -60,6 +60,22 @@ bool AESCrypto::Init(const BYTE* key, int32 keyLen)
 	// IV 설정 (키를 IV로 사용 - 서버/클라이언트 동일하게 설정 필요)
 	memcpy(_ivBackup, key, 16);
 
+	// HMAC 키 저장 (AES 키와 동일하게 사용)
+	memcpy(_hmacKey, key, 16);
+
+	// HMAC-SHA256 알고리즘 열기
+	status = BCryptOpenAlgorithmProvider(
+		&_hHmacAlgorithm,
+		BCRYPT_SHA256_ALGORITHM,
+		nullptr,
+		BCRYPT_ALG_HANDLE_HMAC_FLAG
+	);
+	if (status != 0)
+	{
+		Cleanup();
+		return false;
+	}
+
 	_initialized = true;
 	return true;
 }
@@ -80,6 +96,11 @@ void AESCrypto::Cleanup()
 	{
 		delete[] _keyObject;
 		_keyObject = nullptr;
+	}
+	if (_hHmacAlgorithm)
+	{
+		BCryptCloseAlgorithmProvider(_hHmacAlgorithm, 0);
+		_hHmacAlgorithm = nullptr;
 	}
 	_initialized = false;
 }
@@ -140,6 +161,82 @@ int32 AESCrypto::Decrypt(const BYTE* input, int32 inputLen, BYTE* output, int32 
 int32 AESCrypto::GetEncryptedSize(int32 plainSize)
 {
 	// PKCS7 패딩: 16바이트 블록 단위로 올림
-	// 정확히 16의 배수인 경우에도 16바이트 패딩 추가 
+	// 정확히 16의 배수인 경우에도 16바이트 패딩 추가
 	return ((plainSize / 16) + 1) * 16;
+}
+
+bool AESCrypto::ComputeHMAC(const BYTE* data, int32 dataLen, BYTE* outHmac)
+{
+	if (!_initialized || data == nullptr || dataLen <= 0 || outHmac == nullptr)
+		return false;
+
+	// HMAC 해시 객체 크기 조회
+	DWORD hashObjectSize = 0;
+	DWORD dataSize = 0;
+	NTSTATUS status = BCryptGetProperty(
+		_hHmacAlgorithm,
+		BCRYPT_OBJECT_LENGTH,
+		(PBYTE)&hashObjectSize,
+		sizeof(DWORD),
+		&dataSize,
+		0
+	);
+	if (status != 0)
+		return false;
+
+	// 해시 객체 메모리 할당
+	PBYTE hashObject = new BYTE[hashObjectSize];
+
+	// HMAC 해시 핸들 생성
+	BCRYPT_HASH_HANDLE hHash = nullptr;
+	status = BCryptCreateHash(
+		_hHmacAlgorithm,
+		&hHash,
+		hashObject,
+		hashObjectSize,
+		(PBYTE)_hmacKey,
+		16,
+		0
+	);
+	if (status != 0)
+	{
+		delete[] hashObject;
+		return false;
+	}
+
+	// 데이터 해시
+	status = BCryptHashData(hHash, (PBYTE)data, dataLen, 0);
+	if (status != 0)
+	{
+		BCryptDestroyHash(hHash);
+		delete[] hashObject;
+		return false;
+	}
+
+	// HMAC 결과 추출 (32바이트)
+	status = BCryptFinishHash(hHash, outHmac, HMAC_SIZE, 0);
+
+	BCryptDestroyHash(hHash);
+	delete[] hashObject;
+
+	return (status == 0);
+}
+
+bool AESCrypto::VerifyHMAC(const BYTE* data, int32 dataLen, const BYTE* expectedHmac)
+{
+	if (expectedHmac == nullptr)
+		return false;
+
+	BYTE calculatedHmac[HMAC_SIZE];
+	if (!ComputeHMAC(data, dataLen, calculatedHmac))
+		return false;
+
+	// 상수 시간 비교 (타이밍 공격 방지)
+	int32 diff = 0;
+	for (int32 i = 0; i < HMAC_SIZE; i++)
+	{
+		diff |= (calculatedHmac[i] ^ expectedHmac[i]);
+	}
+
+	return (diff == 0);
 }
