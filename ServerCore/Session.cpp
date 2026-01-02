@@ -404,6 +404,13 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		// size 읽기 (공통)
 		uint16 packetSize = *(reinterpret_cast<uint16*>(&buffer[processLen]));
 
+		// 기본 크기 검증 (암호화 처리 전에)
+		if (packetSize < sizeof(PacketHeader))
+		{
+			cout << "Invalid packet size: " << packetSize << endl;
+			return -1;
+		}
+
 		// 전체 패킷 수신 대기
 		if (dataSize < packetSize)
 			break;
