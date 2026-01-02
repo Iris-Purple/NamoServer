@@ -8,6 +8,11 @@
 class Service;
 
 /*--------------
+	PacketFlags
+---------------*/
+constexpr uint8 PKT_FLAG_HAS_SEQUENCE = 0x01;
+
+/*--------------
 	Session
 ---------------*/
 
@@ -79,6 +84,9 @@ protected:
 	/* 암호화 */
 	AESCrypto*			_crypto = nullptr;
 
+	/* Sequence (리플레이 공격 방지) */
+	uint32				_sendSeq = 0;
+
 public:
 	void				InitEncryption(const BYTE* key, int32 keyLen);
 	SendBufferRef		EncryptBuffer(SendBufferRef sendBuffer);
@@ -107,6 +115,8 @@ struct PacketHeader
 {
 	uint16 size;
 	uint16 id;
+	uint8  flags;
+	uint32 sequence;
 };
 
 class PacketSession : public Session
@@ -120,6 +130,10 @@ public:
 protected:
 	virtual int32		OnRecv(BYTE* buffer, int32 len) sealed;
 	virtual void		OnRecvPacket(BYTE* buffer, int32 len) abstract;
+
+protected:
+	// Sequence 카운터 (리플레이 공격 방지)
+	uint32				_recvSeq = 0;
 
 private:
 	// 복호화용 버퍼 (최대 패킷 크기)

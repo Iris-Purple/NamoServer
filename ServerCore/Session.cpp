@@ -29,6 +29,16 @@ void Session::Send(SendBufferRef sendBuffer)
 	if (IsConnected() == false)
 		return;
 
+	// Sequence 설정 (암호화 전에)
+	if (sendBuffer->WriteSize() >= sizeof(PacketHeader))
+	{
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
+		if (header->flags & PKT_FLAG_HAS_SEQUENCE)
+		{
+			header->sequence = ++_sendSeq;
+		}
+	}
+
 	// 암호화 ON이고 crypto 초기화됨
 	if (GEncryptionEnabled && _crypto)
 	{
@@ -449,6 +459,22 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		// 패킷 처리 (공통)
 		if (packetLen >= sizeof(PacketHeader))
 		{
+			PacketHeader* header = reinterpret_cast<PacketHeader*>(packetData);
+
+			// Sequence 검증 (HAS_SEQUENCE 플래그가 있을 때만)
+			if (header->flags & PKT_FLAG_HAS_SEQUENCE)
+			{
+				if (header->sequence <= _recvSeq)
+				{
+					// 리플레이 공격 감지 → 패킷 폐기
+					cout << "Replay attack detected: seq=" << header->sequence
+						 << ", lastSeq=" << _recvSeq << endl;
+					processLen += packetSize;
+					continue;
+				}
+				_recvSeq = header->sequence;
+			}
+
 			OnRecvPacket(packetData, packetLen);
 		}
 
