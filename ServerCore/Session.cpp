@@ -387,6 +387,11 @@ PacketSession::~PacketSession()
 {
 }
 
+void PacketSession::CacheResponse(SendBufferRef response)
+{
+	_lastResponse = response;
+}
+
 // 평문:       [size(2)][id(2)][flags(1)][seq(4)][data...]
 // 암호화+HMAC: [size(2)][encrypted(id+flags+seq+data)][HMAC(32)]
 int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
@@ -478,13 +483,21 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		// Sequence 검증 (HAS_SEQUENCE 플래그가 있을 때만)
 		if (header->flags & PKT_FLAG_HAS_SEQUENCE)
 		{
-			if (header->sequence <= _recvSeq)
+			if (header->sequence == _recvSeq)
 			{
-				// 리플레이 공격 감지
-				cout << "Replay attack detected: seq=" << header->sequence
-					 << ", lastSeq=" << _recvSeq << endl;
-				return -1;
+				// 동일 seq → 캐시된 응답 재전송
+				if (_lastResponse)
+					Send(_lastResponse);
+				processLen += packetSize;
+				continue;
 			}
+			else if (header->sequence < _recvSeq)
+			{
+				// 오래된 seq → 무시
+				processLen += packetSize;
+				continue;
+			}
+
 			_recvSeq = header->sequence;
 		}
 
