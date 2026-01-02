@@ -14,6 +14,17 @@ enum : uint16
 {%- endfor %}
 };
 
+inline bool NeedsSequence(uint16 packetId)
+{
+	switch (packetId)
+	{
+	case PKT_C2S_SKILL:
+		return true;
+	default:
+		return false;
+	}
+}
+
 // Custom Handlers
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
 
@@ -67,6 +78,8 @@ private:
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 		header->size = packetSize;
 		header->id = pktId;
+		header->flags = NeedsSequence(pktId) ? PKT_FLAG_HAS_SEQUENCE : 0;
+		header->sequence = 0;  // Send()에서 설정
 		pkt.SerializeToArray(&header[1], dataSize);
 		sendBuffer->Close(packetSize);
 

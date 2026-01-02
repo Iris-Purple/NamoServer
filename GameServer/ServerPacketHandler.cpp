@@ -43,7 +43,6 @@ bool Handle_C2S_PONG(GameSessionRef& session, Protocol::C2S_PONG& pkt)
 
 bool Handle_C2S_MOVE(GameSessionRef& session, Protocol::C2S_MOVE& pkt)
 {
-	cout << "C2S_MOVE.... " << endl;
 	PlayerRef myPlayer = session->myPlayer.load();
 	if (myPlayer == nullptr)
 		return false;
@@ -58,6 +57,7 @@ bool Handle_C2S_MOVE(GameSessionRef& session, Protocol::C2S_MOVE& pkt)
 
 bool Handle_C2S_SKILL(GameSessionRef& session, Protocol::C2S_SKILL& pkt)
 {
+	cout << "C2S_SKILL...." << endl;
 	PlayerRef myPlayer = session->myPlayer.load();
 	if (myPlayer == nullptr)
 		return false;

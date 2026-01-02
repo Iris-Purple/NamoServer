@@ -24,7 +24,6 @@ enum : uint16
 	PKT_S2C_DIE = 2007,
 };
 
-// Sequence 검증이 필요한 패킷 여부 (리플레이 공격 방지)
 inline bool NeedsSequence(uint16 packetId)
 {
 	switch (packetId)
@@ -100,7 +99,7 @@ private:
 		header->size = packetSize;
 		header->id = pktId;
 		header->flags = NeedsSequence(pktId) ? PKT_FLAG_HAS_SEQUENCE : 0;
-		header->sequence = 0;  // Send()에서 설정
+		header->sequence = 0;  // Send()���� ����
 		pkt.SerializeToArray(&header[1], dataSize);
 		sendBuffer->Close(packetSize);
 
