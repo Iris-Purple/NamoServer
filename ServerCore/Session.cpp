@@ -490,6 +490,8 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 			else if (header->sequence < _recvSeq)
 			{
 				// 오래된 seq → 리플레이 공격
+				cout << "Replay attack detected: seq=" << header->sequence
+					<< ", lastSeq=" << _recvSeq << endl;
 				return -1;
 			}
 
