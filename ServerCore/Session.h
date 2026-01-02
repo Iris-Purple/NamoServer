@@ -88,7 +88,6 @@ protected:
 	uint32				_sendSeq = 0;
 
 	/* 응답 캐시 (재전송용) */
-	bool				_cacheNextResponse = false;
 	SendBufferRef		_lastResponse = nullptr;
 
 public:

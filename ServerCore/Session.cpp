@@ -29,17 +29,11 @@ void Session::Send(SendBufferRef sendBuffer)
 	if (IsConnected() == false)
 		return;
 
-	// 응답 캐시 (재전송용)
-	if (_cacheNextResponse)
-	{
-		_lastResponse = sendBuffer;
-		_cacheNextResponse = false;
-	}
-
 	// Sequence 설정 (암호화 전에)
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 	if (header->flags & PKT_FLAG_HAS_SEQUENCE)
 	{
+		_lastResponse = sendBuffer;  // 시퀀스 패킷만 캐시
 		header->sequence = ++_sendSeq;
 	}
 
@@ -500,7 +494,6 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 			}
 
 			_recvSeq = header->sequence;
-			_cacheNextResponse = true;  // 다음 Send를 캐시
 		}
 
 		OnRecvPacket(packetData, packetLen);
