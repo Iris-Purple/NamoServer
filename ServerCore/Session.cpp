@@ -460,6 +460,14 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 
 			// 복호화된 크기로 size 설정
 			packetLen = sizeof(uint16) + decryptedLen;
+
+			// 복호화된 패킷도 최소 PacketHeader 크기 이상이어야 함
+			if (packetLen < sizeof(PacketHeader))
+			{
+				cout << "Decrypted packet too small: " << packetLen << endl;
+				return -1;
+			}
+
 			*(reinterpret_cast<uint16*>(_decryptBuffer)) = static_cast<uint16>(packetLen);
 			packetData = _decryptBuffer;
 		}
