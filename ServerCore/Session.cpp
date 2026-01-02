@@ -387,8 +387,8 @@ PacketSession::~PacketSession()
 {
 }
 
-// 평문:   [size(2)][id(2)][data....]
-// 암호화+HMAC: [size(2)][encrypted(id+data)][HMAC(32)]
+// 평문:       [size(2)][id(2)][flags(1)][seq(4)][data...]
+// 암호화+HMAC: [size(2)][encrypted(id+flags+seq+data)][HMAC(32)]
 int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 {
 	int32 processLen = 0;
@@ -404,8 +404,12 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 		// size 읽기 (공통)
 		uint16 packetSize = *(reinterpret_cast<uint16*>(&buffer[processLen]));
 
-		// 기본 크기 검증 (암호화 처리 전에)
-		if (packetSize < sizeof(PacketHeader))
+		// 최소 크기 검증 (암호화 여부에 따라 다름)
+		int32 minSize = GEncryptionEnabled
+			? (sizeof(uint16) + 16 + HMAC_SIZE)  // size + AES블록(16) + HMAC
+			: sizeof(PacketHeader);               // 평문 헤더
+
+		if (packetSize < minSize)
 		{
 			cout << "Invalid packet size: " << packetSize << endl;
 			return -1;
@@ -460,26 +464,23 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 			packetData = _decryptBuffer;
 		}
 
-		// 패킷 처리 (공통)
-		if (packetLen >= sizeof(PacketHeader))
+		// 패킷 처리
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(packetData);
+
+		// Sequence 검증 (HAS_SEQUENCE 플래그가 있을 때만)
+		if (header->flags & PKT_FLAG_HAS_SEQUENCE)
 		{
-			PacketHeader* header = reinterpret_cast<PacketHeader*>(packetData);
-
-			// Sequence 검증 (HAS_SEQUENCE 플래그가 있을 때만)
-			if (header->flags & PKT_FLAG_HAS_SEQUENCE)
+			if (header->sequence <= _recvSeq)
 			{
-				if (header->sequence <= _recvSeq)
-				{
-					// 리플레이 공격 감지 → 패킷 폐기
-					cout << "Replay attack detected: seq=" << header->sequence
-						 << ", lastSeq=" << _recvSeq << endl;
-					return -1;
-				}
-				_recvSeq = header->sequence;
+				// 리플레이 공격 감지
+				cout << "Replay attack detected: seq=" << header->sequence
+					 << ", lastSeq=" << _recvSeq << endl;
+				return -1;
 			}
-
-			OnRecvPacket(packetData, packetLen);
+			_recvSeq = header->sequence;
 		}
+
+		OnRecvPacket(packetData, packetLen);
 
 		processLen += packetSize;
 	}
