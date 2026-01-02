@@ -29,6 +29,13 @@ void Session::Send(SendBufferRef sendBuffer)
 	if (IsConnected() == false)
 		return;
 
+	// 응답 캐시 (재전송용)
+	if (_cacheNextResponse)
+	{
+		_lastResponse = sendBuffer;
+		_cacheNextResponse = false;
+	}
+
 	// Sequence 설정 (암호화 전에)
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
 	if (header->flags & PKT_FLAG_HAS_SEQUENCE)
@@ -387,11 +394,6 @@ PacketSession::~PacketSession()
 {
 }
 
-void PacketSession::CacheResponse(SendBufferRef response)
-{
-	_lastResponse = response;
-}
-
 // 평문:       [size(2)][id(2)][flags(1)][seq(4)][data...]
 // 암호화+HMAC: [size(2)][encrypted(id+flags+seq+data)][HMAC(32)]
 int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
@@ -493,12 +495,12 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 			}
 			else if (header->sequence < _recvSeq)
 			{
-				// 오래된 seq → 무시
-				processLen += packetSize;
-				continue;
+				// 오래된 seq → 리플레이 공격
+				return -1;
 			}
 
 			_recvSeq = header->sequence;
+			_cacheNextResponse = true;  // 다음 Send를 캐시
 		}
 
 		OnRecvPacket(packetData, packetLen);

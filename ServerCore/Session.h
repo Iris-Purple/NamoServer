@@ -87,6 +87,10 @@ protected:
 	/* Sequence (리플레이 공격 방지) */
 	uint32				_sendSeq = 0;
 
+	/* 응답 캐시 (재전송용) */
+	bool				_cacheNextResponse = false;
+	SendBufferRef		_lastResponse = nullptr;
+
 public:
 	void				InitEncryption(const BYTE* key, int32 keyLen);
 	SendBufferRef		EncryptBuffer(SendBufferRef sendBuffer);
@@ -133,15 +137,9 @@ protected:
 	virtual int32		OnRecv(BYTE* buffer, int32 len) sealed;
 	virtual void		OnRecvPacket(BYTE* buffer, int32 len) abstract;
 
-	// 시퀀스 패킷에 대한 응답 캐시 저장
-	void				CacheResponse(SendBufferRef response);
-
 protected:
 	// Sequence 카운터 (리플레이 공격 방지)
 	uint32				_recvSeq = 0;
-
-	// 마지막 응답 캐시 (재전송용)
-	SendBufferRef		_lastResponse = nullptr;
 
 private:
 	// 복호화용 버퍼 (최대 패킷 크기)
