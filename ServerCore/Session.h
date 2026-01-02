@@ -110,7 +110,7 @@ private:
 /*-----------------
 	PacketSession
 ------------------*/
-
+#pragma pack(push, 1)
 struct PacketHeader
 {
 	uint16 size;
@@ -118,6 +118,8 @@ struct PacketHeader
 	uint8  flags;
 	uint32 sequence;
 };
+#pragma pack(pop)
+
 
 class PacketSession : public Session
 {
