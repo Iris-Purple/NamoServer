@@ -10,6 +10,8 @@ using json = nlohmann::json;
 		string dataPath;
 		bool encryptionEnabled = false;  // 패킷 암호화 ON/OFF
 		string encryptionKey;            // AES-128 키 (16바이트 문자열)
+		int roomCount;					 // 방 갯수
+		int monsterCount;				 // 몬스터 갯수
 	};
 
 	inline void from_json(const json& j, ServerConfig& config)
@@ -23,6 +25,12 @@ using json = nlohmann::json;
 		// encryptionKey는 선택적 (없으면 CoreGlobal 기본값 사용)
 		if (j.contains("encryptionKey"))
 			j.at("encryptionKey").get_to(config.encryptionKey);
+
+		if (j.contains("roomCount"))
+			j.at("roomCount").get_to(config.roomCount);
+		if (j.contains("monsterCount"))
+			j.at("monsterCount").get_to(config.monsterCount);
+
 	} 
 
 	class ConfigManager
@@ -35,9 +43,12 @@ using json = nlohmann::json;
 		}
 
 		void LoadConfig(const string& path = "config.json");
+
 		const string& GetDataPath() const { return _config.dataPath; }
 		bool GetEncryptionEnabled() const { return _config.encryptionEnabled; }
 		const string& GetEncryptionKey() const { return _config.encryptionKey; }
+		const int& GetRoomCount() const { return _config.roomCount; }
+		const int& GetMonsterCount() const { return _config.monsterCount; }
 
 	private:
 		ConfigManager() = default;

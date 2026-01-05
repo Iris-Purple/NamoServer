@@ -12,7 +12,6 @@ RoomRef RoomManager::Add(int mapId)
 	WRITE_LOCK;
 	_rooms.emplace(_roomId, room);
 	_roomId++;
-	cout << "RoomManager  Add() called" << endl;
 	return room;
 }
 

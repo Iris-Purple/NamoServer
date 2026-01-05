@@ -7,14 +7,20 @@
 #include "Arrow.h"
 #include "DataManager.h"
 #include "Monster.h"
+#include "ConfigManager.h"
 
-Room::Room(int32 roomId) : _roomId(roomId) { }
+Room::Room(int32 roomId) : _roomId(roomId) 
+{ 
+	_monsterCount = ConfigManager::Instance().GetMonsterCount();
+}
 
 Room::~Room() {	}
 
 void Room::Init(int mapId)
 {
-	_map.LoadMap(mapId);
+	// TODO 현재 map 은 하나만 존재
+	//_map.LoadMap(mapId);
+	_map.LoadMap(1);
 
 	for (int i = 1; i <= _monsterCount; i++)
 	{

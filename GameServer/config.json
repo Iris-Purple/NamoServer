@@ -1,5 +1,7 @@
 {
     "dataPath": "../Common/Data/",
     "encryptionEnabled": true,
-    "encryptionKey": "NamoServerKey123"
+    "encryptionKey": "NamoServerKey123",
+	"roomCount": 5,
+	"monsterCount": 3
 }

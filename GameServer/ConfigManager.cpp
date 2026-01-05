@@ -41,4 +41,7 @@
             cout << "  - encryptionKey: (loaded from config)" << endl;
         else
             cout << "  - encryptionKey: (invalid length, using default)" << endl;
+
+        cout << "  - roomCount: " << _config.roomCount << endl;
+        cout << "  - monsterCount: " << _config.monsterCount << endl;
     }

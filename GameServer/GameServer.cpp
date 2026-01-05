@@ -42,7 +42,11 @@ int main()
 	const string& configPath = ConfigManager::Instance().GetDataPath();
 	DataManager::Instance().Init(configPath);
 
-	RoomManager::Instance().Add(1);
+	const int roomCount = ConfigManager::Instance().GetRoomCount();
+	for (int i = 0; i < roomCount; i++)
+	{
+		RoomManager::Instance().Add(i);
+	}
 
 	ServerPacketHandler::Init();
 
