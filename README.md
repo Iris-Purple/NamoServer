@@ -4,18 +4,9 @@ C++ 기반 게임 서버 프로젝트입니다.
 
 ## 게임서버에 필요한 기술
 
-게임 서버 개발에 필요한 핵심 기술 문서입니다.
+C++ 게임서버에 필요한 기술을 정리하였습니다.
 
-| 순서 | 주제 | 문서 |
-|:----:|------|------|
-| 1 | 네트워크 기초 | [Network](Document/01_Network.md) |
-| 2 | IOCP | [IOCP](Document/02_IOCP.md) |
-| 3 | 멀티스레딩 | [MultiThreading](Document/03_MultiThreading.md) |
-| 4 | Lock & 동기화 | [Lock](Document/04_Lock.md) |
-| 5 | 메모리 관리 | [MemoryManagement](Document/05_MemoryManagement.md) |
-| 6 | 데드락 | [DeadLock](Document/06_DeadLock.md) |
-| 7 | 패킷 처리 | [PacketHandling](Document/07_PacketHandling.md) |
-| 8 | 세션 관리 | [SessionManagement](Document/08_SessionManagement.md) |
+[![바로가기](https://img.shields.io/badge/바로가기-blue)](Document/Study/README.md)
 
 ## Study 디렉토리
 
