@@ -1,8 +1,4 @@
 ## 01_Example
-Study 디렉토리에서 테스트 가능합니다
-- Study/example1.h   
-- Study/main.cpp 
-
 
 
 ## 스레드(Thread)란?
