@@ -219,6 +219,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RateLimiter.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="ServerMonitor.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="DataManager.h" />
+    <ClInclude Include="RateLimiter.h" />
     <ClInclude Include="Stat.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameSession.h" />

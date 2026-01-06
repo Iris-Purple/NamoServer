@@ -1,5 +1,6 @@
 #pragma once
 #include "Session.h"
+#include "RateLimiter.h"
 
 class Player;
 
@@ -22,4 +23,7 @@ public:
 public:
 	atomic<uint64> _lastPingTime = 0;
 	atomic<uint64> _pongTime = 0;
+
+private:
+	RateLimiter _rateLimiter;
 };

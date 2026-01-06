@@ -14,6 +14,8 @@ void GameSession::OnConnected()
 
 	// 암호화 초기화 (GEncryptionEnabled가 true일 때만 실제 동작)
 	InitEncryption(GEncryptionKey, 16);
+
+	_rateLimiter.AddRule(PKT_C2S_MOVE, 10);        // 이동: 초당 10회
 }
 
 void GameSession::OnDisconnected()
@@ -39,6 +41,14 @@ void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 
 	PacketSessionRef session = GetPacketSessionRef();
 	PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
+
+	if (_rateLimiter.CheckRateLimit(header->id) == false)
+	{
+		cout << "[RateLimit] Exceeded! PacketId=" << header->id << endl;
+		Disconnect(L"Rate limit exceeded");
+		return;
+	}
+
 
 	ServerPacketHandler::HandlePacket(session, buffer, len);
 }
