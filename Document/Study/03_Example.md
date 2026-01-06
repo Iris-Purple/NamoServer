@@ -138,7 +138,7 @@ m.unlock();
 
 unlock을 안 하면 발생하는 심각한 문제들!
 
-### 🔴 즉각적인 문제: 데드락(Deadlock)
+### 즉각적인 문제: 데드락(Deadlock)
 
 ```cpp
 std::mutex m;
@@ -155,7 +155,7 @@ void Thread2() {
 
 **결과**: Thread2는 **영원히 블록**되어 프로그램이 멈춤!
 
-### 🔥 예외 발생 시 더 위험!
+### 예외 발생 시 더 위험!
 
 ```cpp
 void DangerousFunction() {

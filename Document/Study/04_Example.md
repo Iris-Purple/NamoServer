@@ -8,7 +8,7 @@ RAII의 핵심은 **프로그래머가 직접 자원을 획득하고 관리하�
 
 자세한 내용은  블로그 참고    :     [https://nx006.tistory.com/40](https://nx006.tistory.com/40)
 
-**🎯 왜 RAII가 중요한가?**
+** 왜 RAII가 중요한가?**
 
 ### 문제 상황 (RAII 없이)
 
@@ -26,7 +26,7 @@ void DangerousFunction() {
     }
     
     if (error2) {
-        delete[] buffer;  *// 일부만 정리// 😱 file, mutex는 누수!*
+        delete[] buffer;  *// 일부만 정리// file, mutex는 누수!*
         return;
     }
     
@@ -41,7 +41,7 @@ void DangerousFunction() {
 
 std::lock_guard의 핵심 장점들
 
-**1. 🛡️ 완벽한 예외 안전성 (Exception Safety)**
+**1. 완벽한 예외 안전성 (Exception Safety)**
 
 ```cpp
 *// ❌ 수동 관리 - 위험!*

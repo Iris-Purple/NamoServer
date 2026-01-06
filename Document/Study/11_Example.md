@@ -1,10 +1,10 @@
 # Example11
 
-**🔒 DFS를 활용한 데드락 탐지 시스템 구현하기**
+** DFS를 활용한 데드락 탐지 시스템 구현하기**
 
 ## 1. 데드락이란?
 
-### 🎯 개념 이해
+### 개념 이해
 
 데드락(Deadlock)은 두 개 이상의 스레드가 서로가 보유한 자원을 기다리며 무한정 대기하는 상황입니다.
 
@@ -15,7 +15,7 @@ Thread1: Lock(A) → Lock(B)  *// A를 잡고 B를 기다림*
 Thread2: Lock(B) → Lock(A)  *// B를 잡고 A를 기다림*
 ```
 
-### 🔄 데드락 발생 조건 (Coffman Conditions)
+### 데드락 발생 조건 (Coffman Conditions)
 1. **상호 배제(Mutual Exclusion)**: 자원은 한 번에 한 스레드만 사용
 2. **점유 대기(Hold and Wait)**: 자원을 보유한 채 다른 자원 대기
 3. **비선점(No Preemption)**: 강제로 자원을 빼앗을 수 없음
@@ -27,7 +27,7 @@ Thread2: Lock(B) → Lock(A)  *// B를 잡고 A를 기다림*
 
 ## 2. DFS로 사이클 탐지하기
 
-### 📊 락 의존성 그래프
+### 락 의존성 그래프
 락 획득 순서를 방향 그래프로 표현합니다:
 ```
 A → B: "A를 잡은 상태에서 B를 획득"
@@ -36,7 +36,7 @@ Thread1: A → B
 Thread2: B → C  
 Thread3: C → A  *// 사이클 발생! A → B → C → A*`
 
-### 🔍 DFS 사이클 탐지 알고리즘
+### DFS 사이클 탐지 알고리즘
 
 ```cpp
 *// 의사 코드*
@@ -90,7 +90,7 @@ private:
 
 ## 4. 핵심 알고리즘 구현
 
-### 🔐 락 획득 추적 (PushLock)
+### 락 획득 추적 (PushLock)
 
 ```cpp
 void DeadLockProfiler::PushLock(const char* name) {
@@ -125,7 +125,7 @@ void DeadLockProfiler::PushLock(const char* name) {
 }
 ```
 
-### 🔄 DFS 사이클 탐지 (핵심!)
+### DFS 사이클 탐지 (핵심!)
 
 ```cpp
 void DeadLockProfiler::Dfs(int32 here) {
@@ -145,20 +145,20 @@ void DeadLockProfiler::Dfs(int32 here) {
     
     set<int32>& nextSet = findIt->second;
     for (int32 there : nextSet) {
-        *// 🌟 케이스 1: 아직 방문 안 한 노드*
+        *// 케이스 1: 아직 방문 안 한 노드*
         if (_discoveredOrder[there] == -1) {
             _parent[there] = here;
             Dfs(there);
             continue;
         }
         
-        *// 🌟 케이스 2: 이미 방문했고, here의 후손인 경우*
+        *// 케이스 2: 이미 방문했고, here의 후손인 경우*
         if (_discoveredOrder[here] < _discoveredOrder[there])
             continue;  *// 정상적인 순방향 간선*
         
-        *// 🌟 케이스 3: 역방향 간선 발견! (사이클)*
+        *// 케이스 3: 역방향 간선 발견! (사이클)*
         if (_finished[there] == false) {
-            *// 🚨 데드락 발견!*
+            *// 데드락 발견!*
             PrintCyclePath(here, there);
             throw std::runtime_error("DEADLOCK_DETECTED");
         }
@@ -168,11 +168,11 @@ void DeadLockProfiler::Dfs(int32 here) {
 }
 ```
 
-### 📝 사이클 경로 출력
+### 사이클 경로 출력
 
 ```cpp
 void PrintCyclePath(int32 here, int32 there) {
-    printf("🔴 Cycle detected: %s -> %s\n", 
+    printf(" Cycle detected: %s -> %s\n", 
            _idToName[here], _idToName[there]);
     
     *// 사이클 경로 역추적*
@@ -191,7 +191,7 @@ void PrintCyclePath(int32 here, int32 there) {
 
 ## 5. 실전 사용 예제
 
-### 💀 데드락 시나리오 1: Classic A↔B
+### 데드락 시나리오 1: Classic A↔B
 
 ```cpp
 *// Thread 1*
@@ -205,14 +205,14 @@ void Thread1_Scenario2() {
 void Thread2_Scenario2() {
     LockGuard lock1(mutexB, "MutexB");  *// B 획득*
     std::this_thread::sleep_for(10ms);
-    LockGuard lock2(mutexA, "MutexA");  *// A 획득 시도 → 💥 데드락!*
+    LockGuard lock2(mutexA, "MutexA");  *// A 획득 시도 →  데드락!*
 }
 
 *// 실행 흐름:// 1. Thread1: PushLock("MutexA") → _lockHistory[A] = {}// 2. Thread2: PushLock("MutexB") → _lockHistory[B] = {}// 3. Thread1: PushLock("MutexB") → _lockHistory[A] = {B} ✅// 4. Thread2: PushLock("MutexA") → _lockHistory[B] = {A} //    → CheckCycle() → 사이클 발견! A→B→A*
 ```
 
-### 🌀 데드락 시나리오 2: 3-way 순환
+### 데드락 시나리오 2: 3-way 순환
 
 ```cpp
-*// Thread 1: A → B// Thread 2: B → C// Thread 3: C → A  // 💥 사이클 완성!// 그래프 구조://     A//    ↙ ↘//   C ← B*
+*// Thread 1: A → B// Thread 2: B → C// Thread 3: C → A  // 사이클 완성!// 그래프 구조://     A//    ↙ ↘//   C ← B*
 ```

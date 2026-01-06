@@ -63,20 +63,20 @@ void BadUseCase() {
 }
 ```
 
-### 🖥️ **CPU 사용률 차이**
+### **CPU 사용률 차이**
 
 ```cpp
 `*// SpinLock 대기 중*
 void SpinLockWaiting() {
     while (못 얻음) {
-        *// CPU: 100% 🔥🔥🔥// 계속 확인, 확인, 확인...*
+        *// CPU: 100% // 계속 확인, 확인, 확인...*
     }
 }
 
 *// Mutex 대기 중*
 void MutexWaiting() {
     if (못 얻음) {
-        *// CPU: 0% 😴// OS가 스레드를 재움*
+        *// CPU: 0% // OS가 스레드를 재움*
     }
 }`
 ```

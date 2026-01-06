@@ -17,11 +17,11 @@
 
 # C++ ThreadManager 구현 및 분석
 
-## 📌 개요
+## 개요
 
 게임 서버에서 멀티스레드를 효율적으로 관리하기 위한 ThreadManager 클래스 구현
 
-## 🎯 핵심 개념
+## 핵심 개념
 
 ### 1. Thread Local Storage (TLS)
 
@@ -47,7 +47,7 @@ void ThreadManager::InitTLS()
 - **fetch_add(1)**: 원자적으로 값을 가져오고 1 증가 (thread-safe)
 - 각 스레드는 고유한 순차 ID를 보장받음
 
-## 🔧 주요 컴포넌트 분석
+## 주요 컴포넌트 분석
 
 ### ThreadManager 클래스 구조
 
@@ -95,7 +95,7 @@ void ThreadManager::Join()
 }
 ```
 
-## 💡 설계 패턴 및 장점
+## 설계 패턴 및 장점
 
 ### 1. RAII (Resource Acquisition Is Initialization)
 
@@ -114,8 +114,6 @@ void ThreadManager::Join()
 - 디버깅 시 스레드 추적 용이
 
 # ThreadManager를 사용하는 이유
-
-## 🎯 핵심 목적
 
 **멀티스레드 프로그램의 복잡성을 줄이고 안전성을 높이기 위함**
 

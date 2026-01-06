@@ -2,11 +2,11 @@
 
 ## IOCP란 무엇인가?
 
-### 🎯 IOCP (I/O Completion Port) 정의
+### IOCP (I/O Completion Port) 정의
 
 **Input/Output Completion Port**는 Windows에서 제공하는 가장 강력한 비동기 I/O 모델입니다.
 
-### 🏭 핵심 아이디어: 작업 완료 통지 중앙화
+### 핵심 아이디어: 작업 완료 통지 중앙화
 
 `일반 모델:                    IOCP 모델:
 Thread1 → Socket1            모든 Socket → IOCP → Worker Threads
@@ -15,7 +15,7 @@ Thread3 → Socket3                    중앙 완료 큐
    ↓                                      ↓
 개별 처리 (비효율)              효율적 분배`
 
-### 💡 비유로 이해하기
+### 비유로 이해하기
 
 `일반 모델 = 각 고객마다 전담 직원 배치 (비효율)
 IOCP = 중앙 접수처 + 여러 처리 직원 (효율적)
@@ -28,9 +28,9 @@ IOCP = 중앙 접수처 + 여러 처리 직원 (효율적)
 
 ## IOCP의 핵심 개념
 
-### 🔑 주요 구성 요소
+### 주요 구성 요소
 
-### 1️⃣ **Completion Port (CP)**
+### **Completion Port (CP)**
 
 ```cpp
 HANDLE iocpHandle = ::CreateIoCompletionPort(
@@ -41,7 +41,7 @@ HANDLE iocpHandle = ::CreateIoCompletionPort(
 );
 ```
 
-### 2️⃣ **Completion Key**
+### **Completion Key**
 
 ```cpp
 *// 소켓을 CP에 등록할 때 Session 포인터를 Key로 사용*
@@ -53,7 +53,7 @@ HANDLE iocpHandle = ::CreateIoCompletionPort(
 );
 ```
 
-### 3️⃣ **Overlapped 구조체**
+### **Overlapped 구조체**
 
 ```cpp
 struct OverlappedEx {
@@ -62,7 +62,7 @@ struct OverlappedEx {
 };
 ```
 
-### 4️⃣ **GetQueuedCompletionStatus**
+### **GetQueuedCompletionStatus**
 
 ```cpp
 BOOL ret = ::GetQueuedCompletionStatus(
@@ -78,7 +78,7 @@ BOOL ret = ::GetQueuedCompletionStatus(
 
 ## 코드 구조 분석
 
-### 📁 전체 구조
+### 전체 구조
 
 `Main Thread                 Worker Threads (5개)
     │                            │
@@ -89,7 +89,6 @@ BOOL ret = ::GetQueuedCompletionStatus(
     ├─ IOCP 등록
     └─ 첫 Recv 예약`
 
-### 🔍 주요 구조체 분석
 
 ### Session 구조체
 
@@ -110,7 +109,7 @@ struct OverlappedEx {
 };
 ```
 
-### 📝 코드 흐름 분석
+### 코드 흐름 분석
 
 ```cpp
 int main() {
@@ -149,7 +148,7 @@ int main() {
 
 ## 상세 동작 과정
 
-### 🔄 전체 플로우
+### 전체 플로우
 
 `1. 클라이언트 접속
       ↓
@@ -169,7 +168,7 @@ int main() {
       ↓
 9. 다시 WSARecv 호출 (계속 수신)`
 
-### 🎬 시나리오별 동작
+### 시나리오별 동작
 
 ### 시나리오 1: 클라이언트 접속
 

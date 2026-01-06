@@ -47,11 +47,9 @@ OS는 효율성을 위해 메모리를 즉시 회수하지 않고, 해당 메모
 
 # StompAllocator: UAF와 메모리 오버플로우 버그 잡기
 
-## 📚 강의 개요
-
 게임 서버 개발에서 가장 찾기 어려운 버그인 **Use After Free(UAF)**와 **메모리 오버플로우**를 즉시 탐지하는 StompAllocator를 구현해봅니다.
 
-## 🎯 학습 목표
+## 학습 목표
 
 1. UAF 버그를 즉시 크래시로 전환하는 방법 이해
 2. 메모리 오버플로우 감지 메커니즘 구현
@@ -150,7 +148,7 @@ void StompAllocator::Release(void* ptr)
 
 ## 3. 버그 감지 실전 예제
 
-### 🐛 UAF 버그 즉시 감지
+### UAF 버그 즉시 감지
 
 ```cpp
 *// UAF 버그 테스트*
@@ -159,7 +157,7 @@ new(knight) Knight();  *// placement new로 생성자 호출*
 
 StompAllocator::Release(knight);  *// 메모리 해제 → 페이지 접근 금지*
 
-knight->_hp = 200;  *// 💥 즉시 크래시!// Access Violation: 접근 금지된 메모리에 쓰기 시도*
+knight->_hp = 200;  *// 즉시 크래시!// Access Violation: 접근 금지된 메모리에 쓰기 시도*
 ```
 
 **일반 할당자 vs StompAllocator:**
@@ -168,13 +166,13 @@ knight->_hp = 200;  *// 💥 즉시 크래시!// Access Violation: 접근 금지
 *// 일반 new/delete*
 Knight* k = new Knight();
 delete k;
-k->_hp = 200;  *// 😱 동작할 수도 있음 (위험!)// StompAllocator*
+k->_hp = 200;  *// 동작할 수도 있음 (위험!)// StompAllocator*
 Knight* k = static_cast<Knight*>(StompAllocator::Alloc(sizeof(Knight)));
 StompAllocator::Release(k);
-k->_hp = 200;  *// 💥 100% 크래시 보장!*
+k->_hp = 200;  *// 100% 크래시 보장!*
 ```
 
-### 🐛 메모리 오버플로우 감지
+### 메모리 오버플로우 감지
 
 ```cpp
 *// 잘못된 크기로 할당 (Player 크기로 할당, Knight로 사용)*
@@ -182,7 +180,7 @@ Knight* knight = static_cast<Knight*>(
     StompAllocator::Alloc(sizeof(Player))  *// Player는 Knight보다 작음*
 );
 
-knight->_hp = 200;  *// Knight의 _hp는 Player 크기를 벗어남// 💥 크래시! (다음 페이지 접근 시도)*
+knight->_hp = 200;  *// Knight의 _hp는 Player 크기를 벗어남// 크래시! (다음 페이지 접근 시도)*
 ```
 
 **메모리 레이아웃:**
@@ -197,12 +195,12 @@ Player size = 1 byte, Knight size = 8 bytes
 knight->_hp 접근 시 → 페이지2 접근 → 크래시!
 ```
 
-### 🐛 표준 new와 비교
+### 표준 new와 비교
 
 ```cpp
 *// 위험한 코드 (표준 new 사용)*
 Knight* knight = (Knight*)(new Player);
-knight->_hp = 20;  *// 😱 메모리 침범! 하지만 크래시 안날 수도...// 다른 객체 오염 가능*
+knight->_hp = 20;  *// 메모리 침범! 하지만 크래시 안날 수도...// 다른 객체 오염 가능*
 Player* p1 = new Player();
 Player* p2 = new Player();  *// p1 바로 다음에 할당*
 Knight* k = (Knight*)p1;

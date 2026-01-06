@@ -4,7 +4,7 @@
 
 STL 컨테이너의 메모리 버그를 즉시 감지하기 위해 StompAllocator를 기반으로 한 **커스텀 STL Allocator**를 구현합니다. 이를 통해 vector, list, map 등의 메모리 오류를 개발 단계에서 완벽하게 잡아냅니다.
 
-## 🎯 학습 목표
+## 학습 목표
 
 1. STL Allocator의 동작 원리 이해
 2. 커스텀 Allocator 구현 방법 학습
@@ -111,7 +111,7 @@ void deallocate(T* ptr, size_t);  *// 메모리 해제*
 ### 문제: 복잡한 템플릿 문법
 
 ```cpp
-*// 😰 매번 이렇게 쓰기는 너무 복잡!*
+*// 매번 이렇게 쓰기는 너무 복잡!*
 vector<Knight, StlAllocator<Knight>> knights;
 map<int, Knight, less<int>, StlAllocator<pair<const int, Knight>>> knightMap;
 ```
