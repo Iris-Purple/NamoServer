@@ -9,5 +9,4 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 
 
 ## Protobuf 설치문서
-
-[![INSTALL](https://img.shields.io/badge/바로가기-blue)](Document/ProtobufSetup.md)
+[INSTALL](Document/ProtobufSetup.md)
