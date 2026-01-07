@@ -455,16 +455,8 @@ if (auto session = player->session.lock())
 
 ---
 
-## 요약: 한 줄 정리
+## 요약
 
 ```
 게임로직 → MakeSendBuffer(Protobuf직렬화) → Send(암호화,큐잉) → RegisterSend(WSASend) → ProcessSend(완료)
 ```
-
-### 핵심 설계 원칙
-
-1. **비동기 I/O**: WSASend()는 즉시 반환, 완료는 IOCP가 통지
-2. **배치 전송**: SendQueue에 모아서 한 번에 WSASend() (Scatter-Gather)
-3. **버퍼 재사용**: 같은 SendBuffer를 여러 세션에 전송 가능
-4. **스레드 안전**: Lock으로 SendQueue 보호
-
