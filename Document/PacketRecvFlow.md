@@ -86,7 +86,6 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 }
 ```
 
-### 핵심 포인트
 - `GetQueuedCompletionStatus()`는 **블로킹 함수**
 - 완료된 I/O가 있을 때까지 대기 (timeout 지정 가능)
 - `iocpEvent`에 어떤 종류의 이벤트인지 정보가 담겨있음

@@ -17,3 +17,4 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 1. [프로젝트 전체 구조](Document/Architecture.md)
 2. [패킷 구조와 프로토콜](Document/Protocol.md)
 3. [패킷 수신](Document/PacketRecvFlow.md)
+4. [패킷 송신](Document/PacketSendFlow.md)
