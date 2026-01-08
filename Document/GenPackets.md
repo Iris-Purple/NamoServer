@@ -1,8 +1,8 @@
 # GenPackets.bat 빌드 스크립트 가이드
 
 > Protocol 정의부터 배포까지 자동화하는 빌드 스크립트
-> 패킷이 변경되면  GenPackts.bat 을 실행하여  배포
-> 게임데이터 변경시  GenPackts.bat 을 실행하여 배포
+> 1. 패킷이 변경되면  GenPackts.bat 을 실행하여  배포
+> 2. 게임데이터 변경시  GenPackts.bat 을 실행하여 배포
 ---
 
 
