@@ -20,3 +20,4 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 4. [패킷 송신](Document/PacketSendFlow.md)
 5. [Worker Thread](Document/WorkerThread.md)
 6. [빌드 스크립트](Document/GenPackets.md)
+7. [환경설정](Document/Config.md)
