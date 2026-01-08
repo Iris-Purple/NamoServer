@@ -24,6 +24,7 @@ GameServer/
     "dataPath": "../Common/Data/",
     "encryptionEnabled": true,
     "encryptionKey": "NamoServerKey123",
+    "workerThread": 10,
     "roomCount": 5,
     "monsterCount": 3
 }
@@ -119,8 +120,28 @@ else if (!_config.encryptionKey.empty())
 
 
 ---
+### 4. workerThread
 
-### 4. roomCount
+**설명:**
+서버 시작 시 생성할 스레드 갯수
+
+**사용처:**
+```cpp
+// GameServer.cpp
+const int workerThread = ConfigManager::Instance().GetWorkerThread();
+for (int32 i = 0; i < workerThread; i++)
+{
+	GThreadManager->Launch([&service]()
+	{
+		DoWorkerJob(service);
+	});
+}
+```
+
+---
+
+
+### 5. roomCount
 
 **설명:**
 서버 시작 시 생성할 게임 방(Room)의 개수입니다.
@@ -137,7 +158,7 @@ for (int i = 0; i < roomCount; i++)
 
 ---
 
-### 5. monsterCount
+### 6. monsterCount
 
 **설명:**
 각 방(Room)에 생성할 몬스터의 개수입니다.

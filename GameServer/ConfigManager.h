@@ -10,6 +10,7 @@ using json = nlohmann::json;
 		string dataPath;
 		bool encryptionEnabled = false;  // 패킷 암호화 ON/OFF
 		string encryptionKey;            // AES-128 키 (16바이트 문자열)
+		int workerThread;				 // 서버 스레드 갯수
 		int roomCount;					 // 방 갯수
 		int monsterCount;				 // 몬스터 갯수
 	};
@@ -26,6 +27,8 @@ using json = nlohmann::json;
 		if (j.contains("encryptionKey"))
 			j.at("encryptionKey").get_to(config.encryptionKey);
 
+		if (j.contains("workerThread"))
+			j.at("workerThread").get_to(config.workerThread);
 		if (j.contains("roomCount"))
 			j.at("roomCount").get_to(config.roomCount);
 		if (j.contains("monsterCount"))
@@ -47,6 +50,7 @@ using json = nlohmann::json;
 		const string& GetDataPath() const { return _config.dataPath; }
 		bool GetEncryptionEnabled() const { return _config.encryptionEnabled; }
 		const string& GetEncryptionKey() const { return _config.encryptionKey; }
+		const int& GetWorkerThread() const { return _config.workerThread; }
 		const int& GetRoomCount() const { return _config.roomCount; }
 		const int& GetMonsterCount() const { return _config.monsterCount; }
 

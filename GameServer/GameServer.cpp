@@ -67,7 +67,8 @@ int main()
 	});
 	ServerMonitor::Instance().Start(5000); // 5초 간격으로 모니터링
 
-	for (int32 i = 0; i < 5; i++)
+	const int workerThread = ConfigManager::Instance().GetWorkerThread();
+	for (int32 i = 0; i < workerThread; i++)
 	{
 		GThreadManager->Launch([&service]()
 			{

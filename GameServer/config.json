@@ -2,6 +2,7 @@
     "dataPath": "../Common/Data/",
     "encryptionEnabled": true,
     "encryptionKey": "NamoServerKey123",
+	"workerThread": 10,
 	"roomCount": 5,
 	"monsterCount": 3
 }
