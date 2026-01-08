@@ -26,6 +26,3 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 --------
 ## 서버 실행 및 게임 데모
 [![YouTube](https://img.shields.io/badge/YouTube-서버_실행_데모-red?logo=youtube)](https://youtu.be/VX-r4Hx6XPA)
-
-
-<video src="https://youtu.be/VX-r4Hx6XPA" controls width="800"></video>
