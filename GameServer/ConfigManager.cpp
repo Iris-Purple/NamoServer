@@ -42,6 +42,7 @@
         else
             cout << "  - encryptionKey: (invalid length, using default)" << endl;
 
+        cout << "  - workerThread: " << _config.workerThread << endl;
         cout << "  - roomCount: " << _config.roomCount << endl;
         cout << "  - monsterCount: " << _config.monsterCount << endl;
     }

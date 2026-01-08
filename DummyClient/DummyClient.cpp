@@ -5,10 +5,10 @@
 #include "GameSession.h"
 
 // 부하테스트 설정
-const int32 CLIENT_COUNT = 1;		// 총 클라이언트 수
+const int32 CLIENT_COUNT = 100;		// 총 클라이언트 수
 const int32 BATCH_SIZE = 50;			// 한 번에 입장시킬 클라이언트 수
-const int32 BATCH_INTERVAL_SEC = 30;	// 배치 간격 (초)
-const int32 WORKER_THREAD_COUNT = 5;	// IOCP 워커 스레드 수
+const int32 BATCH_INTERVAL_SEC = 10;	// 배치 간격 (초)
+const int32 WORKER_THREAD_COUNT = 10;	// IOCP 워커 스레드 수
 
 int main()
 {
