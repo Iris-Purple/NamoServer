@@ -17,11 +17,12 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 1. [프로젝트 전체 구조](Document/Architecture.md)
 2. [빌드 스크립트](Document/GenPackets.md)
 3. [환경설정](Document/Config.md)
-4. [패킷 구조와 프로토콜](Document/Protocol.md)
-5. [패킷 수신](Document/PacketRecvFlow.md)
-6. [패킷 송신](Document/PacketSendFlow.md)
-7. [Worker Thread](Document/WorkerThread.md)
-8. [PING / PONG](Document/PingPong.md)
+4. [네트워크 보안](Document/NetworkSecurity.md)
+5. [패킷 구조와 프로토콜](Document/Protocol.md)
+6. [패킷 수신](Document/PacketRecvFlow.md)
+7. [패킷 송신](Document/PacketSendFlow.md)
+8. [Worker Thread](Document/WorkerThread.md)
+9. [PING / PONG](Document/PingPong.md)
 
 
 

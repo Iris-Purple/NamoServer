@@ -1,4 +1,4 @@
-# Protobuf 설치 가이드
+# Protobuf 설치
 
 > **Note:** Server/Protocol 소스 코드를 다운로드 받으면 아래 기능은 이미 완료된 상태로 git에 포함되어 있습니다.
 
