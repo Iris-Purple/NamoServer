@@ -1,5 +1,7 @@
-# NamoServer
+# NamoServer 
+![C++](https://img.shields.io/badge/C++-00599C?logo=cplusplus&logoColor=white) ![Windows](https://img.shields.io/badge/Windows-IOCP-0078D6?logo=windows) ![Protobuf](https://img.shields.io/badge/Protobuf-4285F4?logo=google)
 C++ 기반 게임 서버 프로젝트입니다.
+--------
 
 
 ## 게임서버에 필요한 기술
@@ -7,7 +9,7 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 
 [![바로가기](https://img.shields.io/badge/바로가기-blue)](Document/Study/README.md)
 
-
+--------
 ## Protobuf 설치문서
 [INSTALL](Document/ProtobufSetup.md)
 
