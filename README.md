@@ -23,7 +23,7 @@ C++ 게임서버에 필요한 기술을 정리하였습니다.
 7. [패킷 송신](Document/PacketSendFlow.md)
 8. [Worker Thread](Document/WorkerThread.md)
 9. [PING / PONG](Document/PingPong.md)
-
+10. [부하 테스트](Document/LoadTest.md)
 
 
 --------
