@@ -29,15 +29,16 @@ private:
 	unordered_map<int32, PlayerRef> _players;
 	unordered_map<int32, MonsterRef> _monsters;
 	unordered_map<int32, ProjectileRef> _projectiles;
-	int _roomId;
+	
 	int _monsterCount;
 	
 public:
+	int _roomId;
 	Map _map;
 
 private:
 	static const uint64 _pingInterval = 10000;
-	static const uint64 _pongTimeout = 3000;
+	static const uint64 _pongTimeout = 4000;
 public:
 	void SendPing();
 };

@@ -102,6 +102,7 @@ void Room::Update()
 
 bool Room::HandleEnterGame(GameObjectRef gameObject)
 {
+	//cout << "Room::HandleEnterGame  _roomId: " << _roomId << endl;
 	if (gameObject == nullptr)
 		return false;
 

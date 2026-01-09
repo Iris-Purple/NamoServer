@@ -5,10 +5,10 @@
 #include "GameSession.h"
 
 // 부하테스트 설정
-const int32 CLIENT_COUNT = 100;		// 총 클라이언트 수
-const int32 BATCH_SIZE = 50;			// 한 번에 입장시킬 클라이언트 수
+const int32 CLIENT_COUNT = 500;		// 총 클라이언트 수
+const int32 BATCH_SIZE = 20;			// 한 번에 입장시킬 클라이언트 수
 const int32 BATCH_INTERVAL_SEC = 10;	// 배치 간격 (초)
-const int32 WORKER_THREAD_COUNT = 10;	// IOCP 워커 스레드 수
+const int32 WORKER_THREAD_COUNT = 50;	// IOCP 워커 스레드 수
 
 int main()
 {
@@ -82,9 +82,8 @@ int main()
 					gameSession->SendMoveOrAttack();
 				}
 			}
+			this_thread::sleep_for(50ms);
 		}
-
-		this_thread::sleep_for(50ms);  // 폴링 주기 50ms
 	}
 
 	GThreadManager->Join();

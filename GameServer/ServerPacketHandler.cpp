@@ -28,7 +28,11 @@ bool Handle_C2S_ENTER_GAME(GameSessionRef& session, Protocol::C2S_ENTER_GAME& pk
 
 	static_pointer_cast<GameSession>(session)->myPlayer.store(player);
 
-	RoomRef room = RoomManager::Instance().Find(1);
+	static atomic<int32> roomIndex = 0;
+	int32 roomCount = RoomManager::Instance().GetRoomCount();
+	int32 targetRoom = (roomIndex++ % roomCount) + 1;
+
+	RoomRef room = RoomManager::Instance().Find(targetRoom);
 	room->DoAsync(&Room::HandleEnterGame, static_pointer_cast<GameObject>(player));
 
 	return true;
@@ -43,6 +47,7 @@ bool Handle_C2S_PONG(GameSessionRef& session, Protocol::C2S_PONG& pkt)
 
 bool Handle_C2S_MOVE(GameSessionRef& session, Protocol::C2S_MOVE& pkt)
 {
+	
 	PlayerRef myPlayer = session->myPlayer.load();
 	if (myPlayer == nullptr)
 		return false;
@@ -50,6 +55,7 @@ bool Handle_C2S_MOVE(GameSessionRef& session, Protocol::C2S_MOVE& pkt)
 	if (room == nullptr)
 		return false;
 
+	//cout << "[MOVE] user _roomId: " << room->_roomId << endl;
 	room->DoAsync(&Room::HandleMove, myPlayer, pkt);
 	//cout << myPlayer->Id() << " : C2S_MOVE(" << pkt.posinfo().posx() << ", " << pkt.posinfo().posy() << ")" << endl;
 	return true;

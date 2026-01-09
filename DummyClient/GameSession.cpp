@@ -128,7 +128,6 @@ void GameSession::SendMovePacket()
 	auto sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 	Send(sendBuffer);
 
-	this_thread::sleep_for(100ms);
 	posInfo->set_state(Protocol::CreatureState::Idle);
 	sendBuffer = ClientPacketHandler::MakeSendBuffer(pkt);
 	Send(sendBuffer);

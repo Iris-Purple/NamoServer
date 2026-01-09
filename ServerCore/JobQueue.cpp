@@ -22,6 +22,7 @@ void JobQueue::Push(JobRef job, bool pushOnly)
 		}
 		else
 		{
+			cout << "Job GlobalQueue push....." << endl;
 			// 여유 있는 다른 쓰레드가 실행하도록 GlobalQueue에 넘긴다
 			GGlobalQueue->Push(shared_from_this());
 		}

@@ -8,7 +8,7 @@ Monster::Monster() : GameObject(Protocol::GameObjectType::MONSTER)
 {
 	_level = 1;
 	_hp = _maxHp = 100;
-	_speed = 5.0f;
+	_speed = 2.0f;
 
 	_state = Protocol::CreatureState::Idle;
 }
