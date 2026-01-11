@@ -1,0 +1,81 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths:
+      - 'Tests/**'
+      - 'GameServer/**'
+      - 'ServerCore/**'
+      - '.github/workflows/tests.yml'
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-linux:
+    name: Linux Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ ninja-build
+
+    - name: Configure CMake
+      working-directory: Tests
+      run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build tests
+      working-directory: Tests
+      run: cmake --build build
+
+    - name: Run tests
+      working-directory: Tests/build
+      run: ctest --output-on-failure --verbose
+
+  test-windows:
+    name: Windows Tests
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure CMake
+      working-directory: Tests
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build tests
+      working-directory: Tests
+      run: cmake --build build --config Release
+
+    - name: Run tests
+      working-directory: Tests/build
+      run: ctest -C Release --output-on-failure --verbose
+
+  test-macos:
+    name: macOS Tests
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: brew install cmake ninja
+
+    - name: Configure CMake
+      working-directory: Tests
+      run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build tests
+      working-directory: Tests
+      run: cmake --build build
+
+    - name: Run tests
+      working-directory: Tests/build
+      run: ctest --output-on-failure --verbose
